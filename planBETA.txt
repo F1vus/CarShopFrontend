@@ -1,0 +1,18 @@
+src/
+ ├─ components/
+ │   ├─ Header.jsx        // Menu, logo, hamburger na mobile
+ │   ├─ HeroBanner.jsx    // Slider zdjęć aut
+ │   ├─ FilterPanel.jsx   // Filtry: marka, rok, przebieg, paliwo, moc, kolor, cena
+ │   ├─ CarCard.jsx       // Pojedynczy samochód (zdjęcia, cena, opis, CTA)
+ │   ├─ CarGrid.jsx       // Siatka samochodów w kategorii
+ │   ├─ Cart.jsx          // Koszyk
+ │   ├─ Checkout.jsx      // Checkout / formularz zamówienia
+ │   ├─ Footer.jsx
+ ├─ pages/
+ │   ├─ index.jsx         // Home
+ │   ├─ category.jsx      // Podstrona kategorii
+ │   ├─ product.jsx       // Karta auta
+ │   ├─ cart.jsx
+ │   ├─ checkout.jsx
+ ├─ styles/
+ │   ├─ tailwind.css
