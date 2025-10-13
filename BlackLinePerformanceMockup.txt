@@ -1,0 +1,369 @@
+/*
+ak uruchomić lokalnie:
+1. Stwórz nową aplikację React przez Vite:
+   npm create vite@latest blackline -- --template react
+2. cd blackline
+3. Zainstaluj Tailwind CSS (wg dokumentacji Vite + Tailwind):
+   - npm install -D tailwindcss postcss autoprefixer
+   - npx tailwindcss init -p
+   - W tailwind.config.cjs ustaw content na:
+       ./index.html,
+       ./src/**/*.{js,jsx,ts,tsx}
+   - W ./src/index.css dodaj:
+       @tailwind base;
+       @tailwind components;
+       @tailwind utilities;
+4. Podmień plik ./src/App.jsx na zawartość tego pliku
+5. Uruchom projekt:
+   npm install && npm run dev
+
+Zawartość tego dema:
+- mockowane dane samochodów
+- komponenty: Header, HeroBanner, FilterPanel, CarCard, CarGrid, Cart, Checkout
+- responsywność + hover na desktopie oraz obsługa dotyku na mobile
+- podstawowa logika koszyka + symulacja checkoutu
+
+Uwagi:
+- Obrazy podmienić na własne (wrzucić do /public) i zaktualizować ścieżki w carsData
+- To wersja tylko frontendowa — integrację z backendem (WooCommerce / API) trzeba dodać osobno
+*/
+
+import React, { useEffect, useMemo, useState } from "react";
+
+// mock data
+const carsData = [
+  {
+    id: 1,
+    brand: "BMW",
+    model: "E60",
+    year: 2007,
+    mileage: 120000,
+    fuel: "Benzyna",
+    power: 272,
+    body: "Sedan",
+    color: "Czarny",
+    price: 35000,
+    images: ["/images/e60-1.jpg", "/images/e60-2.jpg"]
+  },
+  {
+    id: 2,
+    brand: "Honda",
+    model: "Accord",
+    year: 2010,
+    mileage: 90000,
+    fuel: "Benzyna",
+    power: 200,
+    body: "Sedan",
+    color: "Czerwony",
+    price: 30000,
+    images: ["/images/accord-1.jpg", "/images/accord-2.jpg"]
+  },
+  {
+    id: 3,
+    brand: "Mercedes",
+    model: "AMG C63",
+    year: 2012,
+    mileage: 80000,
+    fuel: "Benzyna",
+    power: 457,
+    body: "Coupe",
+    color: "Grafitowy",
+    price: 120000,
+    images: ["/images/mercedes-1.jpg", "/images/mercedes-2.jpg"]
+  }
+];
+
+function Header({ cartCount, onOpenCart }) {
+  return (
+    <header className="bg-black text-white sticky top-0 z-40 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center gap-4">
+            <div className="text-2xl font-extrabold tracking-tight text-red-500">BlackLine</div>
+            <div className="text-sm text-gray-300">Performance</div>
+          </div>
+          <nav className="hidden md:flex items-center gap-6 text-gray-200">
+            <a className="hover:text-red-400" href="#">Home</a>
+            <a className="hover:text-red-400" href="#catalog">Samochody</a>
+            <a className="hover:text-red-400" href="#about">O nas</a>
+          </nav>
+          <div className="flex items-center gap-4">
+            <button className="hidden md:inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">Zobacz samochody</button>
+            <button onClick={onOpenCart} className="relative p-2 rounded-md hover:bg-gray-800">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4" />
+              </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartCount}</span>
+              )}
+            </button>
+            <div className="md:hidden">
+              {/* simple mobile menu placeholder */}
+              <button className="p-2 rounded-md hover:bg-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function HeroBanner() {
+  return (
+    <section className="bg-gradient-to-b from-black via-gray-900 to-black text-white">
+      <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col md:flex-row items-center gap-8">
+        <div className="md:w-1/2">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">BlackLine Performance</h1>
+          <p className="mt-4 text-gray-300">Sklep premium z sportowymi samochodami — Honda Accord, BMW E60, Mercedes AMG. Kup online.</p>
+          <div className="mt-6 flex gap-4">
+            <a href="#catalog" className="inline-block bg-red-600 hover:bg-red-700 px-5 py-3 rounded-md font-semibold">Zobacz samochody</a>
+            <a href="#" className="inline-block border border-red-600 px-5 py-3 rounded-md text-red-600 hover:bg-red-800">Kontakt</a>
+          </div>
+        </div>
+        <div className="md:w-1/2 flex justify-center">
+          {/* sample image placeholder */}
+          <div className="w-full max-w-md rounded-lg overflow-hidden transform hover:scale-105 transition"> 
+            <img src="/images/hero-mix.jpg" alt="BlackLine cars" className="w-full h-64 object-cover" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FilterPanel({ filters, setFilters, onReset }) {
+  const brands = ["BMW", "Honda", "Mercedes"];
+
+  function update(key, value) {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  }
+
+  return (
+    <aside className="bg-gray-900 text-white p-4 rounded-md">
+      <h3 className="font-bold mb-3">Filtry</h3>
+      <div className="flex flex-col gap-3">
+        <label className="text-sm">Marka</label>
+        <select value={filters.brand} onChange={e => update('brand', e.target.value)} className="bg-gray-800 p-2 rounded-md">
+          <option value="">Wszystkie</option>
+          {brands.map(b => <option key={b} value={b}>{b}</option>)}
+        </select>
+
+        <label className="text-sm">Rok (min)</label>
+        <input type="number" value={filters.minYear} onChange={e => update('minYear', e.target.value)} className="bg-gray-800 p-2 rounded-md" />
+
+        <label className="text-sm">Przebieg (max km)</label>
+        <input type="number" value={filters.maxMileage} onChange={e => update('maxMileage', e.target.value)} className="bg-gray-800 p-2 rounded-md" />
+
+        <label className="text-sm">Rodzaj paliwa</label>
+        <select value={filters.fuel} onChange={e => update('fuel', e.target.value)} className="bg-gray-800 p-2 rounded-md">
+          <option value="">Dowolne</option>
+          <option value="Benzyna">Benzyna</option>
+          <option value="Diesel">Diesel</option>
+          <option value="Hybryda">Hybryda</option>
+          <option value="Elektryczny">Elektryczny</option>
+        </select>
+
+        <label className="text-sm">Moc (min KM)</label>
+        <input type="number" value={filters.minPower} onChange={e => update('minPower', e.target.value)} className="bg-gray-800 p-2 rounded-md" />
+
+        <label className="text-sm">Cena (max)</label>
+        <input type="number" value={filters.maxPrice} onChange={e => update('maxPrice', e.target.value)} className="bg-gray-800 p-2 rounded-md" />
+
+        <div className="flex gap-2 mt-2">
+          <button onClick={onReset} className="flex-1 bg-gray-700 hover:bg-gray-600 p-2 rounded-md">Reset</button>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function CarCard({ car, onAdd }) {
+  return (
+    <div className="group bg-gray-800 rounded-lg overflow-hidden shadow-md transform hover:scale-105 transition relative">
+      <div className="relative">
+        <img src={car.images[0]} alt={`${car.brand} ${car.model}`} className="w-full h-48 object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-4">
+          <div>
+            <div className="text-white font-bold text-lg">{car.brand} {car.model}</div>
+            <div className="text-sm text-gray-300">{car.year} • {car.mileage} km • {car.power} KM</div>
+          </div>
+        </div>
+      </div>
+      <div className="p-4 flex flex-col gap-3">
+        <div className="flex items-baseline justify-between">
+          <div>
+            <div className="font-bold text-white">{car.brand} {car.model}</div>
+            <div className="text-sm text-gray-400">{car.year} • {car.body}</div>
+          </div>
+          <div className="text-red-500 font-extrabold text-lg">{car.price.toLocaleString()} PLN</div>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={() => onAdd(car)} className="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-md">Kup teraz</button>
+          <a href={`#product-${car.id}`} className="px-3 py-2 border border-gray-700 rounded-md self-center">Szczegóły</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CarGrid({ cars, onAdd }) {
+  if (cars.length === 0) return <div className="text-gray-400">Brak pasujących samochodów.</div>;
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {cars.map(car => <CarCard key={car.id} car={car} onAdd={onAdd} />)}
+    </div>
+  );
+}
+
+function CartDrawer({ open, onClose, items, onRemove, onCheckout }) {
+  const total = items.reduce((s, it) => s + it.price, 0);
+  return (
+    <div className={`fixed top-0 right-0 h-full w-full md:w-1/3 bg-black/90 text-white transform ${open ? 'translate-x-0' : 'translate-x-full'} transition`}>
+      <div className="p-4 flex items-center justify-between border-b border-gray-700">
+        <h3 className="font-bold">Koszyk</h3>
+        <button onClick={onClose} className="p-2">Zamknij</button>
+      </div>
+      <div className="p-4 space-y-4 overflow-auto h-[calc(100%-120px)]">
+        {items.length === 0 && <div className="text-gray-400">Koszyk pusty</div>}
+        {items.map(it => (
+          <div key={it.id} className="flex items-center gap-4">
+            <img src={it.images[0]} className="w-20 h-12 object-cover rounded-md" />
+            <div className="flex-1">
+              <div className="font-bold">{it.brand} {it.model}</div>
+              <div className="text-sm text-gray-400">{it.year} • {it.mileage} km</div>
+            </div>
+            <div className="text-red-500 font-bold">{it.price.toLocaleString()} PLN</div>
+            <button onClick={() => onRemove(it.id)} className="ml-2 text-sm text-gray-300">Usuń</button>
+          </div>
+        ))}
+      </div>
+      <div className="p-4 border-t border-gray-700">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-sm text-gray-300">Suma</div>
+          <div className="font-bold text-lg text-red-500">{total.toLocaleString()} PLN</div>
+        </div>
+        <button onClick={onCheckout} className="w-full bg-red-600 py-3 rounded-md">Zamawiam i płacę</button>
+      </div>
+    </div>
+  );
+}
+
+function CheckoutForm({ items, onConfirm }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+
+  function submit(e) {
+    e.preventDefault();
+    const payload = { name, email, address, items };
+    // simulate
+    onConfirm(payload);
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-3 p-4 bg-gray-900 rounded-md">
+      <div>
+        <label className="text-sm text-gray-300">Imię i nazwisko</label>
+        <input required value={name} onChange={e=>setName(e.target.value)} className="w-full p-2 rounded-md bg-gray-800" />
+      </div>
+      <div>
+        <label className="text-sm text-gray-300">Email</label>
+        <input required type="email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full p-2 rounded-md bg-gray-800" />
+      </div>
+      <div>
+        <label className="text-sm text-gray-300">Adres</label>
+        <input required value={address} onChange={e=>setAddress(e.target.value)} className="w-full p-2 rounded-md bg-gray-800" />
+      </div>
+      <button type="submit" className="w-full bg-red-600 py-2 rounded-md">Potwierdź zamówienie</button>
+    </form>
+  );
+}
+
+export default function App() {
+  const [filters, setFilters] = useState({ brand: '', minYear: '', maxMileage: '', fuel: '', minPower: '', maxPrice: '' });
+  const [cars, setCars] = useState(carsData);
+  const [cart, setCart] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // dynamic filtering
+    let list = carsData.slice();
+    if (filters.brand) list = list.filter(c => c.brand === filters.brand);
+    if (filters.minYear) list = list.filter(c => c.year >= Number(filters.minYear));
+    if (filters.maxMileage) list = list.filter(c => c.mileage <= Number(filters.maxMileage));
+    if (filters.fuel) list = list.filter(c => c.fuel === filters.fuel);
+    if (filters.minPower) list = list.filter(c => c.power >= Number(filters.minPower));
+    if (filters.maxPrice) list = list.filter(c => c.price <= Number(filters.maxPrice));
+    setCars(list);
+  }, [filters]);
+
+  function addToCart(car) {
+    setCart(prev => [...prev, car]);
+    setCartOpen(true);
+  }
+
+  function removeFromCart(id) {
+    setCart(prev => prev.filter(it => it.id !== id));
+  }
+
+  function resetFilters() {
+    setFilters({ brand: '', minYear: '', maxMileage: '', fuel: '', minPower: '', maxPrice: '' });
+  }
+
+  function handleCheckout() {
+    setCheckoutOpen(true);
+  }
+
+  function confirmOrder(payload) {
+    // simulate order
+    setCart([]);
+    setCheckoutOpen(false);
+    setCartOpen(false);
+    setMessage('Zamówienie przyjęte! Sprawdzimy szczegóły i skontaktujemy się z Tobą.');
+    setTimeout(()=>setMessage(''), 5000);
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <Header cartCount={cart.length} onOpenCart={()=>setCartOpen(true)} />
+      <HeroBanner />
+
+      <main className="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1">
+          <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} />
+        </div>
+        <div className="lg:col-span-3" id="catalog">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-bold">Dostępne samochody</h2>
+            <div className="text-sm text-gray-400">{cars.length} wyników</div>
+          </div>
+
+          <CarGrid cars={cars} onAdd={addToCart} />
+
+        </div>
+      </main>
+
+      <CartDrawer open={cartOpen} onClose={()=>setCartOpen(false)} items={cart} onRemove={removeFromCart} onCheckout={handleCheckout} />
+
+      {checkoutOpen && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl">
+            <CheckoutForm items={cart} onConfirm={confirmOrder} />
+          </div>
+        </div>
+      )}
+
+      {message && (
+        <div className="fixed bottom-6 right-6 bg-red-600 text-white px-4 py-3 rounded-md shadow-lg">{message}</div>
+      )}
+
+      <footer className="mt-12 p-6 text-center text-gray-400">© BlackLine Performance</footer>
+    </div>
+  );
+}
