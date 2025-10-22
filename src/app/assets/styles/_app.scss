@@ -1,4 +1,12 @@
 .card {
-  border: 1xp solid #ccc;
+  border: 1xp solid #242424;
   padding: 15px;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
 }
