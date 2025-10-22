@@ -6,10 +6,10 @@ export default function NavBar() {
     <header className="navbar">
       <div className="container navbar__container">
         <div className="navbar__logo">
-          CAR<span>Shop</span>
-          <div className="navbar__underline"></div>
+          <img src="../../../../public/site-logo.svg" alt="CarShop" />
         </div>
 
+        {/* //TODO Add routing to links */}
         <nav className="navbar__menu">
           <div className="navbar__item">
             <a href="#">Kup</a>
@@ -34,12 +34,22 @@ export default function NavBar() {
 
         <div className="navbar__search">
           <input type="text" placeholder="Szukaj" />
-          <button><i className="fa-solid fa-magnifying-glass"></i></button>
+          <button>
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </button>
         </div>
 
         <div className="navbar__icons">
-          <i className="fa-solid fa-cart-shopping"></i>
-          <a href="#"><i className="fa-regular fa-user"></i> Zaloguj się</a>
+          <div className="navbar__icons-item">
+            <a href="#">
+              <i className="fa-solid fa-cart-shopping"></i>Koszyk
+            </a>
+          </div>
+          <div className="navbar__icons-item">
+            <a href="#">
+              <i className="fa-regular fa-user"></i> Zaloguj się
+            </a>
+          </div>
         </div>
       </div>
     </header>

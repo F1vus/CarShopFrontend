@@ -4,23 +4,26 @@
   padding: 2rem 0;
   margin-top: 2rem;
   width: 100%;
+  bottom: 0;
+  left: 0;
 
   .footer-inner {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     gap: 3rem;
     margin-bottom: 1.5rem;
   }
 
   .footer-nav {
+    width: 100%;
     display: flex;
     gap: 3rem;
-    align-items: flex-start;
+    justify-content: space-between;
 
     .footer-column {
       h4 {
         color: #ffffff;
-        font-size: 1rem;
+        font-size: 1.2rem;
         margin-bottom: 0.5rem;
       }
 

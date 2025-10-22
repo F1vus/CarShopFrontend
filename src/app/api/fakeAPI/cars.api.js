@@ -128,7 +128,7 @@ const getAllCars = () => {
   return new Promise((resolve) => {
     window.setTimeout(() => {
       resolve(JSON.parse(localStorage.getItem("cars")));
-    }, 2000);
+    });
   });
 };
 
@@ -138,7 +138,7 @@ const getCarById = (id) => {
       resolve(
         JSON.parse(localStorage.getItem("cars")).find((car) => car.id === id)
       );
-    }, 1000);
+    });
   });
 };
 
