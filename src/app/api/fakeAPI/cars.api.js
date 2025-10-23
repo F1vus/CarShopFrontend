@@ -1,42 +1,38 @@
-// import axios from "axios";
-// import config from "@/config.json";
+import axios from "axios";
+import config from "@/config.json";
 
-// export async function getAllCars() {
-//   const request = {
-//     method: "GET",
-//     baseURL: config.apiEndpoint,
-//     path: "/cars",
-//     allowAbsoluteUrls: true,
-//   };
+export async function getAllCars() {
+  const request = {
+    method: "GET",
+    baseURL: config.apiEndpoint+"/cars",
+    allowAbsoluteUrls: true,
+  };
+  try {
+    const response = await axios.request(request);
+    console.log("Hello", response)
+    return response;
+  } catch (e) {
+    // TODO: Add better error handling
+    console.error(e);
+  }
+}
 
-//   try {
-//     const response = await axios.request(request);
-//     return response;
-//   } catch (e) {
-//     // TODO: Add better error handling
-//     console.error(e);
-//   }
-// }
+export async function getCarById(id) {
+  const request = {
+    method: "GET",
+    baseURL: `${config.apiEndpoint}`,
+    url: `/cars/${id}`,
+    allowAbsoluteUrls: true,
+  };
 
-// export async function getCarById(id) {
-//   const request = {
-//     method: "GET",
-//     baseURL: `${config.apiEndpoint}`,
-//     url: `/cars`,
-//     allowAbsoluteUrls: true,
-//     params: {
-//       id: id,
-//     },
-//   };
-
-//   try {
-//     const response = await axios.request(request);
-//     return response;
-//   } catch (e) {
-//     // TODO: Add better error handling
-//     console.error(e);
-//   }
-// }
+  try {
+    const response = await axios.request(request);
+    return response;
+  } catch (e) {
+    // TODO: Add better error handling
+    console.error(e);
+  }
+}
 
 const cars = [
   {
@@ -124,23 +120,23 @@ if (!localStorage.getItem("cars")) {
   localStorage.setItem("cars", JSON.stringify(cars));
 }
 
-const getAllCars = () => {
-  return new Promise((resolve) => {
-    window.setTimeout(() => {
-      resolve(JSON.parse(localStorage.getItem("cars")));
-    });
-  });
-};
-
-const getCarById = (id) => {
-  return new Promise((resolve) => {
-    window.setTimeout(() => {
-      resolve(
-        JSON.parse(localStorage.getItem("cars")).find((car) => car.id === id)
-      );
-    });
-  });
-};
+// const getAllCars = () => {
+//   return new Promise((resolve) => {
+//     window.setTimeout(() => {
+//       resolve(JSON.parse(localStorage.getItem("cars")));
+//     });
+//   });
+// };
+//
+// const getCarById = (id) => {
+//   return new Promise((resolve) => {
+//     window.setTimeout(() => {
+//       resolve(
+//         JSON.parse(localStorage.getItem("cars")).find((car) => car.id === id)
+//       );
+//     });
+//   });
+// };
 
 export default {
   getAllCars,

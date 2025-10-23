@@ -6,8 +6,16 @@ import NavBar from "./components/layouts/NavBar";
 function App() {
   const [cars, setCars] = useState([]);
 
-  useEffect(() => {
-    api.cars.getAllCars().then((response) => setCars(response));
+  useEffect( () => {
+      async function fetchData(){
+          await api.cars.getAllCars()
+              .then((response) => {
+                  console.log(response)
+                  setCars([...response.data])
+              });
+      }
+      fetchData()
+      console.log(cars)
   }, []);
 
   //TODO Add routings
@@ -23,9 +31,7 @@ function App() {
               <p>Price: {car.price}</p>
               <p>Color: {car.color}</p>
               <div className="photos">
-                {car.photos.map((photo, idx) => (
-                  <img key={idx} src={photo} alt={car.name} width={"150px"} />
-                ))}
+                  <img src={car.imageUrl} alt={car.name} width={"150px"} />
               </div>
             </div>
           ))}
