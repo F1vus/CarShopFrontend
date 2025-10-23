@@ -25,15 +25,17 @@ function App() {
       <main className="main">
         <div className="container">
           {cars.map((car) => (
-            <div className="card" key={car.id}>
-              <h2>{car.name}</h2>
-              <p>{car.description}</p>
-              <p>Price: {car.price}</p>
-              <p>Color: {car.color}</p>
-              <div className="photos">
-                  <img src={car.imageUrl} alt={car.name} width={"150px"} />
+              <div className="card" key={car.id}>
+                  <h2>{car.name}</h2>
+                  <p>{car.description}</p>
+                  <p>Price: {car.price}</p>
+                  <p>Color: {car.color}</p>
+                  <p>State: {car.state}</p>
+                  <p>Year: {car.year}</p>
+                  <div className="photos">
+                      <img src={car.imageUrl} alt={car.name} width={"150px"}/>
+                  </div>
               </div>
-            </div>
           ))}
         </div>
       </main>
