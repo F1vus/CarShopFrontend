@@ -1,1 +1,6 @@
-@use "styles/app" as *;
+@use "app/assets//styles/fonts" as *;
+@use "app/assets/styles/_app" as *;
+
+body {
+  background-color: #2F2F2F;
+}
