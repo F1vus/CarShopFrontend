@@ -1,18 +1,21 @@
-import React from "react";
 import "../../assets/styles/_navbar.scss";
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   return (
     <header className="navbar">
       <div className="container navbar__container">
         <div className="navbar__logo">
-          <img src="../../../../public/site-logo.svg" alt="CarShop" />
+          <Link to="/home" className="navbar__link">
+            <img src="/site-logo.svg" alt="CarShop" />
+          </Link>
         </div>
 
-        {/* //TODO Add routing to links */}
         <nav className="navbar__menu">
           <div className="navbar__item">
-            <a href="#">Kup</a>
+            <Link to="/" className="navbar__link">
+              Kup
+            </Link>
             <div className="navbar__dropdown">
               <a href="#">Nowe</a>
               <a href="#">Używane</a>
@@ -21,15 +24,20 @@ export default function NavBar() {
           </div>
 
           <div className="navbar__item">
-            <a href="#">Sprzedaj</a>
+            <Link to="/" className="navbar__link">
+              Sprzedaj
+            </Link>
             <div className="navbar__dropdown">
               <a href="#">Nowe</a>
               <a href="#">Używane</a>
               <a href="#">Uszkodzone</a>
             </div>
           </div>
-
-          <a href="#">Kontakty</a>
+          <div className="navbar__item">
+            <Link to="/contacts" className="navbar__link">
+              <span>Kontakty</span>
+            </Link>
+          </div>
         </nav>
 
         <div className="navbar__search">
@@ -41,14 +49,16 @@ export default function NavBar() {
 
         <div className="navbar__icons">
           <div className="navbar__icons-item">
-            <a href="#">
-              <i className="fa-solid fa-cart-shopping"></i>Koszyk
-            </a>
+            <Link to="/basket" className="navbar__link">
+              <i className="fa-solid fa-cart-shopping"></i>
+              <span>Koszyk</span>
+            </Link>
           </div>
           <div className="navbar__icons-item">
-            <a href="#">
-              <i className="fa-regular fa-user"></i> Zaloguj się
-            </a>
+            <Link to="/auth" className="navbar__link">
+              <i className="fa-regular fa-user"></i>
+              <span>Zrejestruj się</span>
+            </Link>
           </div>
         </div>
       </div>

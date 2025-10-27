@@ -1,6 +1,7 @@
 import React from "react";
 import "../../assets/styles/_footer.scss";
 import siteLogo from "assets/img/logo-large.svg";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -22,15 +23,24 @@ export default function Footer() {
 
           <span className="footer-separator"></span>
 
-          {/* //TODO ALL ROUTING LINKS */}
           <div className="footer-column">
             <div className="footer-column__logo">
-              <img src={siteLogo} alt="CarShop" />
+              <Link to="/home" className="footer__link">
+                <img src={siteLogo} alt="CarShop" />
+              </Link>
             </div>
-            <a href="#">Pomoc</a>
-            <a href="#">Kontakt</a>
-            <a href="#">Reklama</a>
-            <a href="#">Polityka Prywatnosci</a>
+            <Link to="/" className="footer__link">
+              Pomoc
+            </Link>
+            <Link to="/contacts" className="footer__link">
+              Kontakty
+            </Link>
+            <Link to="/" className="footer__link">
+              Reklama
+            </Link>
+            <Link to="/" className="footer__link">
+              Polityka Prywatnosci
+            </Link>
           </div>
 
           <span className="footer-separator"></span>
