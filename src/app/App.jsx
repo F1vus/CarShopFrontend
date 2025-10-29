@@ -2,39 +2,40 @@ import { useState, useEffect } from "react";
 import api from "./api";
 import Footer from "./components/layouts/Footer";
 import NavBar from "./components/layouts/NavBar";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import HomePage from "./components/page/HomePage";
+import AuthorizationPage from "./components/page/AuthorizationPage";
+import ContactsPage from "./components/page/ContactsPage";
+import NotFoundPage from "./components/page/NotFoundPage";
+import ShoppingBasketPage from "./components/page/ShopingBasketPage";
 
 function App() {
   const [cars, setCars] = useState([]);
 
-  useEffect( () => {
-      async function fetchData(){
-          await api.cars.getAllCars()
-              .then((response) => {
-                  console.log(response)
-                  setCars([...response.data])
-              });
-      }
-      fetchData()
-      console.log(cars)
+  useEffect(() => {
+    async function fetchData() {
+      await api.cars.getAllCars().then((response) => {
+        console.log(response);
+        setCars([...response.data]);
+      });
+    }
+    fetchData();
+    console.log(cars);
   }, []);
 
-  //TODO Add routings
   return (
     <>
       <NavBar />
       <main className="main">
         <div className="container">
-          {cars.map((car) => (
-            <div className="card" key={car.id}>
-              <h2>{car.name}</h2>
-              <p>{car.description}</p>
-              <p>Price: {car.price}</p>
-              <p>Color: {car.color}</p>
-              <div className="photos">
-                  <img src={car.imageUrl} alt={car.name} width={"150px"} />
-              </div>
-            </div>
-          ))}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/auth" element={<AuthorizationPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/basket" element={<ShoppingBasketPage />} />
+            <Route path="/*" element={<NotFoundPage />} />
+          </Routes>
         </div>
       </main>
       <Footer />
