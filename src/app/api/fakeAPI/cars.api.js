@@ -9,8 +9,7 @@ export async function getAllCars() {
   };
   try {
     const response = await axios.request(request);
-    console.log("Hello", response)
-    return response;
+    return response.data;
   } catch (e) {
     // TODO: Add better error handling
     console.error(e);

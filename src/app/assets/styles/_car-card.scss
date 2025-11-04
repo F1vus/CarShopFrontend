@@ -1,0 +1,98 @@
+@use "../styles/colors" as *;
+@use "../styles/mixins" as *;
+
+.car-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background-color: $light-grey-opacity;
+  @include red-glow(2px, 5px, 0.3);
+  color: $light-black;
+  padding: 15px 20px;
+  width: 720px;
+  min-height: 210px;
+  position: relative;
+  font-family: "Montserrat", sans-serif;
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  &__image {
+    img {
+      width: 250px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      background-color: #5d5d5d;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__info-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 5px 0;
+  }
+
+  &__info-description {
+    font-size: 14px;
+    font-weight: 400;
+    color: #2f2f2f;
+    margin-bottom: 10px;
+  }
+
+  &__details {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    font-weight: 400;
+    
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      img {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  // &__footer {
+  //   display: flex;
+  //   justify-content: space-between;
+  //   align-items: center;
+  //   font-size: 12px;
+  //   margin-top: 10px;
+  // }
+
+  &__price {
+    font-weight: 600;
+    font-size: 18px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+
+  &__fav {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    i {
+      color: $light-orange-red;
+    }
+
+  }  
+}
