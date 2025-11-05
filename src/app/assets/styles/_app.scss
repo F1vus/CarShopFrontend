@@ -1,8 +1,3 @@
-.card {
-  border: 1xp solid #242424;
-  padding: 15px;
-}
-
 .container {
   max-width: 1200px;
   width: 100%;
@@ -13,4 +8,10 @@
 
 * {
   font-family: "Montserrat", sans-serif;
+}
+
+.app {
+  main {
+    margin-top: 30px;
+  }
 }

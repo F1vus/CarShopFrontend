@@ -1,0 +1,13 @@
+@use "../styles/colors" as *;
+@use "../styles/mixins" as *;
+
+.cars-page {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filtration-form {
+  // width: fit-content;
+  // @include red-glow;
+  background-color: $light-grey-opacity;
+}
