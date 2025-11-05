@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "styles/_cars-page.scss";
-import carsApi from "../../api/fakeAPI/cars.api";
+import carService from "../../services/car.service";
 import CarCard from "../UI/CarCard";
 import Loader from "../UI/Loader";
 
@@ -12,8 +12,8 @@ function CarsPage() {
 
   useEffect(() => {
     setIsLoading(true);
-    carsApi
-      .getAllCars()
+    carService
+      .getAll()
       .then((data) => {
         setCars(data || []);
         setIsLoaded(true);

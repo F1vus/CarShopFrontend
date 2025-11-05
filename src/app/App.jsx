@@ -11,20 +11,23 @@ import CarsPage from "./components/page/CarsPage";
 function App() {
   return (
     <>
-      <NavBar />
-      <main className="main" style={{ flexGrow: 1 }}>
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<CarsPage />} />
-            <Route path="/home" element={<Navigate to="/" replace />} />
-            <Route path="/auth" element={<AuthorizationPage />} />
-            <Route path="/contacts" element={<ContactsPage />} />
-            <Route path="/basket" element={<ShoppingBasketPage />} />
-            <Route path="/*" element={<NotFoundPage />} />
-          </Routes>
-        </div>
-      </main>
-      <Footer />
+      <div className="app">
+        <NavBar />
+        <main className="main">
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<Navigate to="/" replace />} />
+              <Route path="/auth" element={<AuthorizationPage />} />
+              <Route path="/contacts" element={<ContactsPage />} />
+              <Route path="/cars/:carId?" element={<CarsPage />} />
+              <Route path="/basket" element={<ShoppingBasketPage />} />
+              <Route path="/*" element={<NotFoundPage />} />
+            </Routes>
+          </div>
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }

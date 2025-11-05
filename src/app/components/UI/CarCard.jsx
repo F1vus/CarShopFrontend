@@ -1,6 +1,6 @@
 import calendar from "assets/img/icons/calendar.svg";
 import canister from "assets/img/icons/canister.svg";
-import gearbox from "assets/img/icons/gearbox.svg";
+import battery from "assets/img/icons/battery.svg"
 import wheel from "assets/img/icons/wheel.svg";
 import { useState } from "react";
 import "styles/_car-card.scss";
@@ -26,9 +26,11 @@ function CarCard({ carInfo }) {
       </div>
 
       <div className="car-card__info">
-        <div>
+        <div className="car-card__info-block">
           <h3 className="car-card__info-title">{name}</h3>
           <div className="car-card__info-description">{description}</div>
+        </div>
+        <div className="car-card__footer">
           <ul className="car-card__details">
             <li>
               <img src={wheel} alt="mileage" />
@@ -38,21 +40,24 @@ function CarCard({ carInfo }) {
               <img src={calendar} alt="year" />
               <strong>Rok:</strong> {year}
             </li>
-            <>
-              {petrolType != null ? (
-                <li>
-                  <img src={canister} alt="canister" />
-                  <strong>Paliwo:</strong> {petrolType.name}
-                </li>
-              ) : (
-                <></>
-              )}
-            </>
+            <li>
+              {
+                (petrolType.name === "Electric" ? (
+                  <>
+                    <img src={battery} alt="battery" />
+                    {petrolType.name}
+                  </>
+                ) : (
+                  <>
+                    <img src={canister} alt="canister" />
+                    <strong>Paliwo:</strong> {petrolType.name}
+                  </>
+                ))
+              }
+            </li>
           </ul>
+          <p>Producent: {producent.name}</p>
         </div>
-        {/* <div className="car-card__footer">
-          
-        </div> */}
       </div>
       <div className="car-card__price">
         {price} <span>PLN</span>
