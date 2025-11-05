@@ -8,6 +8,7 @@ import AuthorizationPage from "./components/page/AuthorizationPage";
 import ContactsPage from "./components/page/ContactsPage";
 import NotFoundPage from "./components/page/NotFoundPage";
 import ShoppingBasketPage from "./components/page/ShopingBasketPage";
+import SellCarPage from "./components/page/SellCarPage";
 
 function App() {
   const [cars, setCars] = useState([]);
@@ -34,7 +35,9 @@ function App() {
             <Route path="/auth" element={<AuthorizationPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/basket" element={<ShoppingBasketPage />} />
+            <Route path="/sellcar" element={<SellCarPage />} />
             <Route path="/*" element={<NotFoundPage />} />
+           
           </Routes>
         </div>
       </main>
