@@ -12,26 +12,11 @@ export default function NavBar() {
         </div>
 
         <nav className="navbar__menu">
+         
           <div className="navbar__item">
-            <Link to="/" className="navbar__link">
-              Kup
+            <Link to="/sellcar" className="navbar__link">
+              Zacznij Sprzedawać 
             </Link>
-            <div className="navbar__dropdown">
-              <a href="#">Nowe</a>
-              <a href="#">Używane</a>
-              <a href="#">Uszkodzone</a>
-            </div>
-          </div>
-
-          <div className="navbar__item">
-            <Link to="/" className="navbar__link">
-              Sprzedaj
-            </Link>
-            <div className="navbar__dropdown">
-              <a href="#">Nowe</a>
-              <a href="#">Używane</a>
-              <a href="#">Uszkodzone</a>
-            </div>
           </div>
           <div className="navbar__item">
             <Link to="/contacts" className="navbar__link">

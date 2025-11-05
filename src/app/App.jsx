@@ -6,6 +6,7 @@ import AuthorizationPage from "./components/page/AuthorizationPage";
 import ContactsPage from "./components/page/ContactsPage";
 import NotFoundPage from "./components/page/NotFoundPage";
 import ShoppingBasketPage from "./components/page/ShopingBasketPage";
+import SellCarPage from "./components/page/SellCarPage";
 import CarsPage from "./components/page/CarsPage";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
               <Route path="/auth" element={<AuthorizationPage />} />
               <Route path="/contacts" element={<ContactsPage />} />
               <Route path="/cars/:carId?" element={<CarsPage />} />
+              <Route path="/sellcar" element={<SellCarPage />} />
               <Route path="/basket" element={<ShoppingBasketPage />} />
               <Route path="/*" element={<NotFoundPage />} />
             </Routes>
