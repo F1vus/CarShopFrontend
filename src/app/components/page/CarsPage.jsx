@@ -3,12 +3,17 @@ import "styles/_cars-page.scss";
 import carService from "../../services/car.service";
 import CarCard from "../UI/CarCard";
 import Loader from "../UI/Loader";
+import CarInfoPage from "./CarInfoPage";
+import { useParams } from "react-router-dom";
 
 function CarsPage() {
   const [cars, setCars] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const params = useParams();
+  const { carId } = params;
 
   useEffect(() => {
     setIsLoading(true);
@@ -25,20 +30,26 @@ function CarsPage() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  if (isLoading) return <Loader />;
   if (error) return <p>{error}</p>;
   if (!isLoaded || cars.length === 0) return <p>Brak samochodów</p>;
 
   return (
-    <div className="cars-page">
-      <aside className="filtration-form">
-      </aside>
-      <div className="cars-cards">
-        {cars.map((carData) => (
-          <CarCard key={carData.id} carInfo={carData} />
-        ))}
-      </div>
-    </div>
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : carId ? (
+        <CarInfoPage carId={carId} />
+      ) : (
+        <div className="cars-page">
+          <aside className="filtration-form"></aside>
+          <div className="cars-cards">
+            {cars.map((carData) => (
+              <CarCard key={carData.id} carInfo={carData} />
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
