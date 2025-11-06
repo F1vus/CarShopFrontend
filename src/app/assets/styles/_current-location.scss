@@ -1,0 +1,26 @@
+@use "../styles/colors" as *;
+
+.current-location {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: $white;
+
+  a {
+    color: $orange;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $orange-hover;
+    }
+  }
+
+  .separator {
+    color: $white-smoke;
+    margin: 0 0.3rem;
+  }
+
+  .current {
+    font-weight: 500;
+  }
+}
