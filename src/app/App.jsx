@@ -29,8 +29,8 @@ function App() {
                   <h2>{car.name}</h2>
                   <p>{car.description}</p>
                   <p>Price: {car.price}</p>
-                  <p>Color: {car.color}</p>
-                  <p>State: {car.state}</p>
+                  <p>Color: {car.color.name}</p>
+                  <p>State: {car.carState}</p>
                   <p>Year: {car.year}</p>
                   <div className="photos">
                       <img src={car.imageUrl} alt={car.name} width={"150px"}/>
