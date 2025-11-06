@@ -5,7 +5,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  background-color: $light-grey-opacity;
+  @include background($color: $white-smoke);
   @include red-glow(2px, 5px, 0.3);
   color: $light-black;
   padding: 15px 20px;

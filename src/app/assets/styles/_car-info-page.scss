@@ -114,6 +114,7 @@
     &-salesman-info {
       @include background();
       color: $light-black;
+      @include red-glow(2px, 5px, 0.3);
 
       margin-top: 2rem;
       padding: 1rem;
