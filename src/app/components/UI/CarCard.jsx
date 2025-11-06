@@ -1,14 +1,17 @@
 import calendar from "assets/img/icons/calendar.svg";
 import canister from "assets/img/icons/canister.svg";
-import battery from "assets/img/icons/battery.svg"
+import battery from "assets/img/icons/battery.svg";
 import wheel from "assets/img/icons/wheel.svg";
 import { useState } from "react";
 import "styles/_car-card.scss";
+import { Link, useLocation } from "react-router-dom";
 
 function CarCard({ carInfo }) {
   const [isLiked, setIsLiked] = useState(false);
+  const currentPath = useLocation().pathname
 
   const {
+    id,
     name,
     price,
     description,
@@ -27,7 +30,11 @@ function CarCard({ carInfo }) {
 
       <div className="car-card__info">
         <div className="car-card__info-block">
-          <h3 className="car-card__info-title">{name}</h3>
+          <h3 className="car-card__info-title">
+            <Link to={currentPath + `/${id}`}>
+              {name}
+            </Link>
+          </h3>
           <div className="car-card__info-description">{description}</div>
         </div>
         <div className="car-card__footer">
@@ -41,19 +48,17 @@ function CarCard({ carInfo }) {
               <strong>Rok:</strong> {year}
             </li>
             <li>
-              {
-                (petrolType.name === "Electric" ? (
-                  <>
-                    <img src={battery} alt="battery" />
-                    {petrolType.name}
-                  </>
-                ) : (
-                  <>
-                    <img src={canister} alt="canister" />
-                    <strong>Paliwo:</strong> {petrolType.name}
-                  </>
-                ))
-              }
+              {petrolType.name === "Electric" ? (
+                <>
+                  <img src={battery} alt="battery" />
+                  {petrolType.name}
+                </>
+              ) : (
+                <>
+                  <img src={canister} alt="canister" />
+                  <strong>Paliwo:</strong> {petrolType.name}
+                </>
+              )}
             </li>
           </ul>
           <p>Producent: {producent.name}</p>

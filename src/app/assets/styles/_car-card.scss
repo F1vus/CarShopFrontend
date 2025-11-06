@@ -5,7 +5,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  background-color: $light-grey-opacity;
+  @include background($color: $white-smoke);
   @include red-glow(2px, 5px, 0.3);
   color: $light-black;
   padding: 15px 20px;
@@ -40,6 +40,20 @@
     font-size: 18px;
     font-weight: 600;
     margin: 5px 0;
+
+    a {
+      color: $light-black;
+      font-weight: bold;
+      text-decoration: none;
+      font-family: "Montserrat", sans-serif;
+      transition: all 0.1s;
+
+      &:hover {
+        text-decoration: underline;
+        text-decoration-color: $orange;
+        color: $orange;
+      }
+    }
   }
 
   &__info-description {
@@ -54,7 +68,7 @@
     gap: 15px;
     font-size: 14px;
     font-weight: 400;
-    
+
     padding: 0;
 
     li {
@@ -87,6 +101,5 @@
     i {
       color: $light-orange-red;
     }
-
-  }  
+  }
 }
