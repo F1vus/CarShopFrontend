@@ -1,5 +1,6 @@
 import "../../assets/styles/_navbar.scss";
 import { Link } from "react-router-dom";
+import siteLogo from "@/app/assets/img/logo-large.svg";
 
 export default function NavBar() {
   return (
@@ -7,15 +8,14 @@ export default function NavBar() {
       <div className="container navbar__container">
         <div className="navbar__logo">
           <Link to="/home" className="navbar__link">
-            <img src="/site-logo.svg" alt="CarShop" />
+            <img src={siteLogo} alt="CarShop" />
           </Link>
         </div>
 
         <nav className="navbar__menu">
-         
           <div className="navbar__item">
             <Link to="/sellcar" className="navbar__link">
-              Zacznij Sprzedawać 
+              Zacznij Sprzedawać
             </Link>
           </div>
           <div className="navbar__item">
