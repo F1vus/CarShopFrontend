@@ -1,6 +1,7 @@
 {
   "name": "car-shop-frontend",
   "private": true,
+  "homepage": "https://F1vus.github.io/CarShopFrontend/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
