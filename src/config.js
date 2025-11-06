@@ -3,7 +3,7 @@ const dev = {
 };
 
 const prod = {
-  apiEndpoint: "https://your-backend-domain.com/api/v1",
+  apiEndpoint: "https://carshopbackend-production-8c33.up.railway.app/api/v1",
 };
 
 const config = process.env.NODE_ENV === "development" ? dev : prod;
