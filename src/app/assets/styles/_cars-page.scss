@@ -4,10 +4,12 @@
 .cars-page {
   display: flex;
   justify-content: space-between;
+  justify-content: center;
 }
 
 .filtration-form {
   // width: fit-content;
   // @include red-glow;
-  background-color: $light-grey-opacity;
+  // background-color: $light-grey-opacity;
+  display: none;
 }

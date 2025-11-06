@@ -112,7 +112,7 @@
     }
 
     &-salesman-info {
-      @include background();
+      @include background($color: $white-smoke);
       color: $light-black;
       @include red-glow(2px, 5px, 0.3);
 

@@ -8,28 +8,24 @@ import NotFoundPage from "./components/page/NotFoundPage";
 import ShoppingBasketPage from "./components/page/ShopingBasketPage";
 import SellCarPage from "./components/page/SellCarPage";
 import CarsPage from "./components/page/CarsPage";
+import CurrentLocation from "./components/layouts/CurrentLocation";
+import Layout from "./components/layouts/Layout";
 
 function App() {
   return (
     <>
-      <div className="app">
-        <NavBar />
-        <main className="main">
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/home" element={<Navigate to="/" replace />} />
-              <Route path="/auth" element={<AuthorizationPage />} />
-              <Route path="/contacts" element={<ContactsPage />} />
-              <Route path="/cars/:carId?" element={<CarsPage />} />
-              <Route path="/sellcar" element={<SellCarPage />} />
-              <Route path="/basket" element={<ShoppingBasketPage />} />
-              <Route path="/*" element={<NotFoundPage />} />
-            </Routes>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<Navigate to="/" replace />} />
+          <Route path="/auth" element={<AuthorizationPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/cars/:carId?" element={<CarsPage />} />
+          <Route path="/sellcar" element={<SellCarPage />} />
+          <Route path="/basket" element={<ShoppingBasketPage />} />
+        </Route>
+        <Route path="/*" element={<NotFoundPage />} />
+      </Routes>
     </>
   );
 }
