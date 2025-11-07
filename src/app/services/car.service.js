@@ -33,7 +33,7 @@ const carService = {
     }
   },
   deleteById: async (id) => {
-    const url = `${config.apiEndpoint}${"/delete"}/${id}`;
+    const url = `${config.apiEndpoint}${carEndpoint}/${id}`;
     console.log("DELETE:", url);
 
     try {
