@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
+
 function HomePage() {
-  return <h1>HomePage</h1>;
+  return <Link to="/cars">Cars</Link>;
 }
 
 export default HomePage;
