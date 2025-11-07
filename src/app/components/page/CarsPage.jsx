@@ -26,7 +26,7 @@ function CarsPage() {
         setError(true);
       })
       .finally(() => setIsLoading(false));
-  }, [carId]);
+  }, []);
 
   if (error) return <Navigate to="/*" replace />;
 
