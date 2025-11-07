@@ -14,7 +14,7 @@ function CarInfoPage({ carId }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isElectric, setIsElectric] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     carService
@@ -34,14 +34,14 @@ function CarInfoPage({ carId }) {
     setShowPhone((prev) => !prev);
   };
 
-  const handleDeleteCar = async () => {
-    try {
-      await carService.deleteById(carId);
-      navigate("/cars");
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const handleDeleteCar = async () => {
+  //   try {
+  //     await carService.deleteById(carId);
+  //     navigate("/cars");
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   if (error) return <p>{error}</p>;
 
@@ -149,9 +149,6 @@ function CarInfoPage({ carId }) {
                     Wyświetl numer
                   </button>
                 )}
-                <button className="write-to-button" onClick={handleDeleteCar}>
-                  Usuń
-                </button>
               </div>
             </div>
           </aside>
