@@ -1,0 +1,29 @@
+@use "../styles/colors" as *;
+
+.divider {
+  position: relative;
+  background-color: $darker-grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+  box-sizing: border-box;
+
+  .divider-line {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background-color: $orange;
+    display: flex;
+    align-items: center;
+  }
+
+  .divider-dot {
+    position: absolute;
+    width: 48px;
+    height: 24px;
+    background-color: $orange;
+    border-radius: 999px;
+    left: 20%;
+  }
+}

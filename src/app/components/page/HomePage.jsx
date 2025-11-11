@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import "styles/_home-page.scss";
 import Slider from "../UI/Slider";
 import logos from "../../assets/logos/logos";
+import Divider from "../UI/Divider";
 
 function HomePage() {
   return (
-    <section className="home-page">
+    <div className="home-page">
       <header className="home-page__header wide-container">
         <div className="home-page__content">
           <h1 className="home-page__title">
@@ -19,7 +20,7 @@ function HomePage() {
           </Link>
         </div>
       </header>
-      <div className="wide-container">
+      <section className="wide-container">
         <Slider>
           {/* Double creating */}
           {[...logos, ...logos].map((logoUrl, index) => (
@@ -28,8 +29,12 @@ function HomePage() {
             </div>
           ))}
         </Slider>
-      </div>
-    </section>
+      </section>
+      <Divider right={true} />
+      <section className="out-benefits">
+
+      </section>
+    </div>
   );
 }
 
