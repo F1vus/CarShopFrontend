@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import "styles/_home-page.scss";
+import Slider from "../UI/Slider";
+import logos from "../../assets/logos/logos";
 
 function HomePage() {
   return (
@@ -17,6 +19,16 @@ function HomePage() {
           </Link>
         </div>
       </header>
+      <div className="wide-container">
+        <Slider>
+          {/* Double creating */}
+          {[...logos, ...logos].map((logoUrl, index) => (
+            <div className="slide" key={index}>
+              <img src={logoUrl} alt={`logo-${index}`} />
+            </div>
+          ))}
+        </Slider>
+      </div>
     </section>
   );
 }

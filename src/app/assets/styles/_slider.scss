@@ -1,0 +1,114 @@
+@use "../styles/colors" as *;
+@use "./styles/mixins" as *;
+
+$animationSpeed: 40s; // Duration of the sliding animation
+$slideWidth: 250px; // Width of each slide item
+$slideHeight: 120px; // Height of each slide item
+$slideCount: 7; // Total number of slide items
+$slideGap: 60px; // Gap between slide items
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-1 * $slideWidth * $slideCount));
+  }
+}
+
+.slider {
+  position: relative;
+  height: calc(#{$slideHeight} + 20px);
+  width: 100%;
+  margin-bottom: 60px;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: "";
+    height: $slideHeight;
+    position: absolute;
+    width: 200px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &::after {
+    right: 0;
+    top: 0;
+    transform: rotateZ(180deg);
+  }
+
+  &::before {
+    left: 0;
+    top: 0;
+  }
+
+  .slide-track {
+    animation: scroll $animationSpeed linear infinite;
+    display: flex;
+    width: calc($slideWidth * 2 * $slideCount);
+    padding: 10px 0;
+  }
+
+  .slide {
+    img {
+      height: $slideHeight;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+
+    &:not(:last-child) {
+      margin-right: $slideGap;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    $slideWidth: 200px;
+    $slideHeight: 100px;
+    $slideGap: 40px;
+
+    height: calc(#{$slideHeight} + 20px);
+
+    .slide img {
+      height: $slideHeight;
+    }
+  }
+
+  @media (max-width: 768px) {
+    $slideWidth: 150px;
+    $slideHeight: 80px;
+    $slideGap: 30px;
+
+    height: calc(#{$slideHeight} + 20px);
+
+    .slide img {
+      height: $slideHeight;
+
+      &:not(:last-child) {
+        margin-right: $slideGap;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    $slideWidth: 100px;
+    $slideHeight: 60px;
+    $slideGap: 20px;
+
+    height: calc(#{$slideHeight} + 20px);
+
+    .slide img {
+      height: $slideHeight;
+
+      &:not(:last-child) {
+        margin-right: $slideGap;
+      }
+    }
+  }
+}
