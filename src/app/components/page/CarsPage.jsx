@@ -5,6 +5,7 @@ import CarCard from "../UI/CarCard";
 import Loader from "../UI/Loader";
 import CarInfoPage from "./CarInfoPage";
 import { Navigate, useParams } from "react-router-dom";
+import FiltrationForm from "../UI/FiltrationForm";
 
 function CarsPage() {
   const [cars, setCars] = useState([]);
@@ -40,7 +41,9 @@ function CarsPage() {
             <CarInfoPage carId={carId} />
           ) : (
             <div className="cars-page">
-              <aside className="filtration-form"></aside>
+              <aside className="filtration-form-aside">
+                <FiltrationForm />
+              </aside>
               <div className="cars-cards">
                 {cars.map((carData) => (
                   <CarCard key={carData.id} carInfo={carData} />

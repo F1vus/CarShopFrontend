@@ -1,0 +1,92 @@
+@use "../styles/colors" as *;
+@use "../styles/mixins" as *;
+
+.filtration-form {
+  width: 100%;
+  max-width: 400px;
+  @include red-glow(2px, 10px, 0.45, 0.25);
+  background-color: $white-bg;
+  padding: 22px;
+  border-radius: 10px;
+  color: $smoke-grey;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  .heading {
+    color: $light-black;
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  &__title {
+    color: $white;
+    font-size: 35px;
+    font-family: "Barlow Condensed";
+    font-weight: 400;
+    letter-spacing: 0.51px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .form-row .form-field {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-field {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    background: $input-bg;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    color: $light-grey;
+    font-size: 14px;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .form-field textarea {
+    min-height: 62px;
+    resize: none;
+  }
+
+  .show-btn {
+    margin-top: 14px;
+    width: 100%;
+    background: $orange;
+    border: none;
+    color: $white;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s ease-in-out;
+  }
+
+  .show-btn:hover {
+    background: $orange-hover;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 1024px) {
+    padding: 18px;
+  }
+}
