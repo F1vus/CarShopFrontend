@@ -8,6 +8,7 @@
   align-items: center;
   padding: 8px 0;
   box-sizing: border-box;
+  margin-bottom: 70px;
 
   .divider-line {
     position: relative;
@@ -25,5 +26,9 @@
     background-color: $orange;
     border-radius: 999px;
     left: 20%;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 50px;
   }
 }
