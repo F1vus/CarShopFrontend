@@ -1,6 +1,4 @@
-import Footer from "./components/layouts/Footer";
-import NavBar from "./components/layouts/NavBar";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./components/page/HomePage";
 import AuthorizationPage from "./components/page/AuthorizationPage";
 import ContactsPage from "./components/page/ContactsPage";
@@ -15,7 +13,7 @@ function App() {
     <>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<CarsPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/:carId" element={<CarsPage />} />
           <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/cars/:carId?" element={<CarsPage />} />
