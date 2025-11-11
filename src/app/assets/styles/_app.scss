@@ -6,6 +6,11 @@
   padding-right: 16px;
 }
 
+.wide-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
 * {
   font-family: "Montserrat", sans-serif;
 }
