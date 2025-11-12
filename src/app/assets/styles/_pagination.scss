@@ -1,0 +1,100 @@
+@use "../styles/colors" as *;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  &__list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    border: none;
+    background-color: $white-bg;
+    color: $orange;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 15px;
+    font-weight: bold;
+
+    i {
+      padding: auto;
+    }
+
+    &:hover {
+      background-color: $white-smoke;
+    }
+
+    &.active {
+      background-color: $orange;
+      color: $white;
+    }
+
+    &:disabled {
+      display: none;
+    }
+  }
+
+  &__dots {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-weight: bold;
+    color: $orange;
+  }
+
+  @media (max-width: 992px) {
+    &__btn {
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+
+    &__list {
+      gap: 5px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+
+    &__list {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    &__btn {
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      min-width: 35px;
+    }
+
+    &__dots {
+      padding: 0 5px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__btn {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 5px;
+    }
+
+    &__dots {
+      font-size: 12px;
+      padding: 0 3px;
+    }
+  }
+}
