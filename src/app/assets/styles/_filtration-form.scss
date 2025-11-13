@@ -91,9 +91,41 @@
     font-weight: 700;
     cursor: pointer;
     transition: background 0.12s ease-in-out;
+    text-decoration: none;
+    text-align: center;
 
     &:hover {
       background: $orange-hover;
+    }
+  }
+
+  &--tablet {
+    max-width: 550px;
+    padding: 20px;
+
+    &__title {
+      font-size: 30px;
+      margin-bottom: 14px;
+    }
+
+    &__body {
+      background-color: $white-bg;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    &__row--stacked {
+      flex-direction: row;
+      gap: 12px;
+
+      .filtration-form__field {
+        flex: 1;
+        width: 50%;
+      }
+    }
+
+    &__row--selects {
+      flex-direction: row;
     }
   }
 
@@ -104,32 +136,6 @@
 
     &__row--selects {
       flex-direction: row;
-    }
-
-    &--tablet {
-      max-width: 550px;
-      padding: 20px;
-
-      &__title {
-        font-size: 30px;
-        margin-bottom: 14px;
-      }
-
-      &__body {
-        background-color: $white-bg;
-        padding: 20px;
-        border-radius: 12px;
-      }
-
-      &__row--stacked {
-        flex-direction: row;
-        gap: 12px;
-
-        .filtration-form__field {
-          flex: 1;
-          width: 50%;
-        }
-      }
     }
   }
 
