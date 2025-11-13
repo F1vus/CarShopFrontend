@@ -1,6 +1,4 @@
-import Footer from "./components/layouts/Footer";
-import NavBar from "./components/layouts/NavBar";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./components/page/HomePage";
 import AuthorizationPage from "./components/page/AuthorizationPage";
 import ContactsPage from "./components/page/ContactsPage";
