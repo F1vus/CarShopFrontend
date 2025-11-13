@@ -5,6 +5,7 @@ import logos from "../../assets/logos/logos";
 import Divider from "../UI/Divider";
 import womenImage from "assets/img/people/women.png";
 import peopleChoosingCar from "assets/img/people/people-choosing-car.png";
+import FiltrationForm from "../UI/FiltrationForm";
 
 function HomePage() {
   return (
@@ -32,7 +33,7 @@ function HomePage() {
           ))}
         </Slider>
       </section>
-    <Divider right={true} />
+      <Divider right={true} />
       <section className="search-car">
         <h3 className="search-car__title section-title">
           Sekcja wyszukiwania samochodu
@@ -41,8 +42,13 @@ function HomePage() {
           Użyj filtrów, aby szybko znaleźć samochód dopasowany do Twoich
           potrzeb.
         </p>
-        <div className="search-car__image-block">
-          <img src={peopleChoosingCar} alt="choose car" />
+        <div className="search-car__content">
+          <div className="search-car__image-block">
+            <img src={peopleChoosingCar} alt="choose car" />
+          </div>
+          <div className="search-car__form">
+            <FiltrationForm variant="tablet" />
+          </div>
         </div>
       </section>
       <Divider />
@@ -51,7 +57,8 @@ function HomePage() {
           Najpopularniejsze oferty w tym tygodniu
         </h3>
         <p className="new-suggestions__subtitle section-subtitle">
-          Zobacz samochody, które nasi klienci wybierają najczęściej – sprawdzone, gotowe do odbioru, z pełną dokumentacją.
+          Zobacz samochody, które nasi klienci wybierają najczęściej –
+          sprawdzone, gotowe do odbioru, z pełną dokumentacją.
         </p>
         <div className="slider"></div>
       </div>

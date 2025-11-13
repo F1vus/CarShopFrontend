@@ -11,7 +11,7 @@ import Pagination from "../UI/Pagination";
 
 function CarsPage() {
   const [cars, setCars] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false)
   const [error, setError] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,18 +22,17 @@ function CarsPage() {
   const { carId } = params;
 
   useEffect(() => {
-    setIsLoading(true);
     carService
       .getAll()
       .then((data) => {
         setCars(data || []);
         setCurrentPage(1);
+        setIsLoaded(true)
       })
       .catch((err) => {
         console.error("Fetch error:", err);
         setError(true);
       })
-      .finally(() => setIsLoading(false));
   }, [location.pathname]);
 
   if (error) return <Navigate to="/*" replace />;
@@ -43,9 +42,7 @@ function CarsPage() {
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : (
+      {isLoaded && cars.length > 0 ? (
         <>
           {carId ? (
             <CarInfoPage carId={carId} />
@@ -70,6 +67,8 @@ function CarsPage() {
             </div>
           )}
         </>
+      ) : (
+        <Loader />
       )}
     </>
   );
