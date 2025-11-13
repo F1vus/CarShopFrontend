@@ -3,7 +3,8 @@ import "styles/_home-page.scss";
 import Slider from "../UI/Slider";
 import logos from "../../assets/logos/logos";
 import Divider from "../UI/Divider";
-import womanImage from "assets/img/people/women.png";
+import womenImage from "assets/img/people/women.png";
+import peopleChoosingCar from "assets/img/people/people-choosing-car.png";
 
 function HomePage() {
   return (
@@ -31,13 +32,36 @@ function HomePage() {
           ))}
         </Slider>
       </section>
+    <Divider right={true} />
+      <section className="search-car">
+        <h3 className="search-car__title section-title">
+          Sekcja wyszukiwania samochodu
+        </h3>
+        <p className="search-car__subtitle section-subtitle">
+          Użyj filtrów, aby szybko znaleźć samochód dopasowany do Twoich
+          potrzeb.
+        </p>
+        <div className="search-car__image-block">
+          <img src={peopleChoosingCar} alt="choose car" />
+        </div>
+      </section>
       <Divider />
+      <div className="new-suggestions">
+        <h3 className="new-suggestions__title section-title">
+          Najpopularniejsze oferty w tym tygodniu
+        </h3>
+        <p className="new-suggestions__subtitle section-subtitle">
+          Zobacz samochody, które nasi klienci wybierają najczęściej – sprawdzone, gotowe do odbioru, z pełną dokumentacją.
+        </p>
+        <div className="slider"></div>
+      </div>
+      <Divider right={true} />
       <section className="out-benefits">
         <div className="out-benefits__info-block">
-          <h3 className="out-benefits__title">
+          <h3 className="out-benefits__title section-title">
             Kupuj bez stresu – wybierz pewność i jakość
           </h3>
-          <p className="out-benefits__info">
+          <p className="out-benefits__subtitle section-subtitle">
             Działamy na rynku od 10 lat. Każdy samochód sprawdzany jest przez
             doświadczonych mechaników, a klient otrzymuje pełną historię
             serwisową oraz gwarancję satysfakcji.
@@ -47,7 +71,7 @@ function HomePage() {
           </Link>
         </div>
         <div className="out-benefits__image-block">
-          <img src={womanImage} alt="happy-person" />
+          <img src={womenImage} alt="happy-person" />
         </div>
       </section>
     </div>

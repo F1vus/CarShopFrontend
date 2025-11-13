@@ -4,7 +4,9 @@ function Divider({ right = false }) {
   return (
     <div className="divider wide-container">
       <div className="divider-line">
-        <div className="divider-dot"></div>
+        <div
+          className={`divider-dot divider-dot-${right ? "-right" : "-left"}`}
+        ></div>
       </div>
     </div>
   );

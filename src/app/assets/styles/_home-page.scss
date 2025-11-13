@@ -4,6 +4,10 @@
 .home-page {
   color: $white;
 
+  section:not(:last-child) {
+    margin-bottom: 45px;
+  }
+
   &__header {
     min-height: calc(100vh - 62px);
     display: flex;
@@ -127,6 +131,48 @@
   }
 }
 
+.section-title {
+  font-size: 30px;
+  font-family: "Anta", sans-serif;
+  font-weight: 400;
+  margin-bottom: 25px;
+}
+
+.section-subtitle {
+  font-size: 20px;
+  color: $white-smoke;
+  margin-bottom: 35px;
+  line-height: 1.5;
+}
+
+.search-car {
+  &__image-block {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    z-index: 1;
+
+    img {
+      width: 100%;
+      max-width: 650px;
+      border-radius: 30px;
+      object-fit: cover;
+      display: block;
+
+      @media (max-width:1024px) {
+        justify-content: center;
+      }  
+    }
+  }
+}
+
+.new-suggestions {
+  &__subtitle {
+    max-width: 600px;
+  }
+}
+
 .out-benefits {
   position: relative;
   display: flex;
@@ -168,19 +214,8 @@
 
     color: $light-black;
   }
-
-  &__title {
-    font-size: 30px;
-    font-family: "Anta", sans-serif;
-    font-weight: 400;
-    margin-bottom: 25px;
-  }
-
-  &__info {
-    font-size: 20px;
+  &__subtitle {
     color: $light-grey;
-    margin-bottom: 35px;
-    line-height: 1.5;
   }
 
   &__cta-button {

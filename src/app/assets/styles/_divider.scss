@@ -25,7 +25,12 @@
     height: 24px;
     background-color: $orange;
     border-radius: 999px;
-    left: 20%;
+    &--right {
+      right: 20%;
+    }
+    &--left {
+      left: 20%;
+    }
   }
 
   @media (max-width: 768px) {
