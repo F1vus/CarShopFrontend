@@ -1,4 +1,4 @@
-import useDeviceMode from "../../common/useDeviceMode";
+import useDeviceMode from "../common/useDeviceMode";
 import "styles/_filtration-form.scss";
 
 function FiltrationForm({ variant = "auto" }) {
