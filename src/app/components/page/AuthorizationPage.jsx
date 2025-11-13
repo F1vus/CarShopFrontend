@@ -4,6 +4,7 @@ import "../../assets/styles/_authorization.scss";
 function AuthorizationPage() {
   const [tab, setTab] = useState("register");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
 
@@ -26,7 +27,7 @@ function AuthorizationPage() {
       return;
     }
 
-    console.log("submit", { tab, email, password });
+    console.log("submit", { tab, email, username: tab === "register" ? username : undefined, password });
   }
 
   return (
@@ -59,6 +60,19 @@ function AuthorizationPage() {
               required
             />
           </label>
+
+          {tab === "register" && (
+            <label className="field-label">
+              Nazwa użytkownika
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Wybierz unikalną nazwę"
+                required
+              />
+            </label>
+          )}
 
           <label className="field-label">
             Hasło
