@@ -4,16 +4,18 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 
 function Layout() {
-  return ( <div className="app">
-    <NavBar />
-    <main className="main">
-      <div className="container">
-        <CurrentLocation />
-        <Outlet />
-      </div>
-    </main>
-    <Footer />
-  </div> );
+  return (
+    <div className="app">
+      <NavBar />
+      <CurrentLocation />
+      <main className="main">
+        <div className="container">
+          <Outlet />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default Layout;

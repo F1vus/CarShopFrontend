@@ -46,18 +46,20 @@ function CurrentLocation() {
 
   return (
     <nav className="current-location">
-      {breadcrumbs.map((crumb, index) => (
-        <span key={index}>
-          {index < breadcrumbs.length - 1 ? (
-            <>
-              <Link to={crumb.path}>{crumb.name}</Link>
-              <span className="separator"> - </span>
-            </>
-          ) : (
-            <span className="current">{crumb.name}</span>
-          )}
-        </span>
-      ))}
+      <div className="container">
+        {breadcrumbs.map((crumb, index) => (
+          <span key={index}>
+            {index < breadcrumbs.length - 1 ? (
+              <>
+                <Link to={crumb.path}>{crumb.name}</Link>
+                <span className="separator"> - </span>
+              </>
+            ) : (
+              <span className="current">{crumb.name}</span>
+            )}
+          </span>
+        ))}
+      </div>
     </nav>
   );
 }

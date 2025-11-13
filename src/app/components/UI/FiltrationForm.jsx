@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import useDeviceMode from "../common/useDeviceMode";
 import "styles/_filtration-form.scss";
 
@@ -14,13 +15,6 @@ function FiltrationForm({ variant = "auto" }) {
       <h3 className="filtration-form__title">Samochody Osobowe</h3>
 
       <form className="filtration-form__body" onSubmit={handleSubmitFiltration}>
-        <div className="filtration-form__field">
-          <label className="filtration-form__label">Szczegóły</label>
-          <textarea
-            className="filtration-form__input filtration-form__input--textarea"
-            placeholder="Szczegóły"
-          />
-        </div>
 
         <div className="filtration-form__row filtration-form__row--selects">
           <div className="filtration-form__field">
@@ -83,9 +77,9 @@ function FiltrationForm({ variant = "auto" }) {
           </div>
         </div>
 
-        <button className="filtration-form__btn" type="submit">
+        <Link to="/cars" className="filtration-form__btn" type="submit">
           Pokaż Wszystkie Ogłoszenia
-        </button>
+        </Link>
       </form>
     </section>
   );

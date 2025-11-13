@@ -160,9 +160,45 @@
       object-fit: cover;
       display: block;
 
-      @media (max-width:1024px) {
+      @media (max-width: 1024px) {
         justify-content: center;
-      }  
+      }
+    }
+  }
+
+  &__content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    &__image-block {
+      flex: 1;
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      z-index: 1;
+
+      img {
+        width: 100%;
+        max-width: 650px;
+        border-radius: 30px;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+
+      & .search-car__image-block {
+        order: 2;
+      }
+
+      & .search-car__form {
+        order: 1;
+      }
     }
   }
 }
