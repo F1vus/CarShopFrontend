@@ -1,3 +1,5 @@
+@use "./colors" as *;
+
 @mixin red-glow(
   $outline-size: 2px,
   $border-radius: 5px,
@@ -13,4 +15,34 @@
   background: $color;
   border-radius: $border-radius;
   box-shadow: 0 10px 20px rgba(0, 0, 0, $shadow-opacity * 0.15);
+}
+
+@mixin button-styles(
+  $color: $orange,
+  $hover-color: $orange-hover,
+  $padding: 10px,
+  $border-radius: 5px
+) {
+  display: flex;
+  background-color: $color;
+  border: none;
+  border-radius: $border-radius;
+  color: $color;
+  padding: $padding;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: $hover-color;
+  }
+}
+
+@mixin white-gradient {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
