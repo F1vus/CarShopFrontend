@@ -1,8 +1,9 @@
 @use "../styles/colors" as *;
 
 .current-location {
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
+  font-size: 15px;
+  margin-top: 30px;
+  margin-bottom: 45px;
   color: $white;
 
   a {

@@ -3,13 +3,43 @@
 
 .cars-page {
   display: flex;
+  gap: 20px;
   justify-content: space-between;
-  justify-content: center;
-}
+  flex-wrap: wrap;
 
-.filtration-form {
-  // width: fit-content;
-  // @include red-glow;
-  // background-color: $light-grey-opacity;
-  display: none;
+  aside.filtration-form {
+    flex: 0 0 380px; // stays fixed on desktop
+  }
+
+  // .cars-cards {
+  //   flex: 1 1 0;
+  //   display: grid;
+  //   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  //   gap: 20px;
+  // }
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    gap: 16px;
+
+    aside.filtration-form {
+      flex: 0 0 250px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+
+    aside.filtration-form {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+
+    .cars-cards {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+  }
 }
