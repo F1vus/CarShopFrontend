@@ -6,6 +6,7 @@ import Divider from "../UI/Divider";
 import womenImage from "assets/img/people/women.png";
 import peopleChoosingCar from "assets/img/people/people-choosing-car.png";
 import FiltrationForm from "../UI/FiltrationForm";
+import CardSlider from "../UI/CardSlider";
 
 function HomePage() {
   return (
@@ -60,7 +61,9 @@ function HomePage() {
           Zobacz samochody, które nasi klienci wybierają najczęściej –
           sprawdzone, gotowe do odbioru, z pełną dokumentacją.
         </p>
-        <div className="slider"></div>
+        <div className="new-suggestions__slider">
+          <CardSlider />
+        </div>
       </div>
       <Divider right={true} />
       <section className="out-benefits">

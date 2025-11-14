@@ -102,4 +102,97 @@
       color: $light-orange-red;
     }
   }
+
+  &--tablet {
+    max-width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+
+    .car-card__image {
+      max-width: 100%;
+      img {
+        height: 200px;
+        width: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    }
+
+    .car-card__info {
+      margin-left: 0;
+      margin-top: 12px;
+      gap: 20px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .car-card__details {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .car-card__price {
+      position: static;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .car-card__fav {
+      position: static;
+      margin-top: 8px;
+    }
+  }
+
+  &--mobile {
+    max-width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+
+    .car-card__image {
+      max-width: 100%;
+      img {
+        height: 180px;
+        width: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    }
+
+    .car-card__info {
+      margin-left: 0;
+      margin-top: 8px;
+      gap: 12px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .car-card__info-title {
+      font-size: 16px;
+    }
+
+    .car-card__info-description {
+      font-size: 13px;
+    }
+
+    .car-card__details {
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .car-card__price {
+      position: static;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+
+    .car-card__fav {
+      position: static;
+      margin-top: 6px;
+      font-size: 18px;
+    }
+  }
 }

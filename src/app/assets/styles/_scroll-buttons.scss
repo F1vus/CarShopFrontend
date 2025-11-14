@@ -1,0 +1,35 @@
+@use "./colors" as *;
+@use "sass:math";
+
+$widget-card-size: 115px;
+
+.scroll-buttons {
+  z-index: 3;
+
+  .move-button {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    color: $white;
+    cursor: pointer;
+
+    width: 3rem;
+    height: 3rem;
+
+    $top-position: math.div($widget-card-size, 2) + 32px;
+
+    i {
+      font-size: 20px;
+    }
+
+    &__left {
+      top: $top-position;
+      left: -2.5rem;
+    }
+
+    &__right {
+      top: $top-position;
+      right: -2.5rem;
+    }
+  }
+}
