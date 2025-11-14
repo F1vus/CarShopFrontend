@@ -52,8 +52,8 @@ function HomePage() {
           </div>
         </div>
       </section>
-      <Divider />
-      <div className="new-suggestions">
+      {/* <Divider /> */}
+      {/* <div className="new-suggestions">
         <h3 className="new-suggestions__title section-title">
           Najpopularniejsze oferty w tym tygodniu
         </h3>
@@ -64,8 +64,8 @@ function HomePage() {
         <div className="new-suggestions__slider">
           <CardSlider />
         </div>
-      </div>
-      <Divider right={true} />
+      </div> */}
+      <Divider />
       <section className="out-benefits">
         <div className="out-benefits__info-block">
           <h3 className="out-benefits__title section-title">

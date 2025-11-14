@@ -18,14 +18,14 @@ function CarCard({ carInfo }) {
     mileage,
     petrolType,
     year,
-    imageUrl,
+    photos,
     producent,
   } = carInfo;
 
   return (
     <div className="car-card">
       <div className="car-card__image">
-        <img src={imageUrl} alt={name} />
+        <img src={photos[0].url} alt={name} />
       </div>
 
       <div className="car-card__info">

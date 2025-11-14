@@ -6,7 +6,7 @@ import canister from "assets/img/icons/large/canister-lg-white.svg";
 import wheel from "assets/img/icons/large/wheel-lg-white.svg";
 import engine from "assets/img/icons/large/engine-lg-white.svg";
 import "styles/_car-info-page.scss";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function CarInfoPage({ carId }) {
   const [carInfo, setCarInfo] = useState({});
@@ -14,7 +14,8 @@ function CarInfoPage({ carId }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isElectric, setIsElectric] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
-  // const navigate = useNavigate();
+
+  const location = useLocation()
 
   useEffect(() => {
     carService
@@ -28,20 +29,11 @@ function CarInfoPage({ carId }) {
         console.error("Fetch error:", err);
         setError("Nie udało się załadować samochodów.");
       });
-  }, [carId]);
+  }, [carId, location.pathname]);
 
   const handleShowPhoneNumber = () => {
     setShowPhone((prev) => !prev);
   };
-
-  // const handleDeleteCar = async () => {
-  //   try {
-  //     await carService.deleteById(carId);
-  //     navigate("/cars");
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
 
   if (error) return <p>{error}</p>;
 
@@ -51,9 +43,9 @@ function CarInfoPage({ carId }) {
         <section className="car-info">
           <div className="car-info__main">
             <div className="car-info__image">
-              <img src={carInfo.imageUrl} alt={carInfo.name} />
+              <img src={carInfo.photos[0].url} alt={carInfo.name} />
             </div>
-            <span className="divider"></span>
+            <span className="divider-span"></span>
             <div className="car-info__important-data">
               <ul className="car-info__important-data-list">
                 <li className="car-info__important-data-element">
@@ -94,7 +86,7 @@ function CarInfoPage({ carId }) {
                 </li>
               </ul>
             </div>
-            <span className="divider"></span>
+            <span className="divider-span"></span>
             <div className="car-info__description">
               <h3 className="car-info__description-title">Opis</h3>
               <p className="car-info__description-text">
