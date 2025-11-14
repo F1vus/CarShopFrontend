@@ -1,7 +1,7 @@
 import axios from "axios";
 import config from "@/config";
 
-const carEndpoint = "/cars";
+const carEndpoint = "/api/v1/cars";
 
 const carService = {
   getAll: async () => {

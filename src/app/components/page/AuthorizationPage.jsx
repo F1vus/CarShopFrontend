@@ -1,12 +1,17 @@
 import React, { useMemo, useState } from "react";
 import "../../assets/styles/_authorization.scss";
+import authService from "app/services/auth.service.js";
+import { useNavigate } from "react-router-dom";
 
 function AuthorizationPage() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("register");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
 
   const pwdChecks = useMemo(
     () => [
@@ -20,14 +25,60 @@ function AuthorizationPage() {
 
   const allOk = pwdChecks.every((c) => c.ok);
 
+  async function sendSignUpRequest(event){
+    event.preventDefault();
+
+    authService
+        .register(
+            {
+              "username": username,
+              "email": email,
+              "password": password
+            }
+        )
+        .then((data) => {
+          setIsCreated(true);
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          setIsCreated(false);
+        })
+  }
+
+  async function sendLoginRequest(event){
+    event.preventDefault();
+
+    authService
+        .login(
+            {
+              "email": email,
+              "password": password
+            }
+        )
+        .then((data) => {
+          localStorage.setItem("token", data)
+          navigate("/");
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          setIsLogged(false);
+        })
+  }
+
+
   function handleSubmit(e) {
     e.preventDefault();
     if (tab === "register" && !allOk) {
       console.log("Password does not meet requirements");
       return;
     }
-
-    console.log("submit", { tab, email, username: tab === "register" ? username : undefined, password });
+    if(tab === "register"){
+      sendSignUpRequest(e)
+    }
+    if(tab === "login"){
+      sendLoginRequest(e)
+    }
+    console.log("submit", { tab, email, username: tab === "register" ? username : undefined, });
   }
 
   return (
@@ -68,7 +119,6 @@ function AuthorizationPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Wybierz unikalną nazwę"
                 required
               />
             </label>
@@ -113,6 +163,20 @@ function AuthorizationPage() {
           <button className="submit-btn" type="submit">
             {tab === "login" ? "Zaloguj" : "Utwórz konto indywidualne"}
           </button>
+          {
+            isCreated && (
+                  <div className="alert alert-success text-center" role="alert">
+                    Account created!
+                  </div>
+              )
+          }
+          {
+              !isLogged && (
+                  <div className="alert alert-danger text-center" role="alert">
+                    An error occurred while attempting to log in.
+                  </div>
+              )
+          }
         </form>
       </div>
     </div>
