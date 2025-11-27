@@ -1,9 +1,9 @@
 const dev = {
-  apiEndpoint: "http://localhost:8080/api/v1",
+  apiEndpoint: "http://localhost:8080",
 };
 
 const prod = {
-  apiEndpoint: "https://carshopbackend-production-8c33.up.railway.app/api/v1",
+  apiEndpoint: "https://carshopbackend-production-8c33.up.railway.app",
 };
 
 const config = import.meta.env.MODE === "development" ? dev : prod;
