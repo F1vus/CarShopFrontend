@@ -123,9 +123,9 @@
   width: 560px;
   max-width: 100%;
   background: linear-gradient(
-    135deg,
-    rgba($darker-grey, 0.95) 0%,
-    rgba(color.adjust($darker-grey, $lightness: -8%), 0.98) 100%
+                  135deg,
+                  rgba($darker-grey, 0.95) 0%,
+                  rgba(color.adjust($darker-grey, $lightness: -8%), 0.98) 100%
   );
   padding: 28px;
   border-radius: 16px;
@@ -133,8 +133,8 @@
   color: $smoke-grey;
   border: 1px solid rgba($accent, 0.15);
   box-shadow: 0 0 40px rgba($accent, 0.1), 0 0 80px rgba($accent, 0.12),
-    0 0 160px rgba($accent, 0.08), 0 0 240px rgba($accent, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  0 0 160px rgba($accent, 0.08), 0 0 240px rgba($accent, 0.04),
+  inset 0 1px 0 rgba(255, 255, 255, 0.06);
   position: relative;
   overflow: hidden;
   animation: cardFloat 4s ease-in-out infinite;
@@ -153,10 +153,14 @@
   animation: rotate 15s linear infinite;
 }
 
+
+
+
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
