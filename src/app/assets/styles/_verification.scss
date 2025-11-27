@@ -1,5 +1,6 @@
 @use "../styles/colors" as *;
 @use "../styles/mixins" as *;
+@use "sass:color";
 
 $accent: #e63946;
 $accent-bright: #f77f88;
@@ -98,7 +99,7 @@ $success: #3bd671;
 .verification-card {
   width: 480px;
   max-width: 100%;
-  background: linear-gradient(135deg, rgba($darker-grey, 0.95) 0%, rgba(darken($darker-grey, 8%), 0.98) 100%);
+  background: linear-gradient(135deg, rgba($darker-grey, 0.95) 0%, rgba(color.adjust($darker-grey, $lightness: -8%), 0.98) 100%);
   padding: 40px 32px;
   border-radius: 16px;
   box-sizing: border-box;
