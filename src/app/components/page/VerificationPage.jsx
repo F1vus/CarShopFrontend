@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "../../assets/styles/_verification.scss";
 import logo from "../../assets/img/logo-large.svg";
 import authService from "app/services/auth.service.js";
+import { useNavigate } from "react-router-dom";
 
 function VerificationPage({ email }) {
   // Stan dla 6-cyfrowego kodu weryfikacyjnego
@@ -17,6 +18,7 @@ function VerificationPage({ email }) {
   const [error, setError] = useState("");
   // Referencje do pól input kodu
   const inputRefs = useRef([]);
+  const navigate = useNavigate()
 
   // Efekt zarządzający timerem
   useEffect(() => {
@@ -106,6 +108,7 @@ function VerificationPage({ email }) {
         )
         .then(() => {
           setIsVerified(true)
+          navigate("/profile")
         })
         .catch((err) => {
           console.error("Fetch error:", err);
