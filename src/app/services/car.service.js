@@ -34,10 +34,8 @@ const carService = {
       throw err;
     }
   },
-  deleteById: async (id) => {
-    const url = `${config.apiEndpoint}${carEndpoint}/${id}`;
-    console.log("Url" + url);
-    
+  deleteById: async (carId) => {
+    const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
 
     try {
       await axios.delete(url, {
@@ -50,6 +48,16 @@ const carService = {
       throw err;
     }
   },
+  updateCar: async (carId, body) => {
+    const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
+    try {
+      const response = await axios.patch(url, body);
+      return response.data;
+    } catch (err) {
+      console.error("Error:", err.response?.status, err.response?.data);
+      throw err;
+    }
+  }
 };
 
 export default carService;

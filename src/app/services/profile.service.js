@@ -4,7 +4,7 @@ import config from "@/config";
 const authEndpoint = "/api/v1/profiles";
 
 const profileService = {
-  getProfileId: async (qvtToken) => {
+  getProfileData: async (qvtToken) => {
     const request = {
       method: "GET",
       url: config.apiEndpoint + authEndpoint,

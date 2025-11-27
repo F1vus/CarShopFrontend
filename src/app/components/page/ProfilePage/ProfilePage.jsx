@@ -12,6 +12,7 @@ import profileService from "services/profile.service";
 import ProfileAdvertisements from "./ProfileAdvertisements";
 import ProfileMessages from "./ProfileMessages";
 import ProfileSettings from "./ProfileSettings";
+import EditCarPage from "./EditCarPage";
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function ProfilePage() {
     }
 
     profileService
-      .getProfileId(token)
+      .getProfileData(token)
       .then((data) => setProfileId(data.id))
       .catch((err) => {
         console.error("Fetch error:", err);
@@ -112,6 +113,7 @@ function ProfilePage() {
               path="advertisements/*"
               element={<ProfileAdvertisements profileId={profileId} />}
             />
+            <Route path="advertisements/:carId/edit" element={<EditCarPage />} />
             <Route path="messages" element={<ProfileMessages />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Routes>
