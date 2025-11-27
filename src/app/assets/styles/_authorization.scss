@@ -1,15 +1,10 @@
 @use "../styles/colors" as *;
 @use "../styles/mixins" as *;
-
-$accent: #e63946;
-$accent-bright: #f77f88;
-$accent-dim: #a4161a;
-$accent-dark: #d41234;
-$success: #3bd671;
-$success-glow: #2db366;
+@use "sass:color";
 
 @keyframes cardFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -29,38 +24,50 @@ $success-glow: #2db366;
 }
 
 @keyframes fieldGlow {
-	0% {
-		box-shadow: 0 0 0 rgba($accent, 0), 0 8px 32px rgba($accent, 0.08), 0 0 60px rgba($accent, 0);
-	}
-	25% {
-		box-shadow: 0 0 12px rgba($accent, 0.08), 0 12px 40px rgba($accent, 0.12), 0 0 80px rgba($accent, 0.04);
-	}
-	50% {
-		box-shadow: 0 0 24px rgba($accent, 0.12), 0 16px 48px rgba($accent, 0.15), 0 0 100px rgba($accent, 0.08);
-	}
-	75% {
-		box-shadow: 0 0 12px rgba($accent, 0.08), 0 12px 40px rgba($accent, 0.12), 0 0 80px rgba($accent, 0.04);
-	}
-	100% {
-		box-shadow: 0 0 0 rgba($accent, 0), 0 8px 32px rgba($accent, 0.08), 0 0 60px rgba($accent, 0);
-	}
-}@keyframes buttonPulse {
-	0% {
-		box-shadow: 0 0 20px rgba($accent, 0.3), 0 0 40px rgba($accent, 0.15), 0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255,255,255,0.1);
-	}
-	25% {
-		box-shadow: 0 0 28px rgba($accent, 0.35), 0 0 56px rgba($accent, 0.18), 0 0 100px rgba($accent, 0.08), inset 0 1px 0 rgba(255,255,255,0.12);
-	}
-	50% {
-		box-shadow: 0 0 36px rgba($accent, 0.4), 0 0 72px rgba($accent, 0.22), 0 0 120px rgba($accent, 0.1), inset 0 1px 0 rgba(255,255,255,0.15);
-	}
-	75% {
-		box-shadow: 0 0 28px rgba($accent, 0.35), 0 0 56px rgba($accent, 0.18), 0 0 100px rgba($accent, 0.08), inset 0 1px 0 rgba(255,255,255,0.12);
-	}
-	100% {
-		box-shadow: 0 0 20px rgba($accent, 0.3), 0 0 40px rgba($accent, 0.15), 0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255,255,255,0.1);
-	}
-}@keyframes requirementCheck {
+  0% {
+    box-shadow: 0 0 0 rgba($accent, 0), 0 8px 32px rgba($accent, 0.08),
+      0 0 60px rgba($accent, 0);
+  }
+  25% {
+    box-shadow: 0 0 12px rgba($accent, 0.08), 0 12px 40px rgba($accent, 0.12),
+      0 0 80px rgba($accent, 0.04);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba($accent, 0.12), 0 16px 48px rgba($accent, 0.15),
+      0 0 100px rgba($accent, 0.08);
+  }
+  75% {
+    box-shadow: 0 0 12px rgba($accent, 0.08), 0 12px 40px rgba($accent, 0.12),
+      0 0 80px rgba($accent, 0.04);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba($accent, 0), 0 8px 32px rgba($accent, 0.08),
+      0 0 60px rgba($accent, 0);
+  }
+}
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 0 20px rgba($accent, 0.3), 0 0 40px rgba($accent, 0.15),
+      0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  25% {
+    box-shadow: 0 0 28px rgba($accent, 0.35), 0 0 56px rgba($accent, 0.18),
+      0 0 100px rgba($accent, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  50% {
+    box-shadow: 0 0 36px rgba($accent, 0.4), 0 0 72px rgba($accent, 0.22),
+      0 0 120px rgba($accent, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  75% {
+    box-shadow: 0 0 28px rgba($accent, 0.35), 0 0 56px rgba($accent, 0.18),
+      0 0 100px rgba($accent, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba($accent, 0.3), 0 0 40px rgba($accent, 0.15),
+      0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+}
+@keyframes requirementCheck {
   0% {
     transform: scale(0.6);
     opacity: 0;
@@ -72,400 +79,421 @@ $success-glow: #2db366;
     transform: scale(1);
     opacity: 1;
   }
-} 
+}
 
 .authorization-page {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
-	padding: 40px 20px;
-	background: radial-gradient(circle at 20% 50%, rgba($accent, 0.04) 0%, transparent 50%), 
-	            radial-gradient(circle at 80% 80%, rgba($success, 0.02) 0%, transparent 50%);
-	position: relative;
-	overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: radial-gradient(
+      circle at 20% 50%,
+      rgba($accent, 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(circle at 80% 80%, rgba($success, 0.02) 0%, transparent 50%);
+  position: relative;
+  overflow: hidden;
 }
 
 .authorization-page::before {
-	content: "";
-	position: absolute;
-	top: -50%;
-	left: -50%;
-	width: 200%;
-	height: 200%;
-	background: radial-gradient(circle, rgba($accent, 0.01) 1px, transparent 1px);
-	background-size: 50px 50px;
-	pointer-events: none;
-	animation: drift 20s linear infinite;
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba($accent, 0.01) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  animation: drift 20s linear infinite;
 }
 
 @keyframes drift {
-	0% {
-		transform: translate(0, 0);
-	}
-	100% {
-		transform: translate(50px, 50px);
-	}
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
 }
 
 .auth-card {
-	width: 560px;
-	max-width: 100%;
-	background: linear-gradient(135deg, rgba($darker-grey, 0.95) 0%, rgba(darken($darker-grey, 8%), 0.98) 100%);
-	padding: 28px;
-	border-radius: 16px;
-	box-sizing: border-box;
-	color: $smoke-grey;
-	border: 1px solid rgba($accent, 0.15);
-	box-shadow: 
-		0 0 40px rgba($accent, 0.1),
-		0 0 80px rgba($accent, 0.12),
-		0 0 160px rgba($accent, 0.08),
-		0 0 240px rgba($accent, 0.04),
-		inset 0 1px 0 rgba(255,255,255,0.06);
-	position: relative;
-	overflow: hidden;
-	animation: cardFloat 4s ease-in-out infinite;
-	z-index: 1;
+  width: 560px;
+  max-width: 100%;
+  background: linear-gradient(
+                  135deg,
+                  rgba($darker-grey, 0.95) 0%,
+                  rgba(color.adjust($darker-grey, $lightness: -8%), 0.98) 100%
+  );
+  padding: 28px;
+  border-radius: 16px;
+  box-sizing: border-box;
+  color: $smoke-grey;
+  border: 1px solid rgba($accent, 0.15);
+  box-shadow: 0 0 40px rgba($accent, 0.1), 0 0 80px rgba($accent, 0.12),
+  0 0 160px rgba($accent, 0.08), 0 0 240px rgba($accent, 0.04),
+  inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+  animation: cardFloat 4s ease-in-out infinite;
+  z-index: 1;
 }
 
 .auth-card::before {
-	content: "";
-	position: absolute;
-	top: -50%;
-	right: -50%;
-	width: 300%;
-	height: 300%;
-	background: radial-gradient(circle, rgba($accent, 0.08) 0%, transparent 70%);
-	pointer-events: none;
-	animation: rotate 15s linear infinite;
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba($accent, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  animation: rotate 15s linear infinite;
 }
 
+
+
+
 @keyframes rotate {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .auth-tabs {
-	display: flex;
-	gap: 26px;
-	justify-content: center;
-	margin-bottom: 18px;
-	position: relative;
-	border-bottom: 1px solid rgba($accent, 0.06);
-	padding-bottom: 12px;
+  display: flex;
+  gap: 26px;
+  justify-content: center;
+  margin-bottom: 18px;
+  position: relative;
+  border-bottom: 1px solid rgba($accent, 0.06);
+  padding-bottom: 12px;
 
-	.tab {
-		background: transparent;
-		border: none;
-		color: $smoke-grey;
-		padding: 8px 6px 12px;
-		font-weight: 700;
-		cursor: pointer;
-		position: relative;
-		transition: color 0.3s ease, text-shadow 0.3s ease;
-		letter-spacing: 0.5px;
-	}
+  .tab {
+    background: transparent;
+    border: none;
+    color: $smoke-grey;
+    padding: 8px 6px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    letter-spacing: 0.5px;
+  }
 
-	.tab:hover {
-		color: $accent-bright;
-		text-shadow: 0 0 12px rgba($accent, 0.4);
-	}
+  .tab:hover {
+    color: $accent-bright;
+    text-shadow: 0 0 12px rgba($accent, 0.4);
+  }
 
-	.tab.active {
-		color: $white;
-		text-shadow: 0 0 16px rgba($accent, 0.6);
-		animation: tabSlide 0.4s ease-out;
-	}
+  .tab.active {
+    color: $white;
+    text-shadow: 0 0 16px rgba($accent, 0.6);
+    animation: tabSlide 0.4s ease-out;
+  }
 
-	.tab.active::after {
-		content: "";
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: -13px;
-		height: 3px;
-		background: linear-gradient(90deg, transparent, $accent, transparent);
-		border-radius: 3px;
-		box-shadow: 0 0 16px rgba($accent, 0.6), 0 0 32px rgba($accent, 0.3);
-		animation: slideIn 0.4s ease-out;
-	}
+  .tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -13px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, $accent, transparent);
+    border-radius: 3px;
+    box-shadow: 0 0 16px rgba($accent, 0.6), 0 0 32px rgba($accent, 0.3);
+    animation: slideIn 0.4s ease-out;
+  }
 
-	@keyframes slideIn {
-		from {
-			width: 0;
-			opacity: 0;
-		}
-		to {
-			width: 100%;
-			opacity: 1;
-		}
-	}
+  @keyframes slideIn {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 100%;
+      opacity: 1;
+    }
+  }
 }
 
 .auth-form {
-	margin-top: 14px;
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-	position: relative;
-	z-index: 2;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
 }
 
 .field-label {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	color: $white;
-	font-size: 13px;
-	font-weight: 500;
-	letter-spacing: 0.4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: $white;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
 
-	input {
-		background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
-		border: 1.5px solid rgba($accent, 0.08);
-		padding: 14px 46px 14px 16px;
-		border-radius: 10px;
-		color: $white-smoke;
-		font-size: 14px;
-		box-sizing: border-box;
-		width: 100%;
-		transition: all 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
-		backdrop-filter: blur(4px);
-		position: relative;
-		z-index: 1;
+  input {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+    border: 1.5px solid rgba($accent, 0.08);
+    padding: 14px 46px 14px 16px;
+    border-radius: 10px;
+    color: $white-smoke;
+    font-size: 14px;
+    box-sizing: border-box;
+    width: 100%;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(4px);
+    position: relative;
+    z-index: 1;
 
-		&::placeholder {
-			color: rgba(255,255,255,0.2);
-		}
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+    }
 
-		&:hover {
-			border-color: rgba($accent, 0.16);
-			box-shadow: 0 0 0 1px rgba($accent, 0.04), 
-			            0 8px 24px rgba($accent, 0.08);
-			background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.015) 100%);
-		}
+    &:hover {
+      border-color: rgba($accent, 0.16);
+      box-shadow: 0 0 0 1px rgba($accent, 0.04), 0 8px 24px rgba($accent, 0.08);
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.015) 100%
+      );
+    }
 
-		&:focus {
-			outline: none;
-			border-color: $accent;
-			box-shadow: 
-				0 0 0 1px $accent,
-				0 0 20px rgba($accent, 0.3),
-				0 0 40px rgba($accent, 0.15),
-				0 12px 48px rgba($accent, 0.2),
-				inset 0 1px 0 rgba(255,255,255,0.08);
-			background: linear-gradient(135deg, rgba($accent, 0.04) 0%, rgba(255,255,255,0.01) 100%);
-			transform: translateY(-2px);
-			animation: fieldGlow 2s ease-in-out infinite;
-		}
-	}
+    &:focus {
+      outline: none;
+      border-color: $accent;
+      box-shadow: 0 0 0 1px $accent, 0 0 20px rgba($accent, 0.3),
+        0 0 40px rgba($accent, 0.15), 0 12px 48px rgba($accent, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      background: linear-gradient(
+        135deg,
+        rgba($accent, 0.04) 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      transform: translateY(-2px);
+      animation: fieldGlow 2s ease-in-out infinite;
+    }
+  }
 }
 
 .password-wrap {
-	position: relative;
-	input[type="password"],
-	input[type="text"] {
-		padding-right: 46px !important;
-	}
+  position: relative;
+  input[type="password"],
+  input[type="text"] {
+    padding-right: 46px !important;
+  }
 
-	.eye-btn {
-		position: absolute;
-		right: 8px;
-		top: 50%;
-		transform: translateY(-50%);
-		background: rgba(0,0,0,0.1);
-		border: 1px solid rgba($accent, 0.2);
-		width: 32px;
-		height: 32px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		color: $smoke-grey;
-		transition: all 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
-		border-radius: 8px;
-		padding: 0;
-		z-index: 10;
+  .eye-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba($accent, 0.2);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: $smoke-grey;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    padding: 0;
+    z-index: 10;
 
-		&:hover {
-			background: rgba($accent, 0.15);
-			border-color: rgba($accent, 0.4);
+    &:hover {
+      background: rgba($accent, 0.15);
+      border-color: rgba($accent, 0.4);
 
-			.eye {
-				border-color: $accent-bright;
-				box-shadow: 0 0 16px rgba($accent, 0.5), inset 0 0 8px rgba($accent, 0.15);
-			}
-		}
+      .eye {
+        border-color: $accent-bright;
+        box-shadow: 0 0 16px rgba($accent, 0.5),
+          inset 0 0 8px rgba($accent, 0.15);
+      }
+    }
 
-		&:active {
-			background: rgba($accent, 0.2);
-			transform: translateY(-50%) scale(0.95);
-		}
-	}
+    &:active {
+      background: rgba($accent, 0.2);
+      transform: translateY(-50%) scale(0.95);
+    }
+  }
 
-	.eye {
-		display: inline-block;
-		width: 16px;
-		height: 11px;
-		border: 2px solid rgba(255,255,255,0.3);
-		border-radius: 12px;
-		transition: all 0.28s ease;
-		position: relative;
-	}
+  .eye {
+    display: inline-block;
+    width: 16px;
+    height: 11px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    transition: all 0.28s ease;
+    position: relative;
+  }
 
-	.eye::after {
-		content: "";
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 4px;
-		height: 4px;
-		background: rgba(255,255,255,0.4);
-		border-radius: 50%;
-		transition: all 0.28s ease;
-	}
+  .eye::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transition: all 0.28s ease;
+  }
 
-	.eye.open {
-		background: linear-gradient(135deg, rgba($accent, 0.15) 0%, rgba($accent, 0.08) 100%);
-		border-color: $accent;
-		box-shadow: 0 0 20px rgba($accent, 0.4), inset 0 0 12px rgba($accent, 0.12);
+  .eye.open {
+    background: linear-gradient(
+      135deg,
+      rgba($accent, 0.15) 0%,
+      rgba($accent, 0.08) 100%
+    );
+    border-color: $accent;
+    box-shadow: 0 0 20px rgba($accent, 0.4), inset 0 0 12px rgba($accent, 0.12);
 
-		&::after {
-			width: 6px;
-			height: 6px;
-			background: $accent;
-		}
-	}
+    &::after {
+      width: 6px;
+      height: 6px;
+      background: $accent;
+    }
+  }
 }
 
 .pw-requirements {
-	margin-top: 12px;
-	color: $smoke-grey;
-	padding: 14px 16px;
-	background: linear-gradient(135deg, rgba($success, 0.04) 0%, rgba($accent, 0.02) 100%);
-	border: 1px solid rgba($success, 0.08);
-	border-radius: 10px;
-	transition: all 0.3s ease;
+  margin-top: 12px;
+  color: $smoke-grey;
+  padding: 14px 16px;
+  background: linear-gradient(
+    135deg,
+    rgba($success, 0.04) 0%,
+    rgba($accent, 0.02) 100%
+  );
+  border: 1px solid rgba($success, 0.08);
+  border-radius: 10px;
+  transition: all 0.3s ease;
 
-	.pw-heading {
-		color: $white;
-		margin-bottom: 10px;
-		font-size: 13px;
-		font-weight: 700;
-		letter-spacing: 0.5px;
-		text-transform: uppercase;
-	}
+  .pw-heading {
+    color: $white;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
 
-	ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 
-		li {
-			display: flex;
-			gap: 10px;
-			align-items: center;
-			color: $smoke-grey;
-			font-size: 13px;
-			transition: all 0.24s ease;
-			padding: 4px 0;
+    li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: $smoke-grey;
+      font-size: 13px;
+      transition: all 0.24s ease;
+      padding: 4px 0;
 
-			&.ok {
-				color: $success;
-				text-shadow: 0 0 8px rgba($success, 0.3);
-				transform: translateX(2px);
-			}
+      &.ok {
+        color: $success;
+        text-shadow: 0 0 8px rgba($success, 0.3);
+        transform: translateX(2px);
+      }
 
-			.check {
-				width: 12px;
-				display: inline-block;
-				color: $smoke-grey;
-				text-align: center;
-				line-height: 12px;
-				font-weight: 700;
-			}
+      .check {
+        width: 12px;
+        display: inline-block;
+        color: $smoke-grey;
+        text-align: center;
+        line-height: 12px;
+        font-weight: 700;
+      }
 
-			.check.dot {
-				width: 10px;
-				height: 10px;
-				display: inline-block;
-				border-radius: 50%;
-				background: $success;
-				box-shadow: 0 0 12px rgba($success, 0.5), 0 0 24px rgba($success, 0.25), 0 0 40px rgba($success, 0.12), inset 0 1px 0 rgba(255,255,255,0.2);
-				color: transparent;
-				animation: requirementCheck 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-			}
-		}
-	}
-}.submit-btn {
-	margin-top: 18px;
-	width: 100%;
-	background: linear-gradient(135deg, $accent 0%, $accent-bright 100%);
-	border: 1.5px solid rgba($accent, 0.5);
-	color: $white;
-	padding: 14px 16px;
-	border-radius: 12px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: all 0.32s cubic-bezier(0.4, 0.0, 0.2, 1);
-	position: relative;
-	overflow: hidden;
-	letter-spacing: 0.6px;
-	text-transform: uppercase;
-	font-size: 13px;
-	box-shadow: 
-		0 0 20px rgba($accent, 0.25),
-		0 0 40px rgba($accent, 0.12),
-		0 0 80px rgba($accent, 0.05),
-		inset 0 1px 0 rgba(255,255,255,0.15),
-		inset 0 -1px 0 rgba(0,0,0,0.2);
-
-	&::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: -100%;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-		transition: left 0.6s ease;
-	}
-
-	&:hover {
-		background: linear-gradient(135deg, $accent-dark 0%, $accent 100%);
-		box-shadow: 
-			0 0 30px rgba($accent, 0.35),
-			0 0 60px rgba($accent, 0.22),
-			0 0 120px rgba($accent, 0.12),
-			0 8px 32px rgba($accent, 0.28),
-			inset 0 1px 0 rgba(255,255,255,0.2),
-			inset 0 -1px 0 rgba(0,0,0,0.3);
-		transform: translateY(-3px);
-		animation: buttonPulse 1.2s ease-in-out infinite;
-
-		&::before {
-			left: 100%;
-		}
-	}
-
-	&:active {
-		transform: translateY(-1px);
-		box-shadow: 
-			0 0 18px rgba($accent, 0.2),
-			0 0 36px rgba($accent, 0.1),
-			0 0 72px rgba($accent, 0.06),
-			0 4px 16px rgba($accent, 0.12),
-			inset 0 1px 0 rgba(255,255,255,0.1),
-			inset 0 -1px 0 rgba(0,0,0,0.15);
-	}
+      .check.dot {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border-radius: 50%;
+        background: $success;
+        box-shadow: 0 0 12px rgba($success, 0.5), 0 0 24px rgba($success, 0.25),
+          0 0 40px rgba($success, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        color: transparent;
+        animation: requirementCheck 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+    }
+  }
 }
+.submit-btn {
+  margin-top: 18px;
+  width: 100%;
+  background: linear-gradient(135deg, $accent 0%, $accent-bright 100%);
+  border: 1.5px solid rgba($accent, 0.5);
+  color: $white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-size: 13px;
+  box-shadow: 0 0 20px rgba($accent, 0.25), 0 0 40px rgba($accent, 0.12),
+    0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, $accent-dark 0%, $accent 100%);
+    box-shadow: 0 0 30px rgba($accent, 0.35), 0 0 60px rgba($accent, 0.22),
+      0 0 120px rgba($accent, 0.12), 0 8px 32px rgba($accent, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+    animation: buttonPulse 1.2s ease-in-out infinite;
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+    box-shadow: 0 0 18px rgba($accent, 0.2), 0 0 36px rgba($accent, 0.1),
+      0 0 72px rgba($accent, 0.06), 0 4px 16px rgba($accent, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  }
+}

@@ -1,0 +1,139 @@
+@use "../colors" as *;
+@use "../mixins" as *;
+
+.profile-ads {
+  &__navigation {
+    display: flex;
+    gap: 30px;
+  }
+
+  &__navigation-item {
+    list-style: none;
+  }
+
+  &__tab-btn {
+    @include nav-link();
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    font-size: 30px;
+    font-family: "Anta", sans-serif;
+    font-weight: 400;
+    margin-bottom: 50px;
+    word-wrap: break-word;
+  }
+
+  &__content-block {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  &__content-list {
+    width: 100%;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+  }
+
+  &__list-item {
+    display: block;
+    width: 100%;
+  }
+
+  &__card-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.15s ease-in-out;
+
+    &--edit {
+      background: transparent;
+      color: $white;
+      border-color: rgba(255, 255, 255, 0.12);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.04);
+        transform: translateY(-1px);
+      }
+    }
+
+    &--delete {
+      background: transparent;
+      color: $white;
+      border-color: rgba(255, 60, 0, 0.85);
+
+      &:hover {
+        background: rgba(255, 60, 0, 0.08);
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  &__add-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 56px;
+    gap: 20px;
+  }
+
+  &__add-img {
+    width: 420px;
+    max-width: 90%;
+    height: auto;
+  }
+
+  &__add-text {
+    font-size: 18px;
+    line-height: 1.4;
+    color: $white;
+    max-width: 700px;
+  }
+
+  &__add-btn {
+    @include button-styles($color: $orange, $hover-color: $orange-hover, $padding: 12px 36px);
+    margin-top: 6px;
+    text-decoration: none;
+    color: $white;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 40px 0;
+    text-align: center;
+    color: $white;
+
+    & .profile-ads__browse-btn {
+      @include button-styles($color: $orange, $hover-color: $orange-hover);
+    }
+  }
+}
