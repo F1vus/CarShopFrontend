@@ -116,38 +116,32 @@ $success-glow: #2db366;
 	border-radius: 16px;
 	box-sizing: border-box;
 	color: $smoke-grey;
-	border: 1px solid rgba($accent, 0.15);
+	border: 1px solid rgba($accent, 0.08);
 	box-shadow: 
-		0 0 40px rgba($accent, 0.1),
-		0 0 80px rgba($accent, 0.12),
-		0 0 160px rgba($accent, 0.08),
-		0 0 240px rgba($accent, 0.04),
-		inset 0 1px 0 rgba(255,255,255,0.06);
+		0 0 30px rgba($accent, 0.04),
+		0 0 60px rgba($accent, 0.05),
+		0 0 120px rgba($accent, 0.06),
+		0 0 200px rgba($accent, 0.055),
+		0 0 320px rgba($accent, 0.045),
+		0 0 480px rgba($accent, 0.03),
+		0 0 640px rgba($accent, 0.015),
+		0 0 800px rgba($accent, 0.008),
+		inset 0 1px 0 rgba(255,255,255,0.06),
+		inset 0 0 60px rgba($accent, 0.02),
+		inset 0 0 120px rgba(0,0,0,0.05);
 	position: relative;
 	overflow: hidden;
 	animation: cardFloat 4s ease-in-out infinite;
 	z-index: 1;
 }
 
-.auth-card::before {
+.auth-card::after {
 	content: "";
 	position: absolute;
-	top: -50%;
-	right: -50%;
-	width: 300%;
-	height: 300%;
-	background: radial-gradient(circle, rgba($accent, 0.08) 0%, transparent 70%);
+	inset: 0;
+	border-radius: 16px;
+	background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0.15) 100%);
 	pointer-events: none;
-	animation: rotate 15s linear infinite;
-}
-
-@keyframes rotate {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
 }
 
 .auth-tabs {

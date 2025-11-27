@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import "../../assets/styles/_authorization.scss";
+import VerificationPage from "./VerificationPage";
 
 function AuthorizationPage() {
   const [tab, setTab] = useState("register");
@@ -7,6 +8,7 @@ function AuthorizationPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
 
   const pwdChecks = useMemo(
     () => [
@@ -28,6 +30,26 @@ function AuthorizationPage() {
     }
 
     console.log("submit", { tab, email, username: tab === "register" ? username : undefined, password });
+    
+    // Show verification page after successful register or login
+    setShowVerification(true);
+  }
+
+  // If verification page is shown, render it instead
+  if (showVerification) {
+    return (
+      <VerificationPage 
+        email={email}
+        onVerified={(code) => {
+          console.log("Email verified with code:", code);
+          // Handle successful verification (redirect to dashboard, etc.)
+        }}
+        onResend={() => {
+          console.log("Resending code to:", email);
+          // Handle resend logic
+        }}
+      />
+    );
   }
 
   return (
