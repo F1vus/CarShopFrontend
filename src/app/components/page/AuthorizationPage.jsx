@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import "../../assets/styles/_authorization.scss";
+import VerificationPage from "./VerificationPage";
 import authService from "app/services/auth.service.js";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +11,7 @@ function AuthorizationPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
   const [isLogged, setIsLogged] = useState(true);
 
@@ -25,7 +27,7 @@ function AuthorizationPage() {
 
   const allOk = pwdChecks.every((c) => c.ok);
 
-  async function sendSignUpRequest(event){
+  function sendSignUpRequest(event){
     event.preventDefault();
 
     authService
@@ -36,8 +38,8 @@ function AuthorizationPage() {
               "password": password
             }
         )
-        .then((data) => {
-          setIsCreated(true);
+        .then(() => {
+            setShowVerification(true);
         })
         .catch((err) => {
           console.error("Fetch error:", err);
@@ -45,10 +47,10 @@ function AuthorizationPage() {
         })
   }
 
-  async function sendLoginRequest(event){
+  function sendLoginRequest(event){
     event.preventDefault();
 
-    authService
+     authService
         .login(
             {
               "email": email,
@@ -68,17 +70,24 @@ function AuthorizationPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (tab === "register" && !allOk) {
-      console.log("Password does not meet requirements");
-      return;
-    }
-    if(tab === "register"){
-      sendSignUpRequest(e)
-    }
-    if(tab === "login"){
-      sendLoginRequest(e)
-    }
-    console.log("submit", { tab, email, username: tab === "register" ? username : undefined, });
+      if(tab === "register" && !allOk){
+        return
+      }
+      if(tab === "register" && allOk){
+          sendSignUpRequest(e)
+      }
+      if(tab === "login"){
+          sendLoginRequest(e)
+      }
+      console.log("submit", { tab, email, username: tab === "register" ? username : undefined, });
+  }
+
+  if (showVerification) {
+    return (
+      <VerificationPage 
+        email={email}
+      />
+    );
   }
 
   return (
