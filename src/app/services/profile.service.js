@@ -1,16 +1,20 @@
 import axios from "axios";
 import config from "@/config";
 
-const authEndpoint = "/api/auth";
+const authEndpoint = "/api/v1/profiles";
 
-const authService = {
-  register: async (credentials) => {
+const profileService = {
+  getProfileId: async (qvtToken) => {
     const request = {
-      method: "POST",
-      baseURL: config.apiEndpoint + authEndpoint + "/register",
-      data: credentials,
+      method: "GET",
+      url: config.apiEndpoint + authEndpoint,
+      headers: {
+        Authorization: `Bearer ${qvtToken}`,
+        "Content-Type": "application/json",
+      },
       allowAbsoluteUrls: true,
     };
+
     try {
       const response = await axios.request(request);
       return response.data;
@@ -19,11 +23,10 @@ const authService = {
       throw err;
     }
   },
-  login: async (credentials) => {
+  getProfileCars: async (profileId) => {
     const request = {
-      method: "POST",
-      baseURL: config.apiEndpoint + authEndpoint + "/login",
-      data: credentials,
+      method: "GET",
+      url: config.apiEndpoint + authEndpoint + `/${profileId}` + "/cars",
       allowAbsoluteUrls: true,
     };
 
@@ -37,4 +40,4 @@ const authService = {
   },
 };
 
-export default authService;
+export default profileService;

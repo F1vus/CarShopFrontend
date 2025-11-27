@@ -13,8 +13,9 @@ const carService = {
     try {
       const response = await axios.request(request);
       return response.data;
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
   },
   getById: async (id) => {
@@ -28,8 +29,9 @@ const carService = {
     try {
       const response = await axios.request(request);
       return response.data;
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
   },
   deleteById: async (id) => {
@@ -42,8 +44,9 @@ const carService = {
           "Content-Type": "application/json",
         },
       });
-    } catch (e) {
-      console.error("Error:", e.response?.status, e.response?.data);
+    } catch (err) {
+      console.error("Error:", err.response?.status, err.response?.data);
+      throw err;
     }
   },
 };

@@ -1,0 +1,30 @@
+@use "./colors" as *;
+
+.profile {
+
+  &__navigation {
+    display: flex;
+    gap: 30px;
+  
+    &-item {
+      list-style: none;
+    }
+  }
+
+
+
+  .navigation-link {
+    color: $white;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 1.08px;
+    word-wrap: break-word;
+    padding: 12px 16px;
+    height: 40px;
+    width: 270px;
+    background-color: $orange;
+    border: none;
+  }
+}

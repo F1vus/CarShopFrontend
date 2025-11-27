@@ -39,6 +39,10 @@ function CurrentLocation() {
       crumbs.push({ name: "Logowanie / Rejestracja", path: "/auth" });
     }
 
+    if (pathnames[0] === "profile") {
+      crumbs.push({name: "Profil", path: "/profile"})
+    }
+
     setBreadcrumbs(crumbs);
   }, [location, carId]);
 

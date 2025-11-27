@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import "../../assets/styles/_authorization.scss";
-import authService from "app/services/auth.service.js";
+import "styles/_authorization.scss";
+import authService from "services/auth.service.js";
 import { useNavigate } from "react-router-dom";
 
 function AuthorizationPage() {
@@ -47,7 +47,6 @@ function AuthorizationPage() {
 
   async function sendLoginRequest(event){
     event.preventDefault();
-
     authService
         .login(
             {
@@ -57,14 +56,13 @@ function AuthorizationPage() {
         )
         .then((data) => {
           localStorage.setItem("token", data)
-          navigate("/");
+          navigate("/profile");
         })
         .catch((err) => {
           console.error("Fetch error:", err);
           setIsLogged(false);
         })
   }
-
 
   function handleSubmit(e) {
     e.preventDefault();
