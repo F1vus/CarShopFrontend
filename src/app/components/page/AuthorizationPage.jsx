@@ -27,7 +27,7 @@ function AuthorizationPage() {
 
   const allOk = pwdChecks.every((c) => c.ok);
 
-  async function sendSignUpRequest(event){
+  function sendSignUpRequest(event){
     event.preventDefault();
 
     authService
@@ -38,8 +38,8 @@ function AuthorizationPage() {
               "password": password
             }
         )
-        .then((data) => {
-          setIsCreated(true);
+        .then(() => {
+            setShowVerification(true);
         })
         .catch((err) => {
           console.error("Fetch error:", err);
@@ -47,10 +47,10 @@ function AuthorizationPage() {
         })
   }
 
-  async function sendLoginRequest(event){
+  function sendLoginRequest(event){
     event.preventDefault();
 
-    authService
+     authService
         .login(
             {
               "email": email,
@@ -70,39 +70,24 @@ function AuthorizationPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (tab === "register" && !allOk) {
-      console.log("Password does not meet requirements");
-      return;
-    }
-
-    console.log("submit", { tab, email, username: tab === "register" ? username : undefined, password });
-    
-    // Show verification page after successful register or login
-    setShowVerification(true);
+      if(tab === "register" && !allOk){
+        return
+      }
+      if(tab === "register" && allOk){
+          sendSignUpRequest(e)
+      }
+      if(tab === "login"){
+          sendLoginRequest(e)
+      }
+      console.log("submit", { tab, email, username: tab === "register" ? username : undefined, });
   }
 
-  // If verification page is shown, render it instead
   if (showVerification) {
     return (
       <VerificationPage 
         email={email}
-        onVerified={(code) => {
-          console.log("Email verified with code:", code);
-          // Handle successful verification (redirect to dashboard, etc.)
-        }}
-        onResend={() => {
-          console.log("Resending code to:", email);
-          // Handle resend logic
-        }}
       />
     );
-    if(tab === "register"){
-      sendSignUpRequest(e)
-    }
-    if(tab === "login"){
-      sendLoginRequest(e)
-    }
-    console.log("submit", { tab, email, username: tab === "register" ? username : undefined, });
   }
 
   return (

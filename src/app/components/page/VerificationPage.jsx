@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../../assets/styles/_verification.scss";
 import logo from "../../assets/img/logo-large.svg";
+import authService from "app/services/auth.service.js";
 
-function VerificationPage({ email, onVerified, onResend }) {
+function VerificationPage({ email }) {
   // Stan dla 6-cyfrowego kodu weryfikacyjnego
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  // Timer - 80 sekund (1:20)
-  const [timeLeft, setTimeLeft] = useState(80);
+
+  const [timeLeft, setTimeLeft] = useState(15);
   // Flaga pozwalająca na ponowne wysłanie kodu
   const [canResend, setCanResend] = useState(false);
   // Flaga wskazująca czy trwa proces weryfikacji
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   // Komunikat błędu
   const [error, setError] = useState("");
   // Referencje do pól input kodu
@@ -93,28 +95,52 @@ function VerificationPage({ email, onVerified, onResend }) {
     }
   };
 
-  // Weryfikacja kodu
+  function sendVerifyRequest(token){
+    setIsVerifying(true);
+    authService
+        .verify(
+            {
+              "token": token,
+              "email": email
+            }
+        )
+        .then(() => {
+          setIsVerified(true)
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          setError("Podany kod jest nie prawidłowy!")
+        })
+    setIsVerifying(false);
+  }
+
+  function sendResetVerifyRequest(){
+    authService
+        .reset_verify(
+            {
+              "email": email
+            }
+        )
+        .then(() => {
+          setTimeLeft(15)
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          setError(err.response.data.message)
+        })
+  }
+
+
   const handleVerify = (e) => {
     e.preventDefault();
     const fullCode = code.join("");
 
-    // Walidacja długości kodu
     if (fullCode.length !== 6) {
       setError("Kod musi mieć 6 cyfr");
       return;
     }
 
-    setIsVerifying(true);
-    // Symulacja weryfikacji przez API
-    setTimeout(() => {
-      // W rzeczywistej aplikacji: weryfikacja z backendem
-      console.log("Verifying code:", fullCode, "for email:", email);
-      setIsVerifying(false);
-      // Wywołanie callbacka po udanej weryfikacji
-      if (onVerified) {
-        onVerified(fullCode);
-      }
-    }, 1500);
+    sendVerifyRequest(fullCode)
   };
 
   // Ponowne wysłanie kodu
@@ -123,16 +149,13 @@ function VerificationPage({ email, onVerified, onResend }) {
     if (!canResend || timeLeft > 0) return;
 
     // Resetuj stan
-    setTimeLeft(80);
+    setTimeLeft(63);
     setCanResend(false);
     setCode(["", "", "", "", "", ""]);
     setError("");
     inputRefs.current[0]?.focus(); // Focus na pierwsze pole
 
-    // Wywołanie callbacka ponownego wysłania
-    if (onResend) {
-      onResend();
-    }
+    sendResetVerifyRequest()
     console.log("Resending code to:", email);
   };
 
@@ -181,57 +204,58 @@ function VerificationPage({ email, onVerified, onResend }) {
           </div>
 
           {/* Sekcja timera i ponownego wysłania */}
-          <div className="timer-section">
-            {timeLeft > 0 ? (
-              <div className="timer-info">
-                <div className="timer-display">
-                  <span className="timer-icon">⏱️</span>
-                  <span className="timer-text">
-                    Kod wygasa za: <strong>{formatTime(timeLeft)}</strong>
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="timer-expired">
-                <p>Kod wygasł</p>
-              </div>
-            )}
+          {
+              !isVerified && (
+                  <div className="timer-section">
+                    {timeLeft > 0 && (
+                        <div className="timer-info">
+                          <div className="timer-display">
+                            <span className="timer-icon">⏱️</span>
+                            <span className="timer-text">Możesz wysłać nowy kod za: <strong>{formatTime(timeLeft)}</strong></span>
+                          </div>
+                        </div>
+                    )}
+                    {/* Przycisk ponownego wysłania */}
+                    <button
+                        type="button"
+                        className={`resend-btn ${canResend ? "active" : "disabled"}`}
+                        onClick={handleResend}
+                        disabled={!canResend}>
+                      {timeLeft > 0 ? "Wyślij kod ponownie" : "Wyślij kod ponownie"}
+                    </button>
+                  </div>
+              )
+          }
 
-            {/* Przycisk ponownego wysłania */}
-            <button
-              type="button"
-              className={`resend-btn ${canResend ? "active" : "disabled"}`}
-              onClick={handleResend}
-              disabled={!canResend}
-            >
-              {timeLeft > 0 ? "Wyślij kod ponownie" : "Wyślij kod ponownie"}
-            </button>
-          </div>
 
           {/* Przycisk weryfikacji */}
-          <button
-            className="verify-btn"
-            type="submit"
-            disabled={isVerifying || code.join("").length !== 6}
-          >
-            {isVerifying ? (
-              <>
-                <span className="spinner"></span>
-                Weryfikowanie...
-              </>
-            ) : (
-              "Zweryfikuj"
-            )}
-          </button>
+          {
+              !isVerified && (
+                  <button
+                      className="verify-btn"
+                      type="submit"
+                      disabled={isVerifying || code.join("").length !== 6}
+                  >
+                    {isVerifying ? (
+                        <>
+                          <span className="spinner"></span>
+                          Weryfikowanie...
+                        </>
+                    ) : (
+                        "Zweryfikuj"
+                    )}
+                  </button>
+              )
+          }
         </form>
 
-        {/* Stopka z pomocą */}
-        <div className="verification-footer">
-          <p className="help-text">Nie otrzymałeś kodu?</p>
-          <a href="#" className="help-link">
-            Skontaktuj się z obsługą
-          </a>
-        </div>
+        {
+            isVerified && (
+                <div className="alert alert-success text-center" role="alert">
+                  Adres e-mail został aktywowany!
+                </div>
+            )
+        }
       </div>
     </div>
   );
