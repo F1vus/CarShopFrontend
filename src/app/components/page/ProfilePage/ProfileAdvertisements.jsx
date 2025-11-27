@@ -152,7 +152,7 @@ function ProfileAdvertisements({ profileId }) {
                             key={fav.id || fav._id}
                             className="profile-ads__list-item"
                           >
-                            <CarCard carInfo={fav} variant="favorite" />
+                            <CarCard carInfo={fav} />
                           </li>
                         ))}
                       </ul>

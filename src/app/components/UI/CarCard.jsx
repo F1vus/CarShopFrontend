@@ -33,10 +33,10 @@ function CarCard({ carInfo, isProfileCard = false, handles = {} }) {
         <div className="car-card__info">
           <div className="car-card__info-block">
             <h3 className="car-card__info-title">
-              {isProfileCard ? (
+              {!isProfileCard ? (
                 <Link to={currentPath + `/${id}`}>{name}</Link>
               ) : (
-                { name }
+                name 
               )}
             </h3>
             <div className="car-card__info-description">{description}</div>
