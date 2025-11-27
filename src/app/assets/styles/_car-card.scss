@@ -2,9 +2,6 @@
 @use "../styles/mixins" as *;
 
 .car-card {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
   @include background($color: $white-bg);
   @include red-glow(2px, 5px, 0.3);
   color: $light-black;
@@ -15,6 +12,12 @@
   font-family: "Montserrat", sans-serif;
   &:not(:last-child) {
     margin-bottom: 20px;
+  }
+
+  &__container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
   }
 
   &__image {
@@ -68,6 +71,7 @@
     gap: 15px;
     font-size: 14px;
     font-weight: 400;
+    margin-bottom: 20px;
 
     padding: 0;
 
@@ -80,6 +84,10 @@
         height: 16px;
       }
     }
+  }
+
+  &__producer {
+    margin-bottom: 0;
   }
 
   &__price {
