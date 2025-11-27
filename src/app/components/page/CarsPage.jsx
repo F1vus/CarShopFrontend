@@ -15,7 +15,7 @@ function CarsPage() {
   const [error, setError] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5; // items per page
+  const pageSize = 4; // items per page
 
   const params = useParams();
   const location = useLocation();

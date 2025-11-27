@@ -114,28 +114,7 @@ function ProfileAdvertisements({ profileId }) {
                               className="profile-ads__list-item"
                               aria-label={`ogłoszenie-${id}`}
                             >
-                              <CarCard carInfo={car} />
-
-                              {/* Action buttons below each card */}
-                              <div className="profile-ads__card-actions">
-                                <button
-                                  type="button"
-                                  className="profile-ads__btn profile-ads__btn--edit"
-                                  onClick={() => handleEdit(car)}
-                                  aria-label={`Edytuj ogłoszenie ${id}`}
-                                >
-                                  Edytuj
-                                </button>
-
-                                <button
-                                  type="button"
-                                  className="profile-ads__btn profile-ads__btn--delete"
-                                  onClick={() => handleDelete(id)}
-                                  aria-label={`Usuń ogłoszenie ${id}`}
-                                >
-                                  Usuń
-                                </button>
-                              </div>
+                              <CarCard carInfo={car} isProfileCard={true} handles={{handleDelete, handleEdit}}/>
                             </li>
                           );
                         })}
@@ -173,7 +152,7 @@ function ProfileAdvertisements({ profileId }) {
                             key={fav.id || fav._id}
                             className="profile-ads__list-item"
                           >
-                            <CarCard carInfo={fav} variant="favorite" />
+                            <CarCard carInfo={fav} />
                           </li>
                         ))}
                       </ul>

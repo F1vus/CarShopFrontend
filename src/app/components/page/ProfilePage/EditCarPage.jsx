@@ -53,61 +53,60 @@ function EditCarPage() {
     <section className="edit-car">
       <h2 className="edit-car__title">Edytuj ogłoszenie samochodu</h2>
       <form className="edit-car__form" onSubmit={handleSubmit}>
-        <label>
-          Nazwa samochodu
+        <div className="edit-car__field">
+          <label className="edit-car__label">Nazwa samochodu</label>
           <input
+            className="edit-car__input"
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
           />
-        </label>
-
-        <label>
-          Cena (PLN)
+        </div>
+        <div className="edit-car__field">
+          <label className="edit-car__label">Cena (PLN)</label>
           <input
+            className="edit-car__input"
             type="number"
             name="price"
             value={formData.price}
             onChange={handleChange}
             required
           />
-        </label>
-
-        <label>
-          Rok produkcji
+        </div>
+        <div className="edit-car__field">
+          <label className="edit-car__label">Rok produkcji</label>
           <input
+            className="edit-car__input"
             type="number"
             name="year"
             value={formData.year}
             onChange={handleChange}
             required
           />
-        </label>
-
-        <label>
-          Przebieg (km)
+        </div>
+        <div className="edit-car__field">
+          <label className="edit-car__label">Przebieg (km)</label>
           <input
+            className="edit-car__input"
             type="number"
             name="mileage"
             value={formData.mileage}
             onChange={handleChange}
             required
           />
-        </label>
-
-        <label>
-          Opis
+        </div>
+        <div className="edit-car__field">
+          <label className="edit-car__label">Opis</label>
           <textarea
+            className="edit-car__textarea"
             name="description"
             value={formData.description}
             onChange={handleChange}
           />
-        </label>
-
+        </div>
         {error && <p className="edit-car__error">{error}</p>}
-
         <button type="submit" disabled={isSaving} className="edit-car__btn">
           {isSaving ? "Zapisywanie..." : "Zapisz zmiany"}
         </button>
