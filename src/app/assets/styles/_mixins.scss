@@ -1,4 +1,5 @@
 @use "./colors" as *;
+@use "sass:color";
 
 @mixin red-glow(
   $outline-size: 2px,
@@ -21,21 +22,28 @@
   $color: $orange,
   $hover-color: $orange-hover,
   $padding: 10px,
-  $border-radius: 5px
+  $border-radius: 5px,
+  $text-color: $white
 ) {
-  display: flex;
-  background-color: $color;
-  border: none;
-  border-radius: $border-radius;
-  color: $color;
-  padding: $padding;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  background-color: $color;
+  color: $text-color;
+  border: none;
+  border-radius: $border-radius;
+  padding: $padding;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {
     background-color: $hover-color;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
@@ -45,4 +53,35 @@
     rgba(255, 255, 255, 1) 0%,
     rgba(255, 255, 255, 0) 100%
   );
+}
+
+@mixin nav-link($bg-color: $light-grey, $text-color: $white, $font-size: 13px, $width: auto) {
+  color: $text-color;
+  font-size: $font-size;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 1.08px;
+  word-wrap: break-word;
+  padding: 12px 20px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $bg-color;
+  border: none;
+  width: $width;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: color.scale($bg-color, $lightness: 15%);
+  }
+
+  &.link-active {
+    background-color: $orange;
+
+    &:hover {
+      background-color: $orange-hover;
+    }
+  }
 }

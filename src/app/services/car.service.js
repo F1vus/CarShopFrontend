@@ -13,8 +13,9 @@ const carService = {
     try {
       const response = await axios.request(request);
       return response.data;
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
   },
   getById: async (id) => {
@@ -28,13 +29,13 @@ const carService = {
     try {
       const response = await axios.request(request);
       return response.data;
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
   },
-  deleteById: async (id) => {
-    const url = `${config.apiEndpoint}${carEndpoint}/${id}`;
-    console.log("DELETE:", url);
+  deleteById: async (carId) => {
+    const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
 
     try {
       await axios.delete(url, {
@@ -42,10 +43,21 @@ const carService = {
           "Content-Type": "application/json",
         },
       });
-    } catch (e) {
-      console.error("Error:", e.response?.status, e.response?.data);
+    } catch (err) {
+      console.error("Error:", err.response?.status, err.response?.data);
+      throw err;
     }
   },
+  updateCar: async (carId, body) => {
+    const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
+    try {
+      const response = await axios.patch(url, body);
+      return response.data;
+    } catch (err) {
+      console.error("Error:", err.response?.status, err.response?.data);
+      throw err;
+    }
+  }
 };
 
 export default carService;
