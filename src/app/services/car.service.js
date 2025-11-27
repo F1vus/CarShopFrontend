@@ -36,7 +36,8 @@ const carService = {
   },
   deleteById: async (id) => {
     const url = `${config.apiEndpoint}${carEndpoint}/${id}`;
-    console.log("DELETE:", url);
+    console.log("Url" + url);
+    
 
     try {
       await axios.delete(url, {

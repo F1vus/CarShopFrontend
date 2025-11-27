@@ -1,46 +1,73 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import "styles/_profilePage.scss";
+import {
+  NavLink,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import "styles/profilePage/_profile-page.scss";
 import profileService from "services/profile.service";
+import ProfileAdvertisements from "./ProfileAdvertisements";
+import ProfileMessages from "./ProfileMessages";
+import ProfileSettings from "./ProfileSettings";
 
 function ProfilePage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [cars, setCars] = useState([]);
+
   const [profileId, setProfileId] = useState(null);
   const [error, setError] = useState(false);
 
+  // --- auth / profile id fetch
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token === "undefined") {
-      navigate("/");
+    if (!token || token === "undefined") {
+      navigate("/", { replace: true });
       return;
     }
 
     profileService
       .getProfileId(token)
-      .then((data) => {
-        setProfileId(data.id);
-      })
+      .then((data) => setProfileId(data.id))
       .catch((err) => {
         console.error("Fetch error:", err);
         setError(true);
       });
-  }, [location.pathname, navigate]);
+  }, []);
 
+  // --- sanitize nested path (prevent /profile/messages/settings etc.)
   useEffect(() => {
-    if (!profileId) return;
+    // only operate for routes that start with /profile
+    if (!location.pathname.startsWith("/profile")) return;
 
-    profileService
-      .getProfileCars(profileId)
-      .then((data) => {
-        setCars(data || []);
-      })
-      .catch((err) => {
-        console.error("Fetch cars error:", err);
-        setError(true);
-      });
-  }, [profileId]);
+    // normalize and split
+    const parts = location.pathname.replace(/^\/+|\/+$/g, "").split("/"); // e.g. ["profile","messages","settings"]
+    // parts[0] === "profile"
+    const child = parts[1] || ""; // "" when at /profile
+
+    // allowed first-level children under /profile
+    const allowed = new Set(["", "advertisements", "messages", "settings"]);
+
+    if (parts.length > 2) {
+      // there are extra nested segments -> redirect to the canonical first-level route
+      if (allowed.has(child)) {
+        const target = child ? `/profile/${child}` : "/profile";
+        if (location.pathname !== target) navigate(target, { replace: true });
+      } else {
+        // unknown child, send to base /profile
+        navigate("/profile", { replace: true });
+      }
+    }
+    // }, [location.pathname, navigate]);
+  }, []);
+
+  const handleActivePage = (isActive) => {
+    return (
+      "profile__navigation-link" + (isActive ? " link-active" : "")
+    );
+  };
 
   if (error) return <Navigate to="/*" replace />;
 
@@ -50,24 +77,45 @@ function ProfilePage() {
         <h2 className="profile__title">Twoje ogłoszenia</h2>
         <nav className="profile__navigation">
           <li className="profile__navigation-item">
-            <Link className="profile__navigation-link navigation-link">
+            <NavLink
+              to="/profile/advertisements"
+              className={({ isActive }) => handleActivePage(isActive)}
+              end
+            >
               Ogłoszenia
-            </Link>
+            </NavLink>
           </li>
           <li className="profile__navigation-item">
-            <Link className="profile__navigation-link navigation-link">
+            <NavLink
+              to="/profile/messages"
+              className={({ isActive }) => handleActivePage(isActive)}
+            >
               Wiadomości
-            </Link>
+            </NavLink>
           </li>
           <li className="profile__navigation-item">
-            <Link className="profile__navigation-link navigation-link">
+            <NavLink
+              to="/profile/settings"
+              className={({ isActive }) => handleActivePage(isActive)}
+            >
               Ustawienia
-            </Link>
+            </NavLink>
           </li>
         </nav>
       </header>
-      <div className="profile__content">
-        
+
+      <div className="profile__content wide-container">
+        <div className="container">
+          <Routes>
+            <Route index element={<Navigate to="advertisements" replace />}/>
+            <Route
+              path="advertisements/*"
+              element={<ProfileAdvertisements profileId={profileId} />}
+            />
+            <Route path="messages" element={<ProfileMessages />} />
+            <Route path="settings" element={<ProfileSettings />} />
+          </Routes>
+        </div>
       </div>
     </section>
   );

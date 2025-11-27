@@ -1,0 +1,44 @@
+@use "../colors" as *;
+@use "../mixins" as *;
+
+.profile {
+  color: $white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  &__title {
+    font-size: 35px;
+    margin-bottom: 40px;
+    font-weight: 400;
+    word-wrap: break-word;
+    font-family: "Anta", sans-serif;
+  }
+
+  &__navigation {
+    display: flex;
+    gap: 30px;
+
+    &-item {
+      list-style: none;
+      height: 100%;
+    }
+  }
+
+  &__navigation-link {
+    @include nav-link();
+  }
+
+  &__header {
+    margin-bottom: 50px;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    background-color: $grey-bg;
+    flex: 1;
+    padding-bottom: 50px;
+    display: flex;
+    align-items: flex-start;
+  }
+}
