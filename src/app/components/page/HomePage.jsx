@@ -19,7 +19,7 @@ function HomePage() {
             Z nami oszczędzasz czas, pieniądze i stres.
           </p>
           <Link to="/cars" className="home-page__cta-button">
-            Wyceń swoje auto
+            Pokaż Wszystkie Ogłoszenia
           </Link>
         </div>
       </header>

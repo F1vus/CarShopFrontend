@@ -19,6 +19,11 @@ export default function NavBar() {
             </Link>
           </div>
           <div className="navbar__item">
+            <Link to="/cars" className="navbar__link">
+              Samochody
+            </Link>
+          </div>
+          <div className="navbar__item">
             <Link to="/contacts" className="navbar__link">
               <span>Kontakty</span>
             </Link>
