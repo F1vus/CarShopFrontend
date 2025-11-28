@@ -108,7 +108,7 @@ function VerificationPage({ email }) {
         )
         .then(() => {
           setIsVerified(true)
-          navigate("/profile")
+          navigate("/auth")
         })
         .catch((err) => {
           console.error("Fetch error:", err);

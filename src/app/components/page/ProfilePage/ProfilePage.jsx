@@ -13,6 +13,7 @@ import ProfileAdvertisements from "./ProfileAdvertisements";
 import ProfileMessages from "./ProfileMessages";
 import ProfileSettings from "./ProfileSettings";
 import EditCarPage from "./EditCarPage";
+import { replace } from "lodash";
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -34,7 +35,10 @@ function ProfilePage() {
       .then((data) => setProfileId(data.id))
       .catch((err) => {
         console.error("Fetch error:", err);
-        setError(true);
+        // setError(true);
+        if (err.status == 401) {
+          navigate("/auth", { replace: true });
+        }
       });
   }, []);
 
@@ -65,9 +69,7 @@ function ProfilePage() {
   }, []);
 
   const handleActivePage = (isActive) => {
-    return (
-      "profile__navigation-link" + (isActive ? " link-active" : "")
-    );
+    return "profile__navigation-link" + (isActive ? " link-active" : "");
   };
 
   if (error) return <Navigate to="/*" replace />;
@@ -108,12 +110,15 @@ function ProfilePage() {
       <div className="profile__content wide-container">
         <div className="container">
           <Routes>
-            <Route index element={<Navigate to="advertisements" replace />}/>
+            <Route index element={<Navigate to="advertisements" replace />} />
             <Route
               path="advertisements/*"
               element={<ProfileAdvertisements profileId={profileId} />}
             />
-            <Route path="advertisements/:carId/edit" element={<EditCarPage />} />
+            <Route
+              path="advertisements/:carId/edit"
+              element={<EditCarPage />}
+            />
             <Route path="messages" element={<ProfileMessages />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Routes>

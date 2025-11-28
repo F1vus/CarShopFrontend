@@ -77,7 +77,6 @@ function AuthorizationPage() {
       if(tab === "login"){
           sendLoginRequest(e)
       }
-      console.log("submit", { tab, email, username: tab === "register" ? username : undefined, });
   }
 
   if (showVerification) {
