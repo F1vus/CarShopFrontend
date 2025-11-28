@@ -13,7 +13,6 @@ import ProfileAdvertisements from "./ProfileAdvertisements";
 import ProfileMessages from "./ProfileMessages";
 import ProfileSettings from "./ProfileSettings";
 import EditCarPage from "./EditCarPage";
-import { replace } from "lodash";
 
 function ProfilePage() {
   const navigate = useNavigate();

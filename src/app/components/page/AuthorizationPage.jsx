@@ -1,90 +1,95 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import "styles/_authorization.scss";
 import authService from "services/auth.service.js";
-import VerificationPage from "./VerificationPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function AuthorizationPage() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState("register");
+  const { authFormType } = useParams();
+  const [tab, setTab] = useState(authFormType === "register" ? authFormType : "login");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
   const [isLogged, setIsLogged] = useState(true);
+
+  const toggleFormTab = () => {
+    const newFormTab = authFormType === "register" ? "login" : "register";
+    setTab(newFormTab);
+    navigate(`/auth/${newFormTab}`);
+  };
 
   const pwdChecks = useMemo(
     () => [
       { key: "length", label: "9 lub więcej znaków", ok: password.length >= 9 },
-      { key: "upper", label: "Wielka litera", ok: /[A-ZĄĆĘŁŃÓŚŻŹ]/.test(password) },
-      { key: "lower", label: "Mała litera", ok: /[a-ząćęłńóśżź]/.test(password) },
-      { key: "digit", label: "Co najmniej jedna cyfra", ok: /\d/.test(password) },
+      {
+        key: "upper",
+        label: "Wielka litera",
+        ok: /[A-ZĄĆĘŁŃÓŚŻŹ]/.test(password),
+      },
+      {
+        key: "lower",
+        label: "Mała litera",
+        ok: /[a-ząćęłńóśżź]/.test(password),
+      },
+      {
+        key: "digit",
+        label: "Co najmniej jedna cyfra",
+        ok: /\d/.test(password),
+      },
     ],
     [password]
   );
 
   const allOk = pwdChecks.every((c) => c.ok);
 
-  function sendSignUpRequest(event){
+  function sendSignUpRequest(event) {
     event.preventDefault();
 
     authService
-        .register(
-            {
-              "username": username,
-              "email": email,
-              "password": password
-            }
-        )
-        .then(() => {
-            setShowVerification(true);
-        })
-        .catch((err) => {
-          console.error("Fetch error:", err);
-          setIsCreated(false);
-        })
+      .register({
+        username: username,
+        email: email,
+        password: password,
+      })
+      .then(() => {
+        navigate("/auth/verify", { state: { email } });
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setIsCreated(false);
+      });
   }
 
-  function sendLoginRequest(event){
+  function sendLoginRequest(event) {
     event.preventDefault();
     authService
-        .login(
-            {
-              "email": email,
-              "password": password
-            }
-        )
-        .then((data) => {
-          localStorage.setItem("token", data)
-          navigate("/profile");
-        })
-        .catch((err) => {
-          console.error("Fetch error:", err);
-          setIsLogged(false);
-        })
+      .login({
+        email: email,
+        password: password,
+      })
+      .then((data) => {
+        localStorage.setItem("token", data);
+        navigate("/profile");
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setIsLogged(false);
+      });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-      if(tab === "register" && !allOk){
-        return
-      }
-      if(tab === "register" && allOk){
-          sendSignUpRequest(e)
-      }
-      if(tab === "login"){
-          sendLoginRequest(e)
-      }
-  }
-
-  if (showVerification) {
-    return (
-      <VerificationPage 
-        email={email}
-      />
-    );
+    if (tab === "register" && !allOk) {
+      return;
+    }
+    if (tab === "register" && allOk) {
+      sendSignUpRequest(e);
+    }
+    if (tab === "login") {
+      sendLoginRequest(e);
+    }
   }
 
   return (
@@ -94,14 +99,14 @@ function AuthorizationPage() {
           <button
             type="button"
             className={`tab ${tab === "login" ? "active" : ""}`}
-            onClick={() => setTab("login")}
+            onClick={toggleFormTab}
           >
             Zaloguj się
           </button>
           <button
             type="button"
             className={`tab ${tab === "register" ? "active" : ""}`}
-            onClick={() => setTab("register")}
+            onClick={toggleFormTab}
           >
             Załóż konto
           </button>
@@ -154,14 +159,14 @@ function AuthorizationPage() {
             <div className="pw-requirements">
               <div className="pw-heading">Twoje hasło musi mieć</div>
               <ul>
-                  {pwdChecks.map((c) => (
-                    <li key={c.key} className={c.ok ? "ok" : ""}>
-                      <span className={`check ${c.ok ? "dot" : ""}`} aria-hidden>
-                        {c.ok ? "" : "—"}
-                      </span>
-                      <span className="text">{c.label}</span>
-                    </li>
-                  ))}
+                {pwdChecks.map((c) => (
+                  <li key={c.key} className={c.ok ? "ok" : ""}>
+                    <span className={`check ${c.ok ? "dot" : ""}`} aria-hidden>
+                      {c.ok ? "" : "—"}
+                    </span>
+                    <span className="text">{c.label}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           )}
@@ -169,20 +174,16 @@ function AuthorizationPage() {
           <button className="submit-btn" type="submit">
             {tab === "login" ? "Zaloguj" : "Utwórz konto indywidualne"}
           </button>
-          {
-            isCreated && (
-                  <div className="alert alert-success text-center" role="alert">
-                    Account created!
-                  </div>
-              )
-          }
-          {
-              !isLogged && (
-                  <div className="alert alert-danger text-center" role="alert">
-                    An error occurred while attempting to log in.
-                  </div>
-              )
-          }
+          {isCreated && (
+            <div className="alert alert-success text-center" role="alert">
+              Account created!
+            </div>
+          )}
+          {!isLogged && (
+            <div className="alert alert-danger text-center" role="alert">
+              An error occurred while attempting to log in.
+            </div>
+          )}
         </form>
       </div>
     </div>

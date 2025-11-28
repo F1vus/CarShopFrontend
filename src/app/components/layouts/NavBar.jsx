@@ -40,7 +40,7 @@ export default function NavBar() {
             </Link>
           </div>
           <div className="navbar__icons-item">
-            <Link to="/auth" className="navbar__link">
+            <Link to="/auth/register" className="navbar__link">
               <i className="fa-regular fa-user"></i>
               <span>Zrejestruj się</span>
             </Link>

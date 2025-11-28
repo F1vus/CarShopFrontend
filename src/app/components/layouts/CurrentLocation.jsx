@@ -4,7 +4,7 @@ import "styles/_current-location.scss";
 
 function CurrentLocation() {
   const location = useLocation();
-  const { carId } = useParams();
+  const { carId, authFormType } = useParams();
   const [breadcrumbs, setBreadcrumbs] = useState([]);
 
   useEffect(() => {
@@ -36,7 +36,13 @@ function CurrentLocation() {
     }
 
     if (pathnames[0] === "auth") {
-      crumbs.push({ name: "Logowanie / Rejestracja", path: "/auth" });
+      if (authFormType === "register") {
+        crumbs.push({ name: "Rejestracja", path: `/auth/${authFormType}` });
+      } 
+      
+      if (authFormType === "login") {
+          crumbs.push({ name: "Logowanie", path: `/auth/${authFormType}` });
+      }
     }
 
     if (pathnames[0] === "profile") {
@@ -44,7 +50,7 @@ function CurrentLocation() {
     }
 
     setBreadcrumbs(crumbs);
-  }, [location, carId]);
+  }, [location, carId, authFormType]);
 
   if (location.pathname === "/") return null;
 
