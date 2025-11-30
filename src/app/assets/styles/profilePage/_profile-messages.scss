@@ -1,0 +1,76 @@
+@use "../colors.scss" as *;
+
+.profile-messages {
+
+
+  &__content {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+
+  }
+
+
+  &__news {
+    font-family: "Anta", sans-serif;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
+
+  &__chose {
+    background: $white-bg;
+    color: $bg-black;
+    width: 550px;
+    height: 700px;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+      align-items: center;
+    flex-direction: column;
+    //height: 50rem;
+  }
+
+  &__subtitle {
+    font-family: Anta, sans-serif;
+    text-align: center;
+    max-width: 80%;
+    //margin-bottom: 20px;
+
+  }
+
+  &__text {
+    text-align: center;
+    max-width: 65%;
+    color: $light-grey-opacity;
+  }
+
+&__link {
+  color: $orange;
+  cursor: pointer;
+}
+
+
+
+  &__article {
+    display: flex;
+    justify-content: center;
+    margin-left: 127px;
+
+
+
+  }
+
+  &__subtitle {
+    max-width: 70%;
+  }
+
+
+
+
+
+}
+
+
+
