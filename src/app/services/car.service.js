@@ -57,12 +57,12 @@ const carService = {
       throw err;
     }
   },
-  findSuggestion: async (query) => {
+  findSuggestion: async (queryParam) => {
     const url = `${config.apiEndpoint}${carEndpoint}/suggestions`;
 
     try {
       const response = await axios.get(url, {
-        params: { q: query },
+        params: { query: queryParam },
       });
       return response.data;
     } catch (err) {
