@@ -5,30 +5,34 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="footer-inner container">
-        <nav className="footer-nav">
-          <div className="footer-column">
-            <h4>Znajdź nas</h4>
-            <a href="#">
+    <footer className="footer">
+      <div className="footer__inner container">
+        <nav className="footer__nav">
+          <div className="footer__column footer__column--social">
+            <h4 className="footer__title">Znajdź nas</h4>
+
+            <a href="#" className="footer__link">
               <i className="fa-brands fa-pinterest"></i> Pinterest
             </a>
-            <a href="#">
+
+            <a href="#" className="footer__link">
               <i className="fa-brands fa-instagram"></i> Instagram
             </a>
-            <a href="#">
+
+            <a href="#" className="footer__link">
               <i className="fa-brands fa-facebook"></i> Facebook
             </a>
           </div>
 
-          <span className="footer-separator"></span>
+          <span className="footer__separator"></span>
 
-          <div className="footer-column">
-            <div className="footer-column__logo">
-              <Link to="/home" className="footer__link">
+          <div className="footer__column footer__column--menu">
+            <div className="footer__logo">
+              <Link to="/home">
                 <img src={siteLogo} alt="CarShop" />
               </Link>
             </div>
+
             <Link to="/" className="footer__link">
               Pomoc
             </Link>
@@ -39,22 +43,27 @@ export default function Footer() {
               Reklama
             </Link>
             <Link to="/" className="footer__link">
-              Polityka Prywatnosci
+              Polityka Prywatności
             </Link>
           </div>
 
-          <span className="footer-separator"></span>
+          <span className="footer__separator"></span>
 
-          <div className="footer-column">
-            <h4>Dane kontaktowe</h4>
-            <p>Telefon: +48 000 000 000, 48 111 111 111</p>
-            <p>Email: carshop@carshop.pl</p>
-            <p>Od pn do nd w godz. 08:00–20:20</p>
-            <p>Chat: od pn do pt w godz. 09:00–24:00</p>
+          <div className="footer__column footer__column--contact">
+            <h4 className="footer__title">Dane kontaktowe</h4>
+            <p className="footer__text">
+              Telefon: +48 000 000 000, 48 111 111 111
+            </p>
+            <p className="footer__text">Email: carshop@carshop.pl</p>
+            <p className="footer__text">Od pn do nd w godz. 08:00–20:20</p>
+            <p className="footer__text">
+              Chat: od pn do pt w godz. 09:00–24:00
+            </p>
           </div>
         </nav>
       </div>
-      <p className="footer-text">
+
+      <p className="footer__copyright">
         © {new Date().getFullYear()} CarShop — Wszystkie prawa zastrzeżone.
       </p>
     </footer>

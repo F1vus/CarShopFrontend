@@ -30,13 +30,13 @@ function ProfilePage() {
     }
 
     profileService
-      .getProfileData(token)
-      .then((data) => setProfileId(data.id))
+      .getProfileId(token)
+      .then((profileId) => setProfileId(profileId))
       .catch((err) => {
         console.error("Fetch error:", err);
-        // setError(true);
+        setError(true);
         if (err.status == 401) {
-          navigate("/auth", { replace: true });
+          navigate("/auth/register", { replace: true });
         }
       });
   }, []);

@@ -36,7 +36,6 @@ const carService = {
   },
   deleteById: async (carId) => {
     const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
-
     try {
       await axios.delete(url, {
         headers: {
@@ -57,7 +56,20 @@ const carService = {
       console.error("Error:", err.response?.status, err.response?.data);
       throw err;
     }
-  }
+  },
+  findSuggestion: async (queryParam) => {
+    const url = `${config.apiEndpoint}${carEndpoint}/suggestions`;
+
+    try {
+      const response = await axios.get(url, {
+        params: { query: queryParam },
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error:", err.response?.status, err.response?.data);
+      throw err;
+    }
+  },
 };
 
 export default carService;
