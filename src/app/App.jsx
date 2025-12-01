@@ -23,8 +23,8 @@ function App() {
           <Route path="/sellcar" element={<SellCarPage />} />
           <Route path="/basket" element={<ShoppingBasketPage />} />
           <Route path="/profile/*" element={<ProfilePage />} />
+          <Route path="/*" element={<NotFoundPage />} />
         </Route>
-        <Route path="/*" element={<NotFoundPage />} />
       </Routes>
     </>
   );
