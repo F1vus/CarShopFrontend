@@ -76,7 +76,7 @@ function ProfilePage() {
   return (
     <section className="profile">
       <header className="profile__header">
-        <h2 className="profile__title">Twoje ogłoszenia</h2>
+        <h2 className="profile__title">Twój profil</h2>
         <nav className="profile__navigation">
           <li className="profile__navigation-item">
             <NavLink
