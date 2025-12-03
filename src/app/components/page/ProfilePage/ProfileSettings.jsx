@@ -104,136 +104,142 @@ function ProfileSettings() {
   };
 
   return (
-    <div className="profile-settings">
+    <article className="profile-settings">
       <h2 className="profile-settings__title">Zmień swoje dane kontaktowe</h2>
 
-      <form className="profile-settings__form" onSubmit={handleSave}>
-        {/* Profile Image Section */}
-        <div className="profile-settings__image-section">
-          <div className="profile-settings__image-container">
-            {formData.profileImagePreview ? (
-              <img
-                src={formData.profileImagePreview}
-                alt="Profile"
-                className="profile-settings__image"
-              />
-            ) : (
-              <div className="profile-settings__image-placeholder">
-                <svg
-                  width="64"
-                  height="64"
-                  viewBox="0 0 64 64"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="32" cy="20" r="12" fill="currentColor" />
-                  <path
-                    d="M8 56C8 45.507 18.059 37 32 37C45.941 37 56 45.507 56 56"
-                    fill="currentColor"
-                  />
-                </svg>
-              </div>
+      <div className="profile-settings__content">
+        <form className="profile-settings__form" onSubmit={handleSave}>
+          {/* Profile Image Section */}
+          <div className="profile-settings__image-section">
+            <div className="profile-settings__image-container">
+              {formData.profileImagePreview ? (
+                <img
+                  src={formData.profileImagePreview}
+                  alt="Profile"
+                  className="profile-settings__image"
+                />
+              ) : (
+                <div className="profile-settings__image-placeholder">
+                  <div class="profile-settings__icon-wrapper">
+                    <div class="profile-settings__icon">
+                      <svg
+                        width="64"
+                        height="64"
+                        viewBox="0 0 64 64"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle cx="32" cy="20" r="12" fill="currentColor" />
+                        <path
+                          d="M8 56C8 45.507 18.059 37 32 37C45.941 37 56 45.507 56 56"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {isEditing && (
+              <label className="profile-settings__image-upload">
+                Zmień zdjęcie
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="profile-settings__file-input"
+                />
+              </label>
             )}
           </div>
 
-          {isEditing && (
-            <label className="profile-settings__image-upload">
-              Zmień zdjęcie
+          {/* Form Fields */}
+          <div className="profile-settings__fields">
+            <div className="profile-settings__field">
+              <label className="profile-settings__label">Imię</label>
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="profile-settings__file-input"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="profile-settings__input"
+                placeholder="Wpisz imię"
               />
-            </label>
-          )}
-        </div>
+            </div>
 
-        {/* Form Fields */}
-        <div className="profile-settings__fields">
-          <div className="profile-settings__field">
-            <label className="profile-settings__label">Imię i nazwisko</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="profile-settings__input"
-              placeholder="Wpisz imię i nazwisko"
-            />
+            <div className="profile-settings__field">
+              <label className="profile-settings__label">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="profile-settings__input"
+                placeholder="Wpisz email"
+              />
+            </div>
+
+            <div className="profile-settings__field">
+              <label className="profile-settings__label">Numer telefonu</label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="profile-settings__input"
+                placeholder="Wpisz numer telefonu"
+              />
+            </div>
           </div>
 
-          <div className="profile-settings__field">
-            <label className="profile-settings__label">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="profile-settings__input"
-              placeholder="Wpisz email"
-            />
-          </div>
-
-          <div className="profile-settings__field">
-            <label className="profile-settings__label">Numer telefonu</label>
-            <input
-              type="tel"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className="profile-settings__input"
-              placeholder="Wpisz numer telefonu"
-            />
-          </div>
-        </div>
-
-        {/* Message */}
-        {message && (
-          <div
-            className={`profile-settings__message ${
-              message.includes("pomyślnie") ? "success" : "error"
-            }`}
-          >
-            {message}
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="profile-settings__actions">
-          {!isEditing ? (
-            <button
-              type="button"
-              className="profile-settings__btn profile-settings__btn--primary"
-              onClick={() => setIsEditing(true)}
+          {/* Message */}
+          {message && (
+            <div
+              className={`profile-settings__message ${
+                message.includes("pomyślnie") ? "success" : "error"
+              }`}
             >
-              Edytuj profil
-            </button>
-          ) : (
-            <>
-              <button
-                type="submit"
-                className="profile-settings__btn profile-settings__btn--primary"
-                disabled={isSaving}
-              >
-                {isSaving ? "Zapisywanie..." : "Zapisz zmiany"}
-              </button>
+              {message}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="profile-settings__actions">
+            {!isEditing ? (
               <button
                 type="button"
-                className="profile-settings__btn profile-settings__btn--secondary"
-                onClick={handleCancel}
-                disabled={isSaving}
+                className="profile-settings__btn profile-settings__btn--primary"
+                onClick={() => setIsEditing(true)}
               >
-                Anuluj
+                Edytuj profil
               </button>
-            </>
-          )}
-        </div>
-      </form>
-    </div>
+            ) : (
+              <>
+                <button
+                  type="submit"
+                  className="profile-settings__btn profile-settings__btn--primary"
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Zapisywanie..." : "Zapisz zmiany"}
+                </button>
+                <button
+                  type="button"
+                  className="profile-settings__btn profile-settings__btn--secondary"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                >
+                  Anuluj
+                </button>
+              </>
+            )}
+          </div>
+        </form>
+      </div>
+    </article>
   );
 }
 
