@@ -6,6 +6,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  Outlet,
 } from "react-router-dom";
 import "styles/profilePage/_profile-page.scss";
 import profileService from "services/profile.service";
@@ -19,7 +20,10 @@ function ProfilePage() {
   const location = useLocation();
 
   const [profileId, setProfileId] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
 
   // --- auth / profile id fetch
   useEffect(() => {
@@ -29,16 +33,21 @@ function ProfilePage() {
       return;
     }
 
+    setLoading(true);
     profileService
-      .getProfileId(token)
-      .then((profileId) => setProfileId(profileId))
+      .getProfileData(token)
+      .then((profileData) => {
+        setProfile(profileData);
+        setProfileId(profileData?.id);
+      })
       .catch((err) => {
         console.error("Fetch error:", err);
         setError(true);
         if (err.status == 401) {
           navigate("/auth/register", { replace: true });
         }
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // --- sanitize nested path (prevent /profile/messages/settings etc.)

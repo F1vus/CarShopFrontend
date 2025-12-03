@@ -57,6 +57,25 @@ const profileService = {
       throw err;
     }
   },
+  updateProfile: async (qvtToken, formData) => {
+    const request = {
+      method: "PUT",
+      url: config.apiEndpoint + authEndpoint,
+      headers: {
+        Authorization: `Bearer ${qvtToken}`,
+      },
+      data: formData,
+      allowAbsoluteUrls: true,
+    };
+
+    try {
+      const response = await axios.request(request);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
 };
 
 export default profileService;
