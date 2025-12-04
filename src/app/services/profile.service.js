@@ -57,14 +57,15 @@ const profileService = {
       throw err;
     }
   },
-  updateProfile: async (qvtToken, formData) => {
+  updateProfile: async (qvtToken, profileData) => {
     const request = {
-      method: "PUT",
+      method: "PATCH",
       url: config.apiEndpoint + authEndpoint,
       headers: {
         Authorization: `Bearer ${qvtToken}`,
+        "Content-Type": "application/json",
       },
-      data: formData,
+      data: profileData,
       allowAbsoluteUrls: true,
     };
 

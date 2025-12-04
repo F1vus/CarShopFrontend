@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Link, useNavigate } from "react-router-dom";
+import { Navigate, Link, useNavigate, useOutletContext } from "react-router-dom";
 import profileService from "services/profile.service.js";
 import "styles/profilePage/_profile-advertisements.scss";
 import partners from "assets/img/auth-page/partners.svg";
@@ -7,12 +7,13 @@ import Loader from "../../UI/Loader";
 import CarCard from "../../UI/CarCard";
 import carService from "../../../services/car.service";
 
-function ProfileAdvertisements({ profileId }) {
+function ProfileAdvertisements() {
   const [cars, setCars] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [tab, setTab] = useState("active");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const {profileId} = useOutletContext() || {};
 
   const navigate = useNavigate();
 

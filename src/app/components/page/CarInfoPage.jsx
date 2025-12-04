@@ -117,21 +117,21 @@ function CarInfoPage({ carId }) {
             </div>
             <div className="car-info__aside-salesman-info">
               {/* TODO */}
-              <h4>{carInfo.userInfo?.name || "Sprzedawca"}</h4>
+              <h4>{carInfo.owner?.name || "Sprzedawca"}</h4>
               <p className="user-info">
                 <i className="bi bi-shield-fill-check"></i>
-                <span>{carInfo.userInfo?.type || "Przywatny sprzedawca"}</span>
+                <span>{carInfo.owner?.type || "Przywatny sprzedawca"}</span>
               </p>
               <p>
                 <i className="bi bi-person-fill"></i>
-                <span>{carInfo.userInfo?.type || "Sprzedający od 2020"}</span>
+                <span>{carInfo.owner?.type || "Sprzedający od 2020"}</span>
               </p>
               <div className="buttons-block">
                 <button className="write-to-button">Napisz</button>
 
                 {showPhone ? (
                   <p className="phone-number">
-                    {carInfo.userInfo?.phoneNumber || "Brak numeru"}
+                    {carInfo.owner?.phoneNumber || "Brak numeru"}
                   </p>
                 ) : (
                   <button

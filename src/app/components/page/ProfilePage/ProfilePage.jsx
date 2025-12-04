@@ -38,6 +38,8 @@ function ProfilePage() {
       .getProfileData(token)
       .then((profileData) => {
         setProfile(profileData);
+        console.log(profileData);
+        
         setProfileId(profileData?.id);
       })
       .catch((err) => {
@@ -117,19 +119,7 @@ function ProfilePage() {
 
       <div className="profile__content wide-container">
         <div className="container">
-          <Routes>
-            <Route index element={<Navigate to="advertisements" replace />} />
-            <Route
-              path="advertisements/*"
-              element={<ProfileAdvertisements profileId={profileId} />}
-            />
-            <Route
-              path="advertisements/:carId/edit"
-              element={<EditCarPage />}
-            />
-            <Route path="messages" element={<ProfileMessages />} />
-            <Route path="settings" element={<ProfileSettings />} />
-          </Routes>
+          <Outlet context={{profile, setProfile, profileId}} />
         </div>
       </div>
     </section>
