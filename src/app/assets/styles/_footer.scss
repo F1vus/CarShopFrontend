@@ -1,63 +1,113 @@
-.site-footer {
-  background: #000000;
+@use "./colors" as *;
+
+.footer {
+  background: #000;
   color: #f3f4f6;
   padding: 2rem 0;
   width: 100%;
-  bottom: 0;
-  left: 0;
 
-  .footer-inner {
+  &__inner {
     display: flex;
-    justify-content: space-around;
-    gap: 3rem;
-    margin-bottom: 1.5rem;
+    justify-content: center;
   }
 
-  .footer-nav {
+  &__nav {
     width: 100%;
     display: flex;
-    gap: 3rem;
     justify-content: space-between;
+    gap: 3rem;
+  }
 
-    .footer-column {
-      h4 {
-        color: #ffffff;
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-      }
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
 
-      a {
-        display: block;
-        color: #9ca3af;
-        text-decoration: none;
-        margin: 0.2rem 0;
-        transition: color 0.2s ease;
-
-        &:hover {
-          color: #ffffff;
-        }
-
-        i {
-          margin-right: 8px;
-        }
-      }
-
-      p {
-        color: #9ca3af;
-        margin: 0.2rem 0;
-      }
+    &--menu {
+      align-items: flex-start;
     }
 
-    .footer-separator {
-      width: 4px;
-      background: #FF3B00; 
-      height: 100%;
+    &--social {
+      width: 100%;
+    }
+
+    &--contact {
+      width: 100%;
     }
   }
 
-  .footer-text {
+  &__title {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  &__link {
+    display: block;
+    color: #9ca3af;
+    text-decoration: none;
+    margin: 0.2rem 0;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #fff;
+    }
+
+    i {
+      margin-right: 8px;
+    }
+  }
+
+  &__text {
+    color: #9ca3af;
+    margin: 0.2rem 0;
+  }
+
+  &__logo {
+    margin-bottom: 0.5rem;
+
+    img {
+      width: 120px;
+      height: auto;
+    }
+  }
+
+  &__separator {
+    width: 4px;
+    background: #ff3b00;
+  }
+
+  /* Stopka na dole */
+  &__copyright {
     text-align: center;
     font-size: 0.8rem;
     color: #9ca3af;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .footer__nav {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer__nav {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer__separator {
+    display: none;
+  }
+
+  .footer__column {
+    align-items: center;
+  }
+
+  .footer__logo img {
+    margin: 0 auto;
   }
 }

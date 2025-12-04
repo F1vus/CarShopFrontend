@@ -9,10 +9,10 @@
   padding: 40px;
   background: radial-gradient(
       circle at 20% 50%,
-      rgba($accent, 0.06),
+      rgba($orange, 0.06),
       transparent 60%
     ),
-    radial-gradient(circle at 80% 80%, rgba($accent, 0.04), transparent 60%);
+    radial-gradient(circle at 80% 80%, rgba($orange, 0.04), transparent 60%);
   color: $white;
 
   &__title {
@@ -20,7 +20,7 @@
     font-weight: 700;
     margin-bottom: 28px;
     text-align: center;
-    text-shadow: 0 0 22px rgba($accent-bright, 0.5);
+    text-shadow: 0 0 22px rgba(color.adjust($orange, $lightness: 15%), 0.5);
     letter-spacing: 1px;
     font-family: "Anta", sans-serif;
     font-weight: 400;
@@ -36,8 +36,8 @@
       rgba($darker-grey, 0.97),
       rgba(color.adjust($darker-grey, $lightness: -10%), 0.98)
     );
-    border: 1px solid rgba($accent, 0.18);
-    box-shadow: 0 0 40px rgba($accent, 0.1), 0 0 80px rgba($accent, 0.16);
+    border: 1px solid rgba($orange, 0.18);
+    box-shadow: 0 0 40px rgba($orange, 0.1), 0 0 80px rgba($orange, 0.16);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -64,7 +64,7 @@
   &__input,
   &__textarea {
     background: rgba($light-black, 0.25);
-    border: 1.5px solid rgba($accent, 0.16);
+    border: 1.5px solid rgba($orange, 0.16);
     padding: 14px 16px;
     border-radius: 10px;
     color: $white-smoke;
@@ -79,16 +79,16 @@
     }
 
     &:hover {
-      border-color: rgba($accent, 0.28);
-      box-shadow: 0 0 18px rgba($accent, 0.14);
+      border-color: rgba($orange, 0.28);
+      box-shadow: 0 0 18px rgba($orange, 0.14);
     }
 
     &:focus {
       outline: none;
-      border-color: $accent;
-      background: rgba($accent, 0.12);
+      border-color: $orange;
+      background: rgba($orange, 0.12);
       transform: translateY(-2px);
-      box-shadow: 0 0 14px rgba($accent, 0.35);
+      box-shadow: 0 0 14px rgba($orange, 0.35);
     }
   }
 
@@ -123,8 +123,12 @@
     margin-top: 10px;
     padding: 14px 16px;
     width: 100%;
-    background: linear-gradient(135deg, $accent 0%, $accent-bright 100%);
-    border: 1.5px solid rgba($accent, 0.42);
+    background: linear-gradient(
+      135deg,
+      $orange 0%,
+      color.adjust($orange, $lightness: 15%) 100%
+    );
+    border: 1.5px solid rgba($orange, 0.42);
     border-radius: 12px;
     color: $white;
     font-weight: 700;
@@ -154,8 +158,8 @@
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 0 36px rgba($accent, 0.45);
-      background: linear-gradient(135deg, $accent-dark 0%, $accent 100%);
+      box-shadow: 0 0 36px rgba($orange, 0.45);
+      background: linear-gradient(135deg, $orange-hover 0%, $orange 100%);
 
       &::before {
         left: 100%;
@@ -167,7 +171,7 @@
     }
 
     &:disabled {
-      background: rgba($accent, 0.4);
+      background: rgba($orange, 0.4);
       cursor: not-allowed;
       box-shadow: none;
     }

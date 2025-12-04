@@ -25,46 +25,46 @@
 
 @keyframes fieldGlow {
   0% {
-    box-shadow: 0 0 0 rgba($accent, 0), 0 8px 32px rgba($accent, 0.08),
-      0 0 60px rgba($accent, 0);
+    box-shadow: 0 0 0 rgba($orange, 0), 0 8px 32px rgba($orange, 0.08),
+      0 0 60px rgba($orange, 0);
   }
   25% {
-    box-shadow: 0 0 12px rgba($accent, 0.08), 0 12px 40px rgba($accent, 0.12),
-      0 0 80px rgba($accent, 0.04);
+    box-shadow: 0 0 12px rgba($orange, 0.08), 0 12px 40px rgba($orange, 0.12),
+      0 0 80px rgba($orange, 0.04);
   }
   50% {
-    box-shadow: 0 0 24px rgba($accent, 0.12), 0 16px 48px rgba($accent, 0.15),
-      0 0 100px rgba($accent, 0.08);
+    box-shadow: 0 0 24px rgba($orange, 0.12), 0 16px 48px rgba($orange, 0.15),
+      0 0 100px rgba($orange, 0.08);
   }
   75% {
-    box-shadow: 0 0 12px rgba($accent, 0.08), 0 12px 40px rgba($accent, 0.12),
-      0 0 80px rgba($accent, 0.04);
+    box-shadow: 0 0 12px rgba($orange, 0.08), 0 12px 40px rgba($orange, 0.12),
+      0 0 80px rgba($orange, 0.04);
   }
   100% {
-    box-shadow: 0 0 0 rgba($accent, 0), 0 8px 32px rgba($accent, 0.08),
-      0 0 60px rgba($accent, 0);
+    box-shadow: 0 0 0 rgba($orange, 0), 0 8px 32px rgba($orange, 0.08),
+      0 0 60px rgba($orange, 0);
   }
 }
 @keyframes buttonPulse {
   0% {
-    box-shadow: 0 0 20px rgba($accent, 0.3), 0 0 40px rgba($accent, 0.15),
-      0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba($orange, 0.3), 0 0 40px rgba($orange, 0.15),
+      0 0 80px rgba($orange, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   25% {
-    box-shadow: 0 0 28px rgba($accent, 0.35), 0 0 56px rgba($accent, 0.18),
-      0 0 100px rgba($accent, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 28px rgba($orange, 0.35), 0 0 56px rgba($orange, 0.18),
+      0 0 100px rgba($orange, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
   50% {
-    box-shadow: 0 0 36px rgba($accent, 0.4), 0 0 72px rgba($accent, 0.22),
-      0 0 120px rgba($accent, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 36px rgba($orange, 0.4), 0 0 72px rgba($orange, 0.22),
+      0 0 120px rgba($orange, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
   75% {
-    box-shadow: 0 0 28px rgba($accent, 0.35), 0 0 56px rgba($accent, 0.18),
-      0 0 100px rgba($accent, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 28px rgba($orange, 0.35), 0 0 56px rgba($orange, 0.18),
+      0 0 100px rgba($orange, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
   100% {
-    box-shadow: 0 0 20px rgba($accent, 0.3), 0 0 40px rgba($accent, 0.15),
-      0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba($orange, 0.3), 0 0 40px rgba($orange, 0.15),
+      0 0 80px rgba($orange, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 }
 @keyframes requirementCheck {
@@ -89,7 +89,7 @@
   padding: 40px 20px;
   background: radial-gradient(
       circle at 20% 50%,
-      rgba($accent, 0.04) 0%,
+      rgba($orange, 0.04) 0%,
       transparent 50%
     ),
     radial-gradient(circle at 80% 80%, rgba($success, 0.02) 0%, transparent 50%);
@@ -104,7 +104,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba($accent, 0.01) 1px, transparent 1px);
+  background: radial-gradient(circle, rgba($orange, 0.01) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
   animation: drift 20s linear infinite;
@@ -123,18 +123,18 @@
   width: 560px;
   max-width: 100%;
   background: linear-gradient(
-                  135deg,
-                  rgba($darker-grey, 0.95) 0%,
-                  rgba(color.adjust($darker-grey, $lightness: -8%), 0.98) 100%
+    135deg,
+    rgba($darker-grey, 0.95) 0%,
+    rgba(color.adjust($darker-grey, $lightness: -8%), 0.98) 100%
   );
   padding: 28px;
   border-radius: 16px;
   box-sizing: border-box;
   color: $smoke-grey;
-  border: 1px solid rgba($accent, 0.15);
-  box-shadow: 0 0 40px rgba($accent, 0.1), 0 0 80px rgba($accent, 0.12),
-  0 0 160px rgba($accent, 0.08), 0 0 240px rgba($accent, 0.04),
-  inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba($orange, 0.15);
+  box-shadow: 0 0 40px rgba($orange, 0.1), 0 0 80px rgba($orange, 0.12),
+    0 0 160px rgba($orange, 0.08), 0 0 240px rgba($orange, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   position: relative;
   overflow: hidden;
   animation: cardFloat 4s ease-in-out infinite;
@@ -148,13 +148,10 @@
   right: -50%;
   width: 300%;
   height: 300%;
-  background: radial-gradient(circle, rgba($accent, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba($orange, 0.08) 0%, transparent 70%);
   pointer-events: none;
   animation: rotate 15s linear infinite;
 }
-
-
-
 
 @keyframes rotate {
   0% {
@@ -172,7 +169,7 @@
   justify-content: center;
   margin-bottom: 18px;
   position: relative;
-  border-bottom: 1px solid rgba($accent, 0.06);
+  border-bottom: 1px solid rgba($orange, 0.06);
   padding-bottom: 12px;
 
   .tab {
@@ -188,13 +185,13 @@
   }
 
   .tab:hover {
-    color: $accent-bright;
-    text-shadow: 0 0 12px rgba($accent, 0.4);
+    color: color.adjust($orange, $lightness: 15%);
+    text-shadow: 0 0 12px rgba($orange, 0.4);
   }
 
   .tab.active {
     color: $white;
-    text-shadow: 0 0 16px rgba($accent, 0.6);
+    text-shadow: 0 0 16px rgba($orange, 0.6);
     animation: tabSlide 0.4s ease-out;
   }
 
@@ -205,9 +202,9 @@
     right: 0;
     bottom: -13px;
     height: 3px;
-    background: linear-gradient(90deg, transparent, $accent, transparent);
+    background: linear-gradient(90deg, transparent, $orange, transparent);
     border-radius: 3px;
-    box-shadow: 0 0 16px rgba($accent, 0.6), 0 0 32px rgba($accent, 0.3);
+    box-shadow: 0 0 16px rgba($orange, 0.6), 0 0 32px rgba($orange, 0.3);
     animation: slideIn 0.4s ease-out;
   }
 
@@ -247,7 +244,7 @@
       rgba(255, 255, 255, 0.02) 0%,
       rgba(255, 255, 255, 0.01) 100%
     );
-    border: 1.5px solid rgba($accent, 0.08);
+    border: 1.5px solid rgba($orange, 0.08);
     padding: 14px 46px 14px 16px;
     border-radius: 10px;
     color: $white-smoke;
@@ -264,8 +261,8 @@
     }
 
     &:hover {
-      border-color: rgba($accent, 0.16);
-      box-shadow: 0 0 0 1px rgba($accent, 0.04), 0 8px 24px rgba($accent, 0.08);
+      border-color: rgba($orange, 0.16);
+      box-shadow: 0 0 0 1px rgba($orange, 0.04), 0 8px 24px rgba($orange, 0.08);
       background: linear-gradient(
         135deg,
         rgba(255, 255, 255, 0.03) 0%,
@@ -275,13 +272,13 @@
 
     &:focus {
       outline: none;
-      border-color: $accent;
-      box-shadow: 0 0 0 1px $accent, 0 0 20px rgba($accent, 0.3),
-        0 0 40px rgba($accent, 0.15), 0 12px 48px rgba($accent, 0.2),
+      border-color: $orange;
+      box-shadow: 0 0 0 1px $orange, 0 0 20px rgba($orange, 0.3),
+        0 0 40px rgba($orange, 0.15), 0 12px 48px rgba($orange, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
       background: linear-gradient(
         135deg,
-        rgba($accent, 0.04) 0%,
+        rgba($orange, 0.04) 0%,
         rgba(255, 255, 255, 0.01) 100%
       );
       transform: translateY(-2px);
@@ -303,7 +300,7 @@
     top: 50%;
     transform: translateY(-50%);
     background: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba($accent, 0.2);
+    border: 1px solid rgba($orange, 0.2);
     width: 32px;
     height: 32px;
     display: flex;
@@ -317,18 +314,18 @@
     z-index: 10;
 
     &:hover {
-      background: rgba($accent, 0.15);
-      border-color: rgba($accent, 0.4);
+      background: rgba($orange, 0.15);
+      border-color: rgba($orange, 0.4);
 
       .eye {
-        border-color: $accent-bright;
-        box-shadow: 0 0 16px rgba($accent, 0.5),
-          inset 0 0 8px rgba($accent, 0.15);
+        border-color: color.adjust($orange, $lightness: 15%);
+        box-shadow: 0 0 16px rgba($orange, 0.5),
+          inset 0 0 8px rgba($orange, 0.15);
       }
     }
 
     &:active {
-      background: rgba($accent, 0.2);
+      background: rgba($orange, 0.2);
       transform: translateY(-50%) scale(0.95);
     }
   }
@@ -359,16 +356,16 @@
   .eye.open {
     background: linear-gradient(
       135deg,
-      rgba($accent, 0.15) 0%,
-      rgba($accent, 0.08) 100%
+      rgba($orange, 0.15) 0%,
+      rgba($orange, 0.08) 100%
     );
-    border-color: $accent;
-    box-shadow: 0 0 20px rgba($accent, 0.4), inset 0 0 12px rgba($accent, 0.12);
+    border-color: $orange;
+    box-shadow: 0 0 20px rgba($orange, 0.4), inset 0 0 12px rgba($orange, 0.12);
 
     &::after {
       width: 6px;
       height: 6px;
-      background: $accent;
+      background: $orange;
     }
   }
 }
@@ -380,7 +377,7 @@
   background: linear-gradient(
     135deg,
     rgba($success, 0.04) 0%,
-    rgba($accent, 0.02) 100%
+    rgba($orange, 0.02) 100%
   );
   border: 1px solid rgba($success, 0.08);
   border-radius: 10px;
@@ -444,8 +441,12 @@
 .submit-btn {
   margin-top: 18px;
   width: 100%;
-  background: linear-gradient(135deg, $accent 0%, $accent-bright 100%);
-  border: 1.5px solid rgba($accent, 0.5);
+  background: linear-gradient(
+    135deg,
+    $orange 0%,
+    color.adjust($orange, $lightness: 15%) 100%
+  );
+  border: 1.5px solid rgba($orange, 0.5);
   color: $white;
   padding: 14px 16px;
   border-radius: 12px;
@@ -457,8 +458,8 @@
   letter-spacing: 0.6px;
   text-transform: uppercase;
   font-size: 13px;
-  box-shadow: 0 0 20px rgba($accent, 0.25), 0 0 40px rgba($accent, 0.12),
-    0 0 80px rgba($accent, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.15),
+  box-shadow: 0 0 20px rgba($orange, 0.25), 0 0 40px rgba($orange, 0.12),
+    0 0 80px rgba($orange, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 
   &::before {
@@ -478,9 +479,9 @@
   }
 
   &:hover {
-    background: linear-gradient(135deg, $accent-dark 0%, $accent 100%);
-    box-shadow: 0 0 30px rgba($accent, 0.35), 0 0 60px rgba($accent, 0.22),
-      0 0 120px rgba($accent, 0.12), 0 8px 32px rgba($accent, 0.28),
+    background: linear-gradient(135deg, $orange-hover 0%, $orange 100%);
+    box-shadow: 0 0 30px rgba($orange, 0.35), 0 0 60px rgba($orange, 0.22),
+      0 0 120px rgba($orange, 0.12), 0 8px 32px rgba($orange, 0.28),
       inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
     transform: translateY(-3px);
     animation: buttonPulse 1.2s ease-in-out infinite;
@@ -492,8 +493,8 @@
 
   &:active {
     transform: translateY(-1px);
-    box-shadow: 0 0 18px rgba($accent, 0.2), 0 0 36px rgba($accent, 0.1),
-      0 0 72px rgba($accent, 0.06), 0 4px 16px rgba($accent, 0.12),
+    box-shadow: 0 0 18px rgba($orange, 0.2), 0 0 36px rgba($orange, 0.1),
+      0 0 72px rgba($orange, 0.06), 0 4px 16px rgba($orange, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
   }
 }

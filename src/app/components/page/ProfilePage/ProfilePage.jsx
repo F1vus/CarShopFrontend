@@ -6,6 +6,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  Outlet,
 } from "react-router-dom";
 import "styles/profilePage/_profile-page.scss";
 import profileService from "services/profile.service";
@@ -13,14 +14,16 @@ import ProfileAdvertisements from "./ProfileAdvertisements";
 import ProfileMessages from "./ProfileMessages";
 import ProfileSettings from "./ProfileSettings";
 import EditCarPage from "./EditCarPage";
-import { replace } from "lodash";
 
 function ProfilePage() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [profileId, setProfileId] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
 
   // --- auth / profile id fetch
   useEffect(() => {
@@ -30,16 +33,21 @@ function ProfilePage() {
       return;
     }
 
+    setLoading(true);
     profileService
       .getProfileData(token)
-      .then((data) => setProfileId(data.id))
+      .then((profileData) => {
+        setProfile(profileData);
+        setProfileId(profileData?.id);
+      })
       .catch((err) => {
         console.error("Fetch error:", err);
-        // setError(true);
+        setError(true);
         if (err.status == 401) {
-          navigate("/auth", { replace: true });
+          navigate("/auth/register", { replace: true });
         }
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // --- sanitize nested path (prevent /profile/messages/settings etc.)
@@ -77,7 +85,7 @@ function ProfilePage() {
   return (
     <section className="profile">
       <header className="profile__header">
-        <h2 className="profile__title">Twoje ogłoszenia</h2>
+        <h2 className="profile__title">Twój profil</h2>
         <nav className="profile__navigation">
           <li className="profile__navigation-item">
             <NavLink

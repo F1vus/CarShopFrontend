@@ -8,6 +8,7 @@ import CarsPage from "./components/page/CarsPage";
 import Layout from "./components/layouts/Layout";
 import AuthorizationPage from "./components/page/AuthorizationPage";
 import ProfilePage from "./components/page/ProfilePage";
+import VerificationPage from "./components/page/VerificationPage";
 function App() {
   return (
     <>
@@ -16,13 +17,14 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/cars/:carId?" element={<CarsPage />} />
-          <Route path="/auth" element={<AuthorizationPage />} />
+          <Route path="/auth/:authFormType?" element={<AuthorizationPage />} />
+          <Route path="/auth/verify" element={<VerificationPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/sellcar" element={<SellCarPage />} />
           <Route path="/basket" element={<ShoppingBasketPage />} />
           <Route path="/profile/*" element={<ProfilePage />} />
+          <Route path="/*" element={<NotFoundPage />} />
         </Route>
-        <Route path="/*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

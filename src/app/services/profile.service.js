@@ -23,10 +23,48 @@ const profileService = {
       throw err;
     }
   },
+  getProfileId: async (qvtToken) => {
+    const request = {
+      method: "GET",
+      url: config.apiEndpoint + authEndpoint,
+      headers: {
+        Authorization: `Bearer ${qvtToken}`,
+        "Content-Type": "application/json",
+      },
+      allowAbsoluteUrls: true,
+    };
+
+    try {
+      const response = await axios.request(request);
+      return response.data?.id;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
   getProfileCars: async (profileId) => {
     const request = {
       method: "GET",
       url: config.apiEndpoint + authEndpoint + `/${profileId}` + "/cars",
+      allowAbsoluteUrls: true,
+    };
+
+    try {
+      const response = await axios.request(request);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+  updateProfile: async (qvtToken, formData) => {
+    const request = {
+      method: "PUT",
+      url: config.apiEndpoint + authEndpoint,
+      headers: {
+        Authorization: `Bearer ${qvtToken}`,
+      },
+      data: formData,
       allowAbsoluteUrls: true,
     };
 
