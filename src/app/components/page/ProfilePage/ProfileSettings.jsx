@@ -59,13 +59,15 @@ function ProfileSettings() {
     setMessage("");
 
     try {
-      // Prepare FormData for multipart/form-data (if image is being uploaded)
-      const dataToSend = new FormData();
-      dataToSend.append("name", formData.name);
-      dataToSend.append("email", formData.email);
-      dataToSend.append("phoneNumber", formData.phoneNumber);
-      if (formData.profileImage && formData.profileImage instanceof File) {
-        dataToSend.append("profileImage", formData.profileImage);
+      const dataToSend = {
+        name: formData.name,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+      };
+
+      // If you have a profileImage and it's a string (already uploaded), include it
+      if (typeof formData.profileImage === "string") {
+        dataToSend.profileImage = formData.profileImage;
       }
 
       // Call API to update profile
@@ -120,8 +122,8 @@ function ProfileSettings() {
                 />
               ) : (
                 <div className="profile-settings__image-placeholder">
-                  <div class="profile-settings__icon-wrapper">
-                    <div class="profile-settings__icon">
+                  <div className="profile-settings__icon-wrapper">
+                    <div className="profile-settings__icon">
                       <svg
                         width="64"
                         height="64"
@@ -207,37 +209,40 @@ function ProfileSettings() {
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="profile-settings__actions">
-            {!isEditing ? (
+          {/* Action Buttons INSIDE the form - only show when editing */}
+          {isEditing && (
+            <div className="profile-settings__actions">
+              <button
+                type="submit"
+                className="profile-settings__btn profile-settings__btn--primary"
+                disabled={isSaving}
+              >
+                {isSaving ? "Zapisywanie..." : "Zapisz zmiany"}
+              </button>
               <button
                 type="button"
-                className="profile-settings__btn profile-settings__btn--primary"
-                onClick={() => setIsEditing(true)}
+                className="profile-settings__btn profile-settings__btn--secondary"
+                onClick={handleCancel}
+                disabled={isSaving}
               >
-                Edytuj profil
+                Anuluj
               </button>
-            ) : (
-              <>
-                <button
-                  type="submit"
-                  className="profile-settings__btn profile-settings__btn--primary"
-                  disabled={isSaving}
-                >
-                  {isSaving ? "Zapisywanie..." : "Zapisz zmiany"}
-                </button>
-                <button
-                  type="button"
-                  className="profile-settings__btn profile-settings__btn--secondary"
-                  onClick={handleCancel}
-                  disabled={isSaving}
-                >
-                  Anuluj
-                </button>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </form>
+
+        {/* Edit button OUTSIDE the form - only show when NOT editing */}
+        {!isEditing && (
+          <div className="profile-settings__actions">
+            <button
+              type="button"
+              className="profile-settings__btn profile-settings__btn--primary"
+              onClick={() => setIsEditing(true)}
+            >
+              Edytuj profil
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );

@@ -9,6 +9,10 @@ import Layout from "./components/layouts/Layout";
 import AuthorizationPage from "./components/page/AuthorizationPage";
 import ProfilePage from "./components/page/ProfilePage";
 import VerificationPage from "./components/page/VerificationPage";
+import ProfileAdvertisements from "./components/page/ProfilePage/ProfileAdvertisements";
+import ProfileMessages from "./components/page/ProfilePage/ProfileMessages";
+import ProfileSettings from "./components/page/ProfilePage/ProfileSettings";
+import EditCarPage from "./components/page/ProfilePage/EditCarPage";
 function App() {
   return (
     <>
@@ -22,7 +26,19 @@ function App() {
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/sellcar" element={<SellCarPage />} />
           <Route path="/basket" element={<ShoppingBasketPage />} />
-          <Route path="/profile/*" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage />}>
+            <Route index element={<Navigate to="advertisements" replace />} />
+            <Route
+              path="advertisements/*"
+              element={<ProfileAdvertisements />}
+            />
+            <Route
+              path="advertisements/:carId/edit"
+              element={<EditCarPage />}
+            />
+            <Route path="messages" element={<ProfileMessages />} />
+            <Route path="settings" element={<ProfileSettings />} />
+          </Route>
           <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>
