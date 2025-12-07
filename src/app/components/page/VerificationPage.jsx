@@ -105,11 +105,11 @@ function VerificationPage() {
     }
   };
 
-  function sendVerifyRequest(token) {
+  function sendVerifyRequest(code) {
     setIsVerifying(true);
     authService
       .verify({
-        token: token,
+        token: code,
         email: email,
       })
       .then(() => {
@@ -130,7 +130,7 @@ function VerificationPage() {
 
   function sendResetVerifyRequest() {
     authService
-      .reset_verify({
+      .resetVerify({
         email: email,
       })
       .then(() => {

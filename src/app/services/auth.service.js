@@ -12,10 +12,10 @@ const authService = {
     }
   },
 
-    login: async (credentials) => {
+  login: async (credentials) => {
     try {
       const response = await apiClient.post("/auth/login", credentials);
-      
+
       const tokenString = response.data;
 
       let decodedToken;
@@ -25,14 +25,14 @@ const authService = {
         if (decodedToken) {
           // get user profile id
           const userProfileId = decodedToken.user_profile_id;
-          
+
           // Calculate expiresIn in seconds
           const expiresIn = decodedToken.exp - decodedToken.iat;
-          
+
           return {
             accessToken: tokenString,
             profileId: userProfileId,
-            expiresIn: expiresIn
+            expiresIn: expiresIn,
           };
         }
       } catch (err) {
@@ -49,6 +49,7 @@ const authService = {
   verify: async (credentials) => {
     try {
       const response = await apiClient.post("/auth/verify", credentials);
+      
       return response.data;
     } catch (err) {
       console.error("Caught an error while verify request!\n" + err);
@@ -62,6 +63,16 @@ const authService = {
       return response.data;
     } catch (err) {
       console.error("Caught an error while resetting verification request!");
+      throw err;
+    }
+  },
+
+  logout: async () => {
+    try {
+      const response = await apiClient.post("/auth/logout");
+      return response.data;
+    } catch (err) {
+      console.error("Failed to logout", err);
       throw err;
     }
   },

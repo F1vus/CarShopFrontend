@@ -16,7 +16,7 @@ function AuthorizationPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
 
-  const { login, error: authError, clearError } = useAuth();
+  const { login, register, error: authError, clearError } = useAuth();
 
   const toggleFormTab = () => {
     const newFormTab = authFormType === "register" ? "login" : "register";
@@ -49,22 +49,20 @@ function AuthorizationPage() {
 
   const allOk = pwdChecks.every((c) => c.ok);
 
-  function sendSignUpRequest(event) {
+  async function sendSignUpRequest(event) {
     event.preventDefault();
 
-    authService
-      .register({
+    try {
+      await register({
         username: username,
         email: email,
         password: password,
-      })
-      .then(() => {
-        navigate("/auth/verify", { state: { email } });
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setIsCreated(false);
       });
+      navigate("/auth/verify", { state: { email } });
+    } catch (err) {
+      console.err("Registration error:", err);
+      setIsCreated(false)
+    }
   }
 
   async function sendLoginRequest(event) {

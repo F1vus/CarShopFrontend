@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
         } else {
           // Token expired or invalid, clear storage
           if (authData.token) {
-            localStorageService.clearAll();
+            localStorageService.removeAuthData();
           }
         }
       } catch (err) {
@@ -68,6 +68,21 @@ export function AuthProvider({ children }) {
     return () => {
       unsubscribe();
     };
+  }, []);
+
+  const register = useCallback(async (credentials) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = authService.register(credentials);
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const login = useCallback(async (credentials) => {
@@ -104,10 +119,36 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const logout = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = authService.logout();
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Logout failed");
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Check if user is authenticated
   const isAuthenticated = useCallback(() => {
     return localStorageService.hasValidToken();
   }, []);
 
+  // Get current user's token
+  const getToken = useCallback(() => {
+    return localStorageService.getAccessToken();
+  }, []);
+
+  // Get current user ID
+  const getUserId = useCallback(() => {
+    return localStorageService.getUserId();
+  }, []);
+  
+  // Clears any auth errors
   const clearError = useCallback(() => {
     setError(null);
   }, []);
@@ -117,7 +158,11 @@ export function AuthProvider({ children }) {
     isLoading,
     error,
     login,
+    register,
+    logout,
     isAuthenticated,
+    getToken,
+    getUserId,
     clearError,
   };
 
