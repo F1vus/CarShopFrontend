@@ -1,6 +1,5 @@
 import { jwtDecode } from "jwt-decode";
 import apiClient from "../utils/apiClient";
-import localStorageService from "./localStorage.service";
 
 const authService = {
   register: async (credentials) => {
@@ -32,7 +31,7 @@ const authService = {
           
           return {
             accessToken: tokenString,
-            userId: userProfileId,
+            profileId: userProfileId,
             expiresIn: expiresIn
           };
         }

@@ -2,23 +2,27 @@ import { useMemo, useState } from "react";
 import "styles/_authorization.scss";
 import authService from "services/auth.service.js";
 import { useNavigate, useParams } from "react-router-dom";
-import localStorageService from "../../services/localStorage.service";
+import { useAuth } from "../context/authProvider";
 
 function AuthorizationPage() {
   const navigate = useNavigate();
   const { authFormType } = useParams();
-  const [tab, setTab] = useState(authFormType === "register" ? authFormType : "login");
+  const [tab, setTab] = useState(
+    authFormType === "register" ? authFormType : "login"
+  );
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
-  const [isLogged, setIsLogged] = useState(true);
+
+  const { login, error: authError, clearError } = useAuth();
 
   const toggleFormTab = () => {
     const newFormTab = authFormType === "register" ? "login" : "register";
     setTab(newFormTab);
     navigate(`/auth/${newFormTab}`);
+    clearError();
   };
 
   const pwdChecks = useMemo(
@@ -63,23 +67,17 @@ function AuthorizationPage() {
       });
   }
 
-  function sendLoginRequest(event) {
+  async function sendLoginRequest(event) {
     event.preventDefault();
-    authService
-      .login({
+    try {
+      await login({
         email: email,
         password: password,
-      })
-      .then((data) => {
-        const {token, id, expires} = data;
-        console.log(data);
-        
-        navigate("/profile");
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setIsLogged(false);
       });
+      navigate("/profile");
+    } catch (err) {
+      console.error("Login error:", err);
+    }
   }
 
   function handleSubmit(e) {
@@ -182,7 +180,7 @@ function AuthorizationPage() {
               Account created!
             </div>
           )}
-          {!isLogged && (
+          {!authError && (
             <div className="alert alert-danger text-center" role="alert">
               An error occurred while attempting to log in.
             </div>

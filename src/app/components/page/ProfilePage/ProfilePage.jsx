@@ -2,18 +2,12 @@ import { useEffect, useState } from "react";
 import {
   NavLink,
   Navigate,
-  Route,
-  Routes,
   useLocation,
   useNavigate,
   Outlet,
 } from "react-router-dom";
 import "styles/profilePage/_profile-page.scss";
 import profileService from "services/profile.service";
-import ProfileAdvertisements from "./ProfileAdvertisements";
-import ProfileMessages from "./ProfileMessages";
-import ProfileSettings from "./ProfileSettings";
-import EditCarPage from "./EditCarPage";
 
 function ProfilePage() {
   const navigate = useNavigate();

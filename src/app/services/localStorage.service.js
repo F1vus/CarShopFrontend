@@ -1,5 +1,5 @@
 const TOKEN_KEY = "jwt-token";
-const USERID_KEY = "user-id";
+const USERID_KEY = "profile-id";
 const EXPIRES_KEY = "token-expires";
 
 class LocalStorageService {
@@ -8,14 +8,14 @@ class LocalStorageService {
   }
 
   // Set all auth data at once
-  setAuthData({ accessToken, userId, expiresAt }) {
-    console.log("local:", accessToken, userId, expiresAt);
+  setAuthData({ accessToken, profileId, expiresAt }) {
+    console.log("local:", accessToken, profileId, expiresAt);
     
     if (!this.storage) return;
 
     try {
       this.storage.setItem(TOKEN_KEY, accessToken || "");
-      this.storage.setItem(USERID_KEY, userId?.toString() || "");
+      this.storage.setItem(USERID_KEY, profileId?.toString() || "");
       this.storage.setItem(EXPIRES_KEY, expiresAt?.toString() || "");
 
       // Notify other tabs
