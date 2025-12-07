@@ -1,4 +1,6 @@
+import { jwtDecode } from "jwt-decode";
 import apiClient from "../utils/apiClient";
+import localStorageService from "./localStorage.service";
 
 const authService = {
   register: async (credentials) => {
@@ -11,12 +13,36 @@ const authService = {
     }
   },
 
-  login: async (credentials) => {
+    login: async (credentials) => {
     try {
       const response = await apiClient.post("/auth/login", credentials);
-      return response.data;
+      
+      const tokenString = response.data;
+
+      let decodedToken;
+      try {
+        decodedToken = jwtDecode(tokenString);
+
+        if (decodedToken) {
+          // get user profile id
+          const userProfileId = decodedToken.user_profile_id;
+          
+          // Calculate expiresIn in seconds
+          const expiresIn = decodedToken.exp - decodedToken.iat;
+          
+          return {
+            accessToken: tokenString,
+            userId: userProfileId,
+            expiresIn: expiresIn
+          };
+        }
+      } catch (err) {
+        console.error("Failed to decode JWT:", err);
+        throw new Error("Invalid token format");
+      }
+      throw new Error("No token data received");
     } catch (err) {
-      console.error("Caught an error while login request!\n" + err);
+      console.error("Caught an error while login request!\n", err);
       throw err;
     }
   },

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import "styles/_authorization.scss";
 import authService from "services/auth.service.js";
 import { useNavigate, useParams } from "react-router-dom";
+import localStorageService from "../../services/localStorage.service";
 
 function AuthorizationPage() {
   const navigate = useNavigate();
@@ -70,7 +71,9 @@ function AuthorizationPage() {
         password: password,
       })
       .then((data) => {
-        localStorage.setItem("token", data);
+        const {token, id, expires} = data;
+        console.log(data);
+        
         navigate("/profile");
       })
       .catch((err) => {

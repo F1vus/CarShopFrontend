@@ -9,6 +9,8 @@ class LocalStorageService {
 
   // Set all auth data at once
   setAuthData({ accessToken, userId, expiresAt }) {
+    console.log("local:", accessToken, userId, expiresAt);
+    
     if (!this.storage) return;
 
     try {
