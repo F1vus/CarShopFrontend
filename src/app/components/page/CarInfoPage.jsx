@@ -15,7 +15,7 @@ function CarInfoPage({ carId }) {
   const [isElectric, setIsElectric] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
 
-  const location = useLocation()
+  const location = useLocation();
 
   useEffect(() => {
     carService
@@ -130,9 +130,11 @@ function CarInfoPage({ carId }) {
                 <button className="write-to-button">Napisz</button>
 
                 {showPhone ? (
-                  <p className="phone-number">
-                    {carInfo.owner?.phoneNumber || "Brak numeru"}
-                  </p>
+                  <div className="car-info__phone-block">
+                    <p className="phone-number">
+                      {carInfo.owner?.phoneNumber || "Brak numeru"}
+                    </p>
+                  </div>
                 ) : (
                   <button
                     className="show-phone-button"

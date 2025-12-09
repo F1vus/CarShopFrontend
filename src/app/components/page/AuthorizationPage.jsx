@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import "styles/_authorization.scss";
-import authService from "services/auth.service.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/authProvider";
 
@@ -53,15 +52,18 @@ function AuthorizationPage() {
     event.preventDefault();
 
     try {
-      await register({
+      const response = await register({
         username: username,
         email: email,
         password: password,
       });
-      navigate("/auth/verify", { state: { email } });
+
+      if (response.success) {
+        navigate("/auth/verify", { state: { email } });
+      }
     } catch (err) {
       console.err("Registration error:", err);
-      setIsCreated(false)
+      setIsCreated(false);
     }
   }
 
@@ -74,6 +76,7 @@ function AuthorizationPage() {
       });
       navigate("/profile");
     } catch (err) {
+      console.log(authError);
       console.error("Login error:", err);
     }
   }
@@ -178,9 +181,9 @@ function AuthorizationPage() {
               Account created!
             </div>
           )}
-          {!authError && (
+          {authError != null && (
             <div className="alert alert-danger text-center" role="alert">
-              An error occurred while attempting to log in.
+              {authError}
             </div>
           )}
         </form>

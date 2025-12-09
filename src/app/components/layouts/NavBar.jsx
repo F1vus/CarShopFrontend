@@ -3,6 +3,7 @@ import "assets/styles/_navbar.scss";
 import { Link, useNavigate } from "react-router-dom";
 import siteLogo from "assets/img/logo-large.svg";
 import carService from "services/car.service.js";
+import UserDropdown from "../UI/UserDropdown";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -275,16 +276,7 @@ function NavBar() {
 
           <div className="navbar__icons">
             <div className="navbar__icons-item">
-              <Link to="/basket" className="navbar__link">
-                <i className="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-                <span className="navbar__icons-text">Koszyk</span>
-              </Link>
-            </div>
-            <div className="navbar__icons-item">
-              <Link to="/auth/register" className="navbar__link">
-                <i className="fa-regular fa-user" aria-hidden="true"></i>
-                <span className="navbar__icons-text">Zrejestruj się</span>
-              </Link>
+              <UserDropdown />
             </div>
           </div>
         </div>

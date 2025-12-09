@@ -65,14 +65,11 @@ function ProfileSettings() {
         phoneNumber: formData.phoneNumber,
       };
 
-      // If you have a profileImage and it's a string (already uploaded), include it
       if (typeof formData.profileImage === "string") {
         dataToSend.profileImage = formData.profileImage;
       }
 
-      // Call API to update profile
       const updatedProfile = await profileService.updateProfile(
-        token,
         dataToSend
       );
 

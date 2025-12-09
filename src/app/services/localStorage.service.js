@@ -1,7 +1,4 @@
-const TOKEN_KEY = "jwt-token";
-const USERID_KEY = "profile-id";
-const EXPIRES_KEY = "token-expires";
-
+import { TOKEN_KEY, PROFILE_ID_KEY, EXPIRES_KEY } from "../utils/authUtils";
 class LocalStorageService {
   constructor() {
     this.storage = typeof window !== "undefined" ? window.localStorage : null;
@@ -13,7 +10,7 @@ class LocalStorageService {
 
     try {
       this.storage.setItem(TOKEN_KEY, accessToken || "");
-      this.storage.setItem(USERID_KEY, profileId?.toString() || "");
+      this.storage.setItem(PROFILE_ID_KEY, profileId?.toString() || "");
       this.storage.setItem(EXPIRES_KEY, expiresAt?.toString() || "");
 
       // Notify other tabs
@@ -34,8 +31,8 @@ class LocalStorageService {
     return null;
   }
 
-  getUserId() {
-    return this.getSafeItem(USERID_KEY);
+  getId() {
+    return this.getSafeItem(PROFILE_ID_KEY);
   }
 
   getTokenExpiresDate() {
@@ -69,7 +66,7 @@ class LocalStorageService {
 
     try {
       this.storage.removeItem(TOKEN_KEY);
-      this.storage.removeItem(USERID_KEY);
+      this.storage.removeItem(PROFILE_ID_KEY);
       this.storage.removeItem(EXPIRES_KEY);
 
       this.dispatchStorageEvent();
@@ -137,7 +134,7 @@ class LocalStorageService {
   getAllAuthData() {
     return {
       token: this.getAccessToken(),
-      userId: this.getUserId(),
+      userId: this.getId(),
       expiresAt: this.getTokenExpiresDate(),
       isValid: this.hasValidToken(),
       timeUntilExpiry: this.getTimeUntilExpiry(),

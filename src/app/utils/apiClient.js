@@ -4,19 +4,21 @@ import localStorageService from "../services/localStorage.service";
 
 const apiClient = axios.create({
   baseURL: config.apiEndpoint + "/api",
-  timeout: 1000,
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
 });
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("jwt-token");
+    const token = localStorageService.getAccessToken();
 
-    if (token) {
+    if (token && !config.headers["Authorization"]) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => {
@@ -30,24 +32,62 @@ apiClient.interceptors.response.use(
     console.log(`${response.status} ${response.config.url}`);
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Log error details
     console.error("API Error:", {
-      url: error.config?.url,
+      url: originalRequest?.url,
+      method: originalRequest?.method?.toUpperCase(),
       status: error.response?.status,
-      data: error.response?.data,
       message: error.message,
     });
 
-    // if token expired
+    // Handle 401 Unauthorized
     if (error.response?.status === 401) {
       console.warn("401 Unauthorized - token expired or invalid");
-      
-      localStorageService.clearAll();
+
+      localStorageService.removeAuthData();
+
       window.dispatchEvent(new Event("auth-expired"));
+
+      // Prevent multiple redirects
+      if (!window.location.pathname.startsWith("/auth")) {
+        setTimeout(() => {
+          window.location.href = "/auth/login?reason=session_expired";
+        }, 100);
+      }
+    }
+
+    if (!error.response) {
+      console.error("Network error or server unreachable:", error.message);
+
+      window.dispatchEvent(
+        new CustomEvent("network-error", {
+          detail: { message: "Błąd połączenia z serwerem" },
+        })
+      );
+    }
+
+    if (error.response?.status >= 500) {
+      console.error("Server error:", error.response.status);
     }
 
     return Promise.reject(error);
   }
 );
+
+apiClient.setAuthToken = (token) => {
+  if (token) {
+    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete apiClient.defaults.headers.common["Authorization"];
+  }
+};
+
+apiClient.removeAuthToken = () => {
+  delete apiClient.defaults.headers.common["Authorization"];
+};
+
 
 export default apiClient;

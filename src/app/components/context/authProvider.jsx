@@ -3,10 +3,18 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import localStorageService from "../../services/localStorage.service";
 import authService from "../../services/auth.service";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  calculateExpire,
+  getTimeUntilExpiry,
+  isTokenExpired,
+  isTokenValid,
+} from "../../utils/authUtils";
 
 const AuthContext = createContext({});
 
@@ -19,150 +27,247 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }) {
-  const [profile, setProfile] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [authData, setAuthData] = useState(() => {
+    const token = localStorageService.getAccessToken();
+    const id = localStorageService.getId();
+    const expiresAt = localStorageService.getTokenExpiresDate();
+
+    return {
+      token,
+      id,
+      expiresAt,
+      isValid: token && id && isTokenValid(expiresAt),
+    };
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // load profile data from local storage
-  useEffect(() => {
-    const loadUser = () => {
-      try {
-        const authData = localStorageService.getAllAuthData();
+  // refs for cleanup and timeouts
+  const logoutTimerRef = useRef(null);
+  const isMountedRef = useRef(true);
 
-        if (authData.isValid) {
-          setProfile({
-            token: authData.token,
-            userId: authData.userId,
-            expiresAt: authData.expiresAt,
-          });
-        } else {
-          // Token expired or invalid, clear storage
-          if (authData.token) {
-            localStorageService.removeAuthData();
-          }
-        }
-      } catch (err) {
-        console.error("Failed to load user from storage:", err);
-        localStorageService.removeAuthData();
-      } finally {
-        setIsLoading(false);
+  // cleanup on unmount
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
       }
     };
-    loadUser();
   }, []);
 
+  // update localstourage subscription
   useEffect(() => {
     const unsubscribe = localStorageService.subscribeToAuthChanges(() => {
-      const authData = localStorageService.getAllAuthData();
-      if (authData.isValid) {
-        setProfile({
-          userId: authData.userId,
-          token: authData.token,
-          expiresAt: authData.expiresAt,
-        });
-      } else {
-        setProfile(null);
-      }
+      if (!isMountedRef.current) return;
+
+      const token = localStorageService.getAccessToken();
+      const profileId = localStorageService.getId();
+      const expiresAt = localStorageService.getTokenExpiresDate();
+
+      setAuthData({
+        token,
+        profileId,
+        expiresAt,
+        isValid: token && profileId && isTokenValid(expiresAt),
+      });
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
+
+  // auto-logout
+  useEffect(() => {
+    if (logoutTimerRef.current) {
+      clearTimeout(logoutTimerRef.current);
+    }
+
+    if (!authData.expiresAt || !authData.isValid) return;
+
+    const timeUntilExpiry = getTimeUntilExpiry(authData.expiresAt);
+
+    if (timeUntilExpiry <= 0) {
+      handleLogout();
+      return;
+    }
+
+    logoutTimerRef.current = setTimeout(() => {
+      handleLogout({ auto: true });
+    }, timeUntilExpiry);
+
+    return () => {
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+      }
+    };
+  }, [authData.expiresAt, authData.isValid]);
+
+  const handleLogout = useCallback(async (options = {}) => {
+    const { auto = false, redirect = true } = options;
+
+    if (logoutTimerRef.current) {
+      clearTimeout(logoutTimerRef.current);
+      logoutTimerRef.current = null;
+    }
+
+    try {
+      const token = localStorageService.getAccessToken();
+      
+      if (token && !isTokenExpired(authData.expiresAt)) {
+        try {
+          await authService.logout();
+        } catch (serverError) {
+          console.warn(
+            "Server logout failed, clearing local session:",
+            serverError
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error during logout process:", error);
+    } finally {
+      localStorageService.removeAuthData();
+
+      setAuthData({
+        token: null,
+        userId: null,
+        expiresAt: null,
+        isValid: false,
+      });
+      setError(null);
+
+      if (redirect && !location.pathname.startsWith("/auth")) {
+        navigate("/auth/login", {
+          replace: true,
+          state: {
+            from: location.pathname,
+            message: auto
+              ? "Twoja sesja wygasła. Zaloguj się ponownie."
+              : "Zostałeś wylogowany.",
+            messageType: auto ? "warning" : "info",
+          },
+        });
+      }
+
+      window.dispatchEvent(new Event("auth-logout"));
+    }
+
+    [navigate, location.pathname, authData.expiresAt];
+  });
 
   const register = useCallback(async (credentials) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const data = authService.register(credentials);
-      return data;
+      const data = await authService.register(credentials);
+      return { success: true, data };
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
-      throw err;
+      console.error("Registration error:", err);
+
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Wystąpił błąd podczas rejestracji. Spróbuj ponownie.";
+
+      setError(errorMessage);
+      return {
+        success: false,
+        error: new Error(errorMessage),
+      };
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const login = useCallback(async (credentials) => {
-    setIsLoading(true);
-    setError(null);
+  const login = useCallback(
+    async (credentials, options = {}) => {
+      const { redirect = "/profile" } = options;
 
-    try {
-      const data = await authService.login(credentials);
+      setIsLoading(true);
+      setError(null);
 
-      const { accessToken, profileId, expiresIn } = data;
+      try {
+        const data = await authService.login(credentials);
 
-      console.log(data);
+        const expiresAt = calculateExpire(data.expiresIn);
 
-      const expiresAt = Date.now() + expiresIn * 1000;
+        localStorageService.setAuthData({
+          accessToken: data.accessToken,
+          profileId: data.profileId,
+          expiresAt,
+        });
 
-      localStorageService.setAuthData({
-        accessToken: accessToken,
-        profileId: profileId,
-        expiresAt: expiresAt,
-      });
+        setAuthData({
+          token: data.accessToken,
+          userId: data.userId,
+          expiresAt,
+          isValid: true,
+        });
 
-      setProfile({
-        accessToken: accessToken,
-        userId: profileId,
-        expiresAt: expiresAt,
-      });
+        if (redirect) {
+          const redirectTo = location.state?.from || redirect;
+          navigate(redirectTo, { replace: true });
+        }
 
-      return data;
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        return { success: true, data };
+      } catch (err) {
+        console.error("Login error:", err);
 
-  const logout = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = authService.logout();
-      return data;
-    } catch (err) {
-      setError(err.response?.data?.message || "Logout failed");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        const errorMessage =
+          err.response?.data?.message ||
+          err.message ||
+          "Wystąpił błąd podczas logowania. Sprawdź dane i spróbuj ponownie.";
 
-  // Check if user is authenticated
-  const isAuthenticated = useCallback(() => {
-    return localStorageService.hasValidToken();
-  }, []);
+        setError(errorMessage);
+        return {
+          success: false,
+          error: new Error(errorMessage),
+        };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [navigate, location.state]
+  );
 
-  // Get current user's token
-  const getToken = useCallback(() => {
-    return localStorageService.getAccessToken();
-  }, []);
+  // get auth headers
+  const getAuthHeaders = useCallback(() => {
+    if (!authData.token || !authData.isValid) return {};
 
-  // Get current user ID
-  const getUserId = useCallback(() => {
-    return localStorageService.getUserId();
-  }, []);
-  
+    return {
+      Authorization: `Bearer ${authData.token}`,
+    };
+  }, [authData.token, authData.isValid]);
+
   // Clears any auth errors
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
   const value = {
-    profile,
+    token: authData.token,
+    userId: authData.userId,
+    expiresAt: authData.expiresAt,
+    isValid: authData.isValid,
+
+    // loading & Error
     isLoading,
     error,
+
+    // computed values
+    isAuthenticated: authData.isValid,
+    timeUntilExpiry: getTimeUntilExpiry(authData.expiresAt),
+
+    // methods
     login,
     register,
-    logout,
-    isAuthenticated,
-    getToken,
-    getUserId,
+    logout: handleLogout,
+    getAuthHeaders,
     clearError,
   };
 

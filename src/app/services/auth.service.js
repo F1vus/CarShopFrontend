@@ -15,7 +15,7 @@ const authService = {
   login: async (credentials) => {
     try {
       const response = await apiClient.post("/auth/login", credentials);
-
+      
       const tokenString = response.data;
 
       let decodedToken;

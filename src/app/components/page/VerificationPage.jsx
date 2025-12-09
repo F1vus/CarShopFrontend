@@ -5,18 +5,14 @@ import authService from "app/services/auth.service.js";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function VerificationPage() {
-  // Stan dla 6-cyfrowego kodu weryfikacyjnego
   const [code, setCode] = useState(["", "", "", "", "", ""]);
 
   const [timeLeft, setTimeLeft] = useState(15);
-  // Flaga pozwalająca na ponowne wysłanie kodu
   const [canResend, setCanResend] = useState(false);
-  // Flaga wskazująca czy trwa proces weryfikacji
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-  // Komunikat błędu
   const [error, setError] = useState("");
-  // Referencje do pól input kodu
+  
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,55 +24,43 @@ function VerificationPage() {
     if (!email) navigate("/auth/register");
   }, [email, navigate]);
 
-  // Efekt zarządzający timerem
   useEffect(() => {
-    // Jeśli czas się skończył, ustaw możliwość ponownego wysłania
     if (timeLeft <= 0) {
       setCanResend(true);
       return;
     }
 
-    // Uruchom timer co sekundę
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
 
-    // Wyczyść timer przy odmontowaniu komponentu
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  // Formatowanie czasu na MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Obsługa zmiany wartości w polu kodu
   const handleCodeChange = (index, value) => {
-    // Walidacja - tylko cyfry są dozwolone
     if (!/^\d*$/.test(value)) return;
 
-    // Aktualizacja stanu kodu
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
     setError(""); // Wyczyść błędy przy zmianie
 
-    // Auto-przejście do następnego pola po wpisaniu cyfry
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
-  // Obsługa klawiszy specjalnych
   const handleKeyDown = (index, e) => {
-    // Backspace - przejście do poprzedniego pola przy pustym polu
     if (e.key === "Backspace" && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
 
-    // Nawigacja strzałkami
     if (e.key === "ArrowRight" && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -85,21 +69,18 @@ function VerificationPage() {
     }
   };
 
-  // Obsługa wklejania kodu
   const handlePaste = (e) => {
     e.preventDefault();
-    // Pobierz dane ze schowka i usuń nie-cyfry
     const pastedData = e.clipboardData.getData("text").replace(/\D/g, "");
     const newCode = [...code];
 
-    // Wypełnij pola wklejonymi danymi
     for (let i = 0; i < Math.min(pastedData.length, 6); i++) {
       newCode[i] = pastedData[i];
     }
 
     setCode(newCode);
     setError("");
-    // Przejdź do ostatniego pola jeśli wklejono pełny kod
+    
     if (pastedData.length === 6) {
       inputRefs.current[5]?.focus();
     }

@@ -9,10 +9,10 @@ import { AuthProvider } from "./app/components/context/authProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
       <BrowserRouter basename="/CarShopFrontend">
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </BrowserRouter>
-    </AuthProvider>
   </StrictMode>
 );
