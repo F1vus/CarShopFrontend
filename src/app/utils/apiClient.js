@@ -29,7 +29,6 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response) => {
-    console.log(`${response.status} ${response.config.url}`);
     return response;
   },
   async (error) => {
@@ -52,9 +51,9 @@ apiClient.interceptors.response.use(
       window.dispatchEvent(new Event("auth-expired"));
 
       // Prevent multiple redirects
-      if (!window.location.pathname.startsWith("/auth")) {
+      if (!window.location.pathname.startsWith("/CarShopFrontend/auth")) {
         setTimeout(() => {
-          window.location.href = "/auth/login?reason=session_expired";
+          window.location.href = "/CarShopFrontend/auth/login";
         }, 100);
       }
     }
@@ -88,6 +87,5 @@ apiClient.setAuthToken = (token) => {
 apiClient.removeAuthToken = () => {
   delete apiClient.defaults.headers.common["Authorization"];
 };
-
 
 export default apiClient;

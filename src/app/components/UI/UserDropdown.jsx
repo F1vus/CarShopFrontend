@@ -59,6 +59,16 @@ function UserDropdown() {
           <div className="navbar__dropdown-header">
             <span>Witaj!</span>
           </div>
+          <Link
+            to="/profile/advertisements?tab=active"
+            className="navbar__dropdown-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <div className="dropdown-item-content">
+              <i className="fa-solid fa-car"></i>
+              <span>Moje ogłoszenia</span>
+            </div>
+          </Link>
 
           <Link
             to="/profile/advertisements?tab=liked"
@@ -72,13 +82,13 @@ function UserDropdown() {
           </Link>
 
           <Link
-            to="/profile/advertisements?tab=active"
+            to="/profile/messages"
             className="navbar__dropdown-item"
             onClick={() => setIsOpen(false)}
           >
             <div className="dropdown-item-content">
-              <i className="fa-solid fa-car"></i>
-              <span>Moje ogłoszenia</span>
+              <i className="bi bi-chat-dots-fill"></i>
+              <span>Powiadomienia</span>
             </div>
           </Link>
 
