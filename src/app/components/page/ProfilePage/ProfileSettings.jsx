@@ -15,7 +15,6 @@ function ProfileSettings() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const token = localStorage.getItem("token");
 
   // Populate form with profile data on load
   useEffect(() => {

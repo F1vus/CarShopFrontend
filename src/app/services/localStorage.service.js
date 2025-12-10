@@ -1,15 +1,21 @@
-import { TOKEN_KEY, PROFILE_ID_KEY, EXPIRES_KEY } from "../utils/authUtils";
+import {
+  TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  PROFILE_ID_KEY,
+  EXPIRES_KEY,
+} from "../utils/authUtils";
 class LocalStorageService {
   constructor() {
     this.storage = typeof window !== "undefined" ? window.localStorage : null;
   }
 
   // Set all auth data at once
-  setAuthData({ accessToken, profileId, expiresAt }) {
+  setAuthData({ accessToken, refreshToken, profileId, expiresAt }) {
     if (!this.storage) return;
 
     try {
       this.storage.setItem(TOKEN_KEY, accessToken || "");
+      this.storage.setItem(REFRESH_TOKEN_KEY, refreshToken || "");
       this.storage.setItem(PROFILE_ID_KEY, profileId?.toString() || "");
       this.storage.setItem(EXPIRES_KEY, expiresAt?.toString() || "");
 
@@ -24,7 +30,14 @@ class LocalStorageService {
   // Get token with validation
   getAccessToken() {
     const token = this.getSafeItem(TOKEN_KEY);
-    // Simple validation - ensure it's a JWT format (optional)
+    if (token && token.split(".").length === 3) {
+      return token;
+    }
+    return null;
+  }
+
+  getRefreshToken() {
+    const token = this.getSafeItem(REFRESH_TOKEN_KEY);
     if (token && token.split(".").length === 3) {
       return token;
     }
@@ -47,7 +60,6 @@ class LocalStorageService {
 
     if (!token || !expiresAt) return false;
 
-    // Add 5-minute buffer for safety
     const buffer = 5 * 60 * 1000;
     return Date.now() < expiresAt - buffer;
   }
@@ -60,12 +72,29 @@ class LocalStorageService {
     return Math.max(expiresAt - Date.now(), 0);
   }
 
+  updateAccessToken(accessToken, expiresIn) {
+    if (!this.storage) return;
+
+    try {
+      this.storage.setItem(TOKEN_KEY, accessToken || "");
+
+      if (expiresIn) {
+        const expiresAt = Date.now() + expiresIn * 1000;
+        this.storage.setItem(EXPIRES_KEY, expiresAt.toString());
+      }
+      this.dispatchStorageEvent();
+    } catch (error) {
+      console.error("Failed to update access token:", error);
+    }
+  }
+
   // Remove all auth data
   removeAuthData() {
     if (!this.storage) return;
 
     try {
       this.storage.removeItem(TOKEN_KEY);
+      this.storage.removeItem(REFRESH_TOKEN_KEY);
       this.storage.removeItem(PROFILE_ID_KEY);
       this.storage.removeItem(EXPIRES_KEY);
 
@@ -134,7 +163,7 @@ class LocalStorageService {
   getAllAuthData() {
     return {
       token: this.getAccessToken(),
-      userId: this.getId(),
+      profileId: this.getId(),
       expiresAt: this.getTokenExpiresDate(),
       isValid: this.hasValidToken(),
       timeUntilExpiry: this.getTimeUntilExpiry(),

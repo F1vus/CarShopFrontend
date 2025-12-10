@@ -1,5 +1,6 @@
 import { jwtDecode } from "jwt-decode";
-import apiClient from "../utils/apiClient";
+import apiClient, { refreshClient } from "../utils/apiClient";
+import localStorageService from "./localStorage.service";
 
 const authService = {
   register: async (credentials) => {
@@ -15,12 +16,13 @@ const authService = {
   login: async (credentials) => {
     try {
       const response = await apiClient.post("/auth/login", credentials);
-      
-      const tokenString = response.data;
+
+      const accessToken = response.data.access_token;
+      const refreshToken = response.data.refresh_token;
 
       let decodedToken;
       try {
-        decodedToken = jwtDecode(tokenString);
+        decodedToken = jwtDecode(accessToken);
 
         if (decodedToken) {
           // get user profile id
@@ -30,7 +32,8 @@ const authService = {
           const expiresIn = decodedToken.exp - decodedToken.iat;
 
           return {
-            accessToken: tokenString,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
             profileId: userProfileId,
             expiresIn: expiresIn,
           };
@@ -49,7 +52,7 @@ const authService = {
   verify: async (credentials) => {
     try {
       const response = await apiClient.post("/auth/verify", credentials);
-      
+
       return response.data;
     } catch (err) {
       console.error("Caught an error while verify request!\n" + err);
@@ -73,6 +76,38 @@ const authService = {
       return response.data;
     } catch (err) {
       console.error("Failed to logout", err);
+      throw err;
+    }
+  },
+
+  refreshToken: async (refreshToken) => {
+    try {
+      if (!refreshToken) {
+        throw new Error("No refresh token available");
+      }
+
+      const response = await refreshClient.post(
+        "/auth/refresh-token",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        }
+      );
+
+      const newAccessToken = response.data.access_token;
+      const newRefreshToken = response.data.refresh_token;
+      const decodedToken = jwtDecode(newAccessToken);
+
+      return {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken || refreshToken,
+        expiresIn: decodedToken.exp - decodedToken.iat,
+        profileId: decodedToken.user_profile_id,
+      };
+    } catch (err) {
+      console.error("Refresh token error:", err);
       throw err;
     }
   },

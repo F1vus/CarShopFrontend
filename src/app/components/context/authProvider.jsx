@@ -32,11 +32,13 @@ export function AuthProvider({ children }) {
 
   const [authData, setAuthData] = useState(() => {
     const token = localStorageService.getAccessToken();
+    const refreshToken = localStorageService.getRefreshToken();
     const id = localStorageService.getId();
     const expiresAt = localStorageService.getTokenExpiresDate();
 
     return {
       token,
+      refreshToken,
       id,
       expiresAt,
       isValid: token && id && isTokenValid(expiresAt),
@@ -47,6 +49,7 @@ export function AuthProvider({ children }) {
 
   // refs for cleanup and timeouts
   const logoutTimerRef = useRef(null);
+  const refreshTimerRef = useRef(null);
   const isMountedRef = useRef(true);
 
   // cleanup on unmount
@@ -57,6 +60,9 @@ export function AuthProvider({ children }) {
       if (logoutTimerRef.current) {
         clearTimeout(logoutTimerRef.current);
       }
+      if (refreshTimerRef.current) {
+        clearTimeout(refreshTimerRef.current);
+      }
     };
   }, []);
 
@@ -66,11 +72,13 @@ export function AuthProvider({ children }) {
       if (!isMountedRef.current) return;
 
       const token = localStorageService.getAccessToken();
+      const refreshToken = localStorageService.getRefreshToken();
       const profileId = localStorageService.getId();
       const expiresAt = localStorageService.getTokenExpiresDate();
 
       setAuthData({
         token,
+        refreshToken,
         profileId,
         expiresAt,
         isValid: token && profileId && isTokenValid(expiresAt),
@@ -79,6 +87,57 @@ export function AuthProvider({ children }) {
 
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (refreshTimerRef.current) {
+      clearTimeout(refreshTimerRef.current);
+    }
+
+    if (!authData.expiresAt || !authData.isValid) return;
+
+    const checkInterval = 60 * 1000; // check every minute
+
+    refreshTimerRef.current = setTimeout(async () => {
+      if (isTokenExpired(authData.expiresAt)) {
+        try {
+          const refreshToken = localStorageService.getRefreshToken();
+          if (refreshToken) {
+            const newTokens = await authService.refreshToken(refreshToken);
+
+            console.log(newTokens.profileId);
+            
+            const expiresAt = calculateExpire(newTokens.expiresIn);
+
+            localStorageService.setAuthData({
+              accessToken: newTokens.accessToken,
+              refreshToken: newTokens.refreshToken,
+              profileId: newTokens.profileId,
+              expiresAt,
+            });
+
+            if (isMountedRef.current) {
+              setAuthData({
+                token: newTokens.accessToken,
+                refreshToken: newTokens.refreshToken,
+                profileId: newTokens.profileId,
+                expiresAt,
+                isValid: true,
+              });
+            }
+          }
+        } catch (refreshError) {
+          console.error("Proactive refresh failed:", refreshError);
+          handleLogout({ auto: true });
+        }
+      }
+    }, checkInterval);
+
+    return () => {
+      if (refreshTimerRef.current) {
+        clearTimeout(refreshTimerRef.current);
+      }
+    };
+  }, [authData.expiresAt, authData.isValid]);
 
   // auto-logout
   useEffect(() => {
@@ -109,22 +168,26 @@ export function AuthProvider({ children }) {
   const handleLogout = useCallback(async (options = {}) => {
     const { auto = false, redirect = true } = options;
 
+    // Clear timers
     if (logoutTimerRef.current) {
       clearTimeout(logoutTimerRef.current);
       logoutTimerRef.current = null;
     }
+    if (refreshTimerRef.current) {
+      clearTimeout(refreshTimerRef.current);
+      refreshTimerRef.current = null;
+    }
 
     try {
       const token = localStorageService.getAccessToken();
-      
-      if (token && !isTokenExpired(authData.expiresAt)) {
+      const refreshToken = localStorageService.getRefreshToken();
+
+      if (token && refreshToken && !isTokenExpired(authData.expiresAt)) {
         try {
           await authService.logout();
+          console.log("Server logout successful");
         } catch (serverError) {
-          console.warn(
-            "Server logout failed, clearing local session:",
-            serverError
-          );
+          console.warn("Server logout failed, clearing local session:", serverError);
         }
       }
     } catch (error) {
@@ -132,13 +195,16 @@ export function AuthProvider({ children }) {
     } finally {
       localStorageService.removeAuthData();
 
-      setAuthData({
-        token: null,
-        userId: null,
-        expiresAt: null,
-        isValid: false,
-      });
-      setError(null);
+      if (isMountedRef.current) {
+        setAuthData({
+          token: null,
+          refreshToken: null,
+          profileId: null,
+          expiresAt: null,
+          isValid: false,
+        });
+        setError(null);
+      }
 
       if (redirect && !location.pathname.startsWith("/auth")) {
         navigate("/auth/login", {
@@ -155,9 +221,7 @@ export function AuthProvider({ children }) {
 
       window.dispatchEvent(new Event("auth-logout"));
     }
-
-    [navigate, location.pathname, authData.expiresAt];
-  });
+  }, [navigate, location.pathname, authData.expiresAt]);
 
   const register = useCallback(async (credentials) => {
     setIsLoading(true);
@@ -198,13 +262,15 @@ export function AuthProvider({ children }) {
 
         localStorageService.setAuthData({
           accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
           profileId: data.profileId,
           expiresAt,
         });
 
         setAuthData({
           token: data.accessToken,
-          userId: data.userId,
+          refreshToken: data.refreshToken,
+          profileId: data.profileId,
           expiresAt,
           isValid: true,
         });
@@ -251,7 +317,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     token: authData.token,
-    userId: authData.userId,
+    profileId: authData.profileId,
     expiresAt: authData.expiresAt,
     isValid: authData.isValid,
 

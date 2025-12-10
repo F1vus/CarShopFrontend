@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   NavLink,
-  Navigate,
   useLocation,
   useNavigate,
   Outlet,
@@ -9,7 +8,6 @@ import {
 import "styles/profilePage/_profile-page.scss";
 import profileService from "services/profile.service";
 import { useAuth } from "../../context/authProvider";
-import Loader from "../../UI/Loader";
 
 function ProfilePage() {
   const navigate = useNavigate();
