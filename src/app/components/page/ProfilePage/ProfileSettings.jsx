@@ -15,7 +15,6 @@ function ProfileSettings() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const token = localStorage.getItem("token");
 
   // Populate form with profile data on load
   useEffect(() => {
@@ -65,14 +64,11 @@ function ProfileSettings() {
         phoneNumber: formData.phoneNumber,
       };
 
-      // If you have a profileImage and it's a string (already uploaded), include it
       if (typeof formData.profileImage === "string") {
         dataToSend.profileImage = formData.profileImage;
       }
 
-      // Call API to update profile
       const updatedProfile = await profileService.updateProfile(
-        token,
         dataToSend
       );
 

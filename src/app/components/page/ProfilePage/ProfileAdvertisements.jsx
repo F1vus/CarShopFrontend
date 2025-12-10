@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Navigate, Link, useNavigate, useOutletContext } from "react-router-dom";
+import {
+  Navigate,
+  Link,
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
 import profileService from "services/profile.service.js";
 import "styles/profilePage/_profile-advertisements.scss";
 import partners from "assets/img/auth-page/partners.svg";
@@ -10,11 +16,14 @@ import carService from "../../../services/car.service";
 function ProfileAdvertisements() {
   const [cars, setCars] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [tab, setTab] = useState("active");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const {profileId} = useOutletContext() || {};
+  const { profileId } = useOutletContext() || {};
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab") || "active";
+
+  const isLikedTab = tab === "liked";
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,10 +43,11 @@ function ProfileAdvertisements() {
 
   // TODO: add useEffect for favorites
 
-  const handleDelete = async (carId) => {
-    // ask user to confirm
-    console.log(carId);
+  const handleTabChange = (tabName) => {
+    setSearchParams({ tab: tabName });
+  };
 
+  const handleDelete = async (carId) => {
     setIsLoading(true);
     try {
       await carService.deleteById(carId);
@@ -52,28 +62,25 @@ function ProfileAdvertisements() {
     }
   };
 
-  // -----------------------------
   const handleEdit = (car) => {
     const carId = car.id || car._id;
-    navigate(`/profile/advertisements/${carId}/edit`, { state: { car } });
+    navigate(`/profile/advertisements/edit/${carId}`, { state: { car } });
   };
 
   if (isError) return <Navigate to="/*" replace />;
 
-  const isActiveTab = tab === "active";
-
   return (
     <article className="profile-ads">
-      {/* NAVIGATION */}
+      {/* NAVIGATION - Uses query parameters */}
       <nav className="profile-ads__navigation" aria-label="Profile tabs">
         <li className="profile-ads__navigation-item">
           <button
             type="button"
             className={`profile-ads__tab-btn ${
-              isActiveTab ? "link-active" : ""
+              !isLikedTab ? "link-active" : ""
             }`}
-            onClick={() => setTab("active")}
-            aria-pressed={isActiveTab}
+            onClick={() => handleTabChange("active")}
+            aria-pressed={!isLikedTab}
           >
             Aktywne
           </button>
@@ -83,10 +90,10 @@ function ProfileAdvertisements() {
           <button
             type="button"
             className={`profile-ads__tab-btn ${
-              !isActiveTab ? "link-active" : ""
+              isLikedTab ? "link-active" : ""
             }`}
-            onClick={() => setTab("favorites")}
-            aria-pressed={!isActiveTab}
+            onClick={() => handleTabChange("liked")}
+            aria-pressed={isLikedTab}
           >
             Ulubione
           </button>
@@ -98,13 +105,12 @@ function ProfileAdvertisements() {
           <Loader />
         ) : (
           <>
-            {/* ---------- ACTIVE TAB ---------- */}
-            {isActiveTab && (
+            {!isLikedTab && (
               <>
-                <h4 className="profile-ads__title">Aktywne</h4>
+                <h4 className="profile-ads__title">Aktywne ogłoszenia</h4>
 
                 <div className="profile-ads__content-block">
-                  {cars.length > 0 && (
+                  {cars.length > 0 ? (
                     <div className="profile-ads__content-list">
                       <ul className="profile-ads__list">
                         {cars.map((car) => {
@@ -115,47 +121,17 @@ function ProfileAdvertisements() {
                               className="profile-ads__list-item"
                               aria-label={`ogłoszenie-${id}`}
                             >
-                              <CarCard carInfo={car} isProfileCard={true} handles={{handleDelete, handleEdit}}/>
+                              <CarCard
+                                carInfo={car}
+                                isProfileCard={true}
+                                handles={{
+                                  handleDelete,
+                                  handleEdit,
+                                }}
+                              />
                             </li>
                           );
                         })}
-                      </ul>
-                    </div>
-                  )}
-                  <div className="profile-ads__add-block">
-                    <img
-                      className="profile-ads__add-img"
-                      src={partners}
-                      alt="Add new car"
-                    />
-                    <p className="profile-ads__add-text">
-                      Dodaj już dziś ogłoszenie swojego kolejnego pojazdu.
-                    </p>
-                    <Link to="/sellcar" className="profile-ads__add-btn">
-                      Wyceń swoje auto
-                    </Link>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* ---------- FAVORITES TAB ---------- */}
-            {!isActiveTab && (
-              <>
-                <h4 className="profile-ads__title">Ulubione</h4>
-
-                <div className="profile-ads__content-block">
-                  {favorites.length > 0 ? (
-                    <div className="profile-ads__content-list">
-                      <ul className="profile-ads__list">
-                        {favorites.map((fav) => (
-                          <li
-                            key={fav.id || fav._id}
-                            className="profile-ads__list-item"
-                          >
-                            <CarCard carInfo={fav} />
-                          </li>
-                        ))}
                       </ul>
                     </div>
                   ) : (
@@ -163,7 +139,57 @@ function ProfileAdvertisements() {
                       <img
                         className="profile-ads__add-img"
                         src={partners}
+                        alt="Brak ogłoszeń"
+                      />
+                      <p>Nie masz jeszcze żadnych ogłoszeń.</p>
+                      <Link to="/sellcar" className="profile-ads__browse-btn">
+                        Dodaj pierwsze ogłoszenie
+                      </Link>
+                    </div>
+                  )}
+                  {cars.length > 0 && (
+                    <div className="profile-ads__add-block">
+                      <img
+                        className="profile-ads__add-img"
+                        src={partners}
                         alt="Add new car"
+                      />
+                      <p className="profile-ads__add-text">
+                        Dodaj już dziś ogłoszenie swojego kolejnego pojazdu.
+                      </p>
+                      <Link to="/sellcar" className="profile-ads__add-btn">
+                        Wyceń swoje auto
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {isLikedTab && (
+              <>
+                <h4 className="profile-ads__title">Ulubione ogłoszenia</h4>
+
+                <div className="profile-ads__content-block">
+                  {favorites.length > 0 ? (
+                    <div className="profile-ads__content-list">
+                      <ul className="profile-ads__list">
+                        {favorites.map((fav) => {
+                          const id = fav.id || fav._id;
+                          return (
+                            <li key={id} className="profile-ads__list-item">
+                              <CarCard carInfo={fav} />
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="profile-ads__empty">
+                      <img
+                        className="profile-ads__add-img"
+                        src={partners}
+                        alt="Brak ulubionych"
                       />
                       <p>Brak ulubionych ogłoszeń.</p>
                       <Link to="/cars" className="profile-ads__browse-btn">
