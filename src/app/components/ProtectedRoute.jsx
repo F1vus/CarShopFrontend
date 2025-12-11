@@ -1,7 +1,4 @@
 function ProtectedRoute({children}) {
-
-  
-
   return (  );
 }
 
