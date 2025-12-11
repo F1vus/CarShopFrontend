@@ -1,79 +1,46 @@
-import axios from "axios";
-import config from "@/config";
+import apiClient from "../utils/apiClient";
 
-const authEndpoint = "/api/v1/profiles";
+const PROFILE_ENDPOINT = "/v1/profiles";
 
 const profileService = {
-  getProfileData: async (qvtToken) => {
-    const request = {
-      method: "GET",
-      url: config.apiEndpoint + authEndpoint,
-      headers: {
-        Authorization: `Bearer ${qvtToken}`,
-        "Content-Type": "application/json",
-      },
-      allowAbsoluteUrls: true,
-    };
-
+  getProfileData: async () => {
     try {
-      const response = await axios.request(request);
+      const response = await apiClient.get(PROFILE_ENDPOINT);
       return response.data;
     } catch (err) {
-      console.error(err);
+      console.error("Caught an error while getting profile data! " + err);
       throw err;
     }
   },
-  getProfileId: async (qvtToken) => {
-    const request = {
-      method: "GET",
-      url: config.apiEndpoint + authEndpoint,
-      headers: {
-        Authorization: `Bearer ${qvtToken}`,
-        "Content-Type": "application/json",
-      },
-      allowAbsoluteUrls: true,
-    };
 
+  getProfileId: async () => {
     try {
-      const response = await axios.request(request);
-      return response.data?.id;
+      const response = await apiClient.get(PROFILE_ENDPOINT);
+      return response.data.id;
     } catch (err) {
-      console.error(err);
+      console.error("Caught an error while getting profile Id! " + err);
       throw err;
     }
   },
+
   getProfileCars: async (profileId) => {
-    const request = {
-      method: "GET",
-      url: config.apiEndpoint + authEndpoint + `/${profileId}` + "/cars",
-      allowAbsoluteUrls: true,
-    };
-
     try {
-      const response = await axios.request(request);
+      const response = await apiClient.get(
+        `${PROFILE_ENDPOINT}/${profileId}/cars`
+      );
       return response.data;
     } catch (err) {
-      console.error(err);
+      console.error("Caught an error while getting profile cars data! " + err);
       throw err;
     }
   },
-  updateProfile: async (qvtToken, profileData) => {
-    const request = {
-      method: "PATCH",
-      url: config.apiEndpoint + authEndpoint,
-      headers: {
-        Authorization: `Bearer ${qvtToken}`,
-        "Content-Type": "application/json",
-      },
-      data: profileData,
-      allowAbsoluteUrls: true,
-    };
 
+  updateProfile: async (profileData) => {
     try {
-      const response = await axios.request(request);
+      const response = await apiClient.patch(PROFILE_ENDPOINT, profileData);
       return response.data;
     } catch (err) {
-      console.error(err);
+      console.error("Caught an error while updating profile data! " + err);
       throw err;
     }
   },

@@ -1,23 +1,27 @@
 import { useMemo, useState } from "react";
 import "styles/_authorization.scss";
-import authService from "services/auth.service.js";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/authProvider";
 
 function AuthorizationPage() {
   const navigate = useNavigate();
   const { authFormType } = useParams();
-  const [tab, setTab] = useState(authFormType === "register" ? authFormType : "login");
+  const [tab, setTab] = useState(
+    authFormType === "register" ? authFormType : "login"
+  );
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
-  const [isLogged, setIsLogged] = useState(true);
+
+  const { login, register, error: authError, clearError } = useAuth();
 
   const toggleFormTab = () => {
     const newFormTab = authFormType === "register" ? "login" : "register";
     setTab(newFormTab);
     navigate(`/auth/${newFormTab}`);
+    clearError();
   };
 
   const pwdChecks = useMemo(
@@ -44,39 +48,37 @@ function AuthorizationPage() {
 
   const allOk = pwdChecks.every((c) => c.ok);
 
-  function sendSignUpRequest(event) {
+  async function sendSignUpRequest(event) {
     event.preventDefault();
 
-    authService
-      .register({
+    try {
+      const response = await register({
         username: username,
         email: email,
         password: password,
-      })
-      .then(() => {
-        navigate("/auth/verify", { state: { email } });
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setIsCreated(false);
       });
+
+      if (response.success) {
+        navigate("/auth/verify", { state: { email } });
+      }
+    } catch (err) {
+      console.err("Registration error:", err);
+      setIsCreated(false);
+    }
   }
 
-  function sendLoginRequest(event) {
+  async function sendLoginRequest(event) {
     event.preventDefault();
-    authService
-      .login({
+    try {
+      await login({
         email: email,
         password: password,
-      })
-      .then((data) => {
-        localStorage.setItem("token", data);
-        navigate("/profile");
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        setIsLogged(false);
       });
+      navigate("/profile");
+    } catch (err) {
+      console.log(authError);
+      console.error("Login error:", err);
+    }
   }
 
   function handleSubmit(e) {
@@ -179,9 +181,9 @@ function AuthorizationPage() {
               Account created!
             </div>
           )}
-          {!isLogged && (
+          {authError != null && (
             <div className="alert alert-danger text-center" role="alert">
-              An error occurred while attempting to log in.
+              {authError}
             </div>
           )}
         </form>

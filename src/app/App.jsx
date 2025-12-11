@@ -28,12 +28,9 @@ function App() {
           <Route path="/basket" element={<ShoppingBasketPage />} />
           <Route path="/profile" element={<ProfilePage />}>
             <Route index element={<Navigate to="advertisements" replace />} />
+            <Route path="advertisements" element={<ProfileAdvertisements />} />
             <Route
-              path="advertisements/*"
-              element={<ProfileAdvertisements />}
-            />
-            <Route
-              path="advertisements/:carId/edit"
+              path="advertisements/edit/:carId"
               element={<EditCarPage />}
             />
             <Route path="messages" element={<ProfileMessages />} />
