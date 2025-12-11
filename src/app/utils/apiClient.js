@@ -161,7 +161,7 @@ apiClient.interceptors.response.use(
 
 refreshClient.interceptors.request.use(
   (config) => {
-    if (config.url === "/auth/refresh") {
+    if (config.url === "/auth/refresh-token") {
       const refreshToken = localStorageService.getRefreshToken();
       if (refreshToken) {
         config.headers.Authorization = `Bearer ${refreshToken}`;

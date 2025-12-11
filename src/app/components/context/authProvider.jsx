@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
             const newTokens = await authService.refreshToken(refreshToken);
 
             console.log(newTokens.profileId);
-            
+
             const expiresAt = calculateExpire(newTokens.expiresIn);
 
             localStorageService.setAuthData({
@@ -139,10 +139,80 @@ export function AuthProvider({ children }) {
     };
   }, [authData.expiresAt, authData.isValid]);
 
+  const handleLogout = useCallback(
+    async (options = {}) => {
+      const { auto = false, redirect = true } = options;
+
+      // Clear timers
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+        logoutTimerRef.current = null;
+      }
+      if (refreshTimerRef.current) {
+        clearTimeout(refreshTimerRef.current);
+        refreshTimerRef.current = null;
+      }
+
+      try {
+        const token = localStorageService.getAccessToken();
+        const refreshToken = localStorageService.getRefreshToken();
+
+        if (token && refreshToken && !isTokenExpired(authData.expiresAt)) {
+          try {
+            await authService.logout();
+            console.log("Server logout successful");
+          } catch (serverError) {
+            console.warn(
+              "Server logout failed, clearing local session:",
+              serverError
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error during logout process:", error);
+      } finally {
+        localStorageService.removeAuthData();
+
+        if (isMountedRef.current) {
+          setAuthData({
+            token: null,
+            refreshToken: null,
+            profileId: null,
+            expiresAt: null,
+            isValid: false,
+          });
+          setError(null);
+        }
+
+        if (redirect && !location.pathname.startsWith("/auth")) {
+          navigate("/auth/login", {
+            replace: true,
+            state: {
+              from: location.pathname,
+              message: auto
+                ? "Twoja sesja wygasła. Zaloguj się ponownie."
+                : "Zostałeś wylogowany.",
+              messageType: auto ? "warning" : "info",
+            },
+          });
+        }
+
+        window.dispatchEvent(new Event("auth-logout"));
+      }
+    },
+    [navigate, location.pathname, authData.expiresAt]
+  );
+
   // auto-logout
   useEffect(() => {
     if (logoutTimerRef.current) {
       clearTimeout(logoutTimerRef.current);
+    }
+
+    if (authData.expiresAt && !authData.isValid) {
+      console.log("Token is invalid, logging out immediately");
+      handleLogout({ auto: true });
+      return;
     }
 
     if (!authData.expiresAt || !authData.isValid) return;
@@ -150,11 +220,13 @@ export function AuthProvider({ children }) {
     const timeUntilExpiry = getTimeUntilExpiry(authData.expiresAt);
 
     if (timeUntilExpiry <= 0) {
-      handleLogout();
+      console.log("Token already expired, logging out");
+      handleLogout({ auto: true });
       return;
     }
 
     logoutTimerRef.current = setTimeout(() => {
+      console.log("Auto-logout timer fired");
       handleLogout({ auto: true });
     }, timeUntilExpiry);
 
@@ -163,65 +235,7 @@ export function AuthProvider({ children }) {
         clearTimeout(logoutTimerRef.current);
       }
     };
-  }, [authData.expiresAt, authData.isValid]);
-
-  const handleLogout = useCallback(async (options = {}) => {
-    const { auto = false, redirect = true } = options;
-
-    // Clear timers
-    if (logoutTimerRef.current) {
-      clearTimeout(logoutTimerRef.current);
-      logoutTimerRef.current = null;
-    }
-    if (refreshTimerRef.current) {
-      clearTimeout(refreshTimerRef.current);
-      refreshTimerRef.current = null;
-    }
-
-    try {
-      const token = localStorageService.getAccessToken();
-      const refreshToken = localStorageService.getRefreshToken();
-
-      if (token && refreshToken && !isTokenExpired(authData.expiresAt)) {
-        try {
-          await authService.logout();
-          console.log("Server logout successful");
-        } catch (serverError) {
-          console.warn("Server logout failed, clearing local session:", serverError);
-        }
-      }
-    } catch (error) {
-      console.error("Error during logout process:", error);
-    } finally {
-      localStorageService.removeAuthData();
-
-      if (isMountedRef.current) {
-        setAuthData({
-          token: null,
-          refreshToken: null,
-          profileId: null,
-          expiresAt: null,
-          isValid: false,
-        });
-        setError(null);
-      }
-
-      if (redirect && !location.pathname.startsWith("/auth")) {
-        navigate("/auth/login", {
-          replace: true,
-          state: {
-            from: location.pathname,
-            message: auto
-              ? "Twoja sesja wygasła. Zaloguj się ponownie."
-              : "Zostałeś wylogowany.",
-            messageType: auto ? "warning" : "info",
-          },
-        });
-      }
-
-      window.dispatchEvent(new Event("auth-logout"));
-    }
-  }, [navigate, location.pathname, authData.expiresAt]);
+  }, [authData.expiresAt, authData.isValid, handleLogout]);
 
   const register = useCallback(async (credentials) => {
     setIsLoading(true);
