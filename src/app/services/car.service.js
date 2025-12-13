@@ -2,6 +2,7 @@ import axios from "axios";
 import config from "@/config";
 
 const carEndpoint = "/api/v1/cars";
+const lookupEndpoint = "/api/v1/lookups/metadata";
 
 const carService = {
   getAll: async () => {
@@ -34,6 +35,43 @@ const carService = {
       throw err;
     }
   },
+
+
+
+
+    getMetadata: async () => {
+        try {
+            const response = await axios.get(
+                config.apiEndpoint + lookupEndpoint
+            );
+            return response.data;
+        } catch (err) {
+            console.error("Failed to fetch metadata", err);
+            throw err;
+        }
+    },
+
+    createCar: async (body) => {
+        try {
+            const response = await axios.post(
+                config.apiEndpoint + carEndpoint,
+                body
+            );
+            return response.data;
+        } catch (err) {
+            console.error(
+                "Failed to create car",
+                err.response?.status,
+                err.response?.data
+            );
+            throw err;
+        }
+    },
+
+
+
+
+
   deleteById: async (carId) => {
     const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
     try {
