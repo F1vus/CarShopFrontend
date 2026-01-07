@@ -133,11 +133,6 @@ function CarInfoPage({ carId }) {
             </div>
             <div className="car-info__aside-salesman-info">
               <div className="salesman-top">
-                <img
-                  src={carInfo.owner?.profileImage || '/placeholder-user.png'}
-                  alt={carInfo.owner?.name}
-                  className="salesman-avatar"
-                />
                 <div className="salesman-meta">
                   <h4>{carInfo.owner?.name || 'Sprzedawca'}</h4>
                   <p className="user-info">
