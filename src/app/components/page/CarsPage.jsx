@@ -9,6 +9,7 @@ import { Navigate } from "react-router-dom";
 import FiltrationForm from "../UI/FiltrationForm";
 import paginate from "../../utils/paginate";
 import Pagination from "../UI/Pagination";
+import noResultsImg from "assets/img/no-results.svg";
 
 function parseNumber(value) {
   if (value === undefined || value === null || value === "") return null;
@@ -119,24 +120,6 @@ function CarsPage() {
     setSearchParams(newParams);
   };
 
-  const handleClearFilters = () => {
-    // clear only filter keys and keep other non-filter params if needed
-    const newParams = new URLSearchParams(searchParams.toString());
-    [
-      "priceFrom",
-      "priceTo",
-      "yearFrom",
-      "yearTo",
-      "mileageFrom",
-      "mileageTo",
-      "color",
-      "fuelType",
-      "producer",
-    ].forEach((p) => newParams.delete(p));
-    newParams.delete("page");
-    setSearchParams(newParams);
-  };
-
   return (
     <div className="cars-page">
       <aside className="filtration-form-aside">
@@ -150,20 +133,12 @@ function CarsPage() {
           <div className="no-results" role="status" aria-live="polite">
             <div className="no-results__wrapper">
               <h3 className="no-results__title">Brak ogłoszeń</h3>
+              <img src={noResultsImg} alt="No result were found!" className="no-results-img" />
               <p className="no-results__desc">
                 Nie znaleziono samochodów pasujących do wybranych parametrów.
                 Spróbuj poszerzyć zakres filtrów lub wyczyść je, aby zobaczyć
                 wszystkie ogłoszenia.
               </p>
-              <div className="no-results__actions">
-                <button
-                  type="button"
-                  className="no-results__clear-btn"
-                  onClick={handleClearFilters}
-                >
-                  Wyczyść filtry
-                </button>
-              </div>
             </div>
           </div>
         ) : (

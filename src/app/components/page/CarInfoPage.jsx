@@ -116,7 +116,6 @@ function CarInfoPage({ carId }) {
               </p>
             </div>
             <div className="car-info__aside-salesman-info">
-              {/* TODO */}
               <h4>{carInfo.owner?.name || "Sprzedawca"}</h4>
               <p className="user-info">
                 <i className="bi bi-shield-fill-check"></i>
