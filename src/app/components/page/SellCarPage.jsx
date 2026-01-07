@@ -1,9 +1,211 @@
-import "styles/profilePage/_car-sell-page.scss";
-import React, { useState, useEffect } from "react";
-import carService from "services/car.service.js";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import carService from "../../services/car.service";
+import { useAuth } from "../context/authProvider";
+import "styles/_sell-car-page.scss";
+
+const DRAFT_KEY = "sellCarDraft_v1";
 
 function SellCarPage() {
-    const [dane, setDane] = useState({
+  const { isAuthenticated, profileId, getAuthHeaders } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    description: "",
+    color: "",
+    mileage: "",
+    carState: "",
+    petrolType: "",
+    engineCapacity: "",
+    power: "",
+    year: "",
+    photos: "",
+    producent: "",
+    hadAccidents: false,
+  });
+
+  const [metadata, setMetadata] = useState({
+    color: [],
+    carState: [],
+    petrolType: [],
+    producent: [],
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // draft helpers (omitted for brevity in this snippet; keep your existing ones)
+  const loadDraft = () => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (err) {
+      console.warn("Failed to parse sell car draft", err);
+      return null;
+    }
+  };
+  const saveDraft = (data) => {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    } catch (err) {
+      console.warn("Failed to save draft", err);
+    }
+  };
+  const clearDraft = () => {
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch (err) {
+      console.warn("Failed to clear draft", err);
+    }
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    async function getMetadata() {
+      try {
+        const data = await carService.getMetadata();
+        const normalized = {
+          color: data.colors || data.color || [],
+          petrolType: data.petrols || data.petrolType || [],
+          producent: data.producers || data.producent || [],
+          carState: data.carStates || data.carState || [],
+        };
+        if (!mounted) return;
+        setMetadata(normalized);
+      } catch (err) {
+        console.error("Error fetching metadata for form:", err);
+      } finally {
+        if (!mounted) return;
+        setIsLoading(false);
+        const draft = loadDraft();
+        if (draft) setFormData((prev) => ({ ...prev, ...draft }));
+      }
+    }
+    getMetadata();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // handle change same as before (checkbox support)
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const fieldValue = type === "checkbox" ? checked : value;
+    setFormData((prev) => {
+      const next = { ...prev, [name]: fieldValue };
+      saveDraft(next);
+      return next;
+    });
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = "Nazwa samochodu jest wymagana";
+    if (!formData.producent) newErrors.producent = "Producent jest wymagany";
+    if (!formData.description) newErrors.description = "Opis jest wymagany";
+    if (!formData.price || Number(formData.price) <= 0)
+      newErrors.price = "Cena musi być większa niż 0";
+    if (!formData.year || Number(formData.year) <= 0)
+      newErrors.year = "Rok jest wymagany";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const isValidUrl = (url) => /^https?:\/\/.+/.test(url);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    // if not authenticated -> save draft and redirect to login
+    if (!isAuthenticated) {
+      saveDraft(formData);
+      navigate("/auth/login", {
+        state: {
+          from: location.pathname,
+          message:
+            "Musisz się zalogować, aby wystawić ogłoszenie. Twoje dane zostały zapisane.",
+        },
+      });
+      return;
+    }
+
+    const photoUrls = formData.photos
+      ? formData.photos
+          .split(",")
+          .map((url) => url.trim())
+          .filter(Boolean)
+      : [];
+
+    for (const url of photoUrls) {
+      if (!isValidUrl(url)) {
+        setErrors((prev) => ({ ...prev, photos: "Niepoprawny URL zdjęcia" }));
+        return;
+      }
+    }
+
+    const getFullObject = (id, metadataArray) => {
+      if (!id) return null;
+      const item = metadataArray.find(
+        (item) =>
+          item.id === Number(id) ||
+          item.colorID === Number(id) ||
+          item.petrolID === Number(id)
+      );
+      return item
+        ? { id: item.id || item.colorID || item.petrolID, name: item.name }
+        : null;
+    };
+
+    // Build payload: include the user's id so DB constraint is satisfied.
+    // Adjust property names to match backend expectations.
+    const payload = {
+      name: formData.name,
+      price: Number(formData.price),
+      description: formData.description,
+      mileage: formData.mileage ? Number(formData.mileage) : null,
+      engineCapacity: formData.engineCapacity
+        ? Number(formData.engineCapacity)
+        : null,
+      power: formData.power ? Number(formData.power) : null,
+      year: Number(formData.year),
+      carState: formData.carState || null,
+      color: getFullObject(formData.color, metadata.color),
+      petrolType: getFullObject(formData.petrolType, metadata.petrolType),
+      producent: getFullObject(formData.producent, metadata.producent),
+      photos: photoUrls.map((url) => ({ url })),
+      hadAccidents: formData.hadAccidents || false,
+      // important: user reference (choose one your backend expects)
+      usersProfilesId: profileId ? Number(profileId) : undefined,
+      users_profiles_id: profileId ? Number(profileId) : undefined,
+      ownerId: profileId ? Number(profileId) : undefined,
+      // if your backend expects an object:
+      owner: profileId ? { id: Number(profileId) } : undefined,
+    };
+
+    // remove undefined fields to keep payload clean
+    Object.keys(payload).forEach(
+      (k) => payload[k] === undefined && delete payload[k]
+    );
+
+    try {
+      setIsSubmitting(true);
+      // pass auth headers from context if available
+      const headers =
+        typeof getAuthHeaders === "function" ? getAuthHeaders() : {};
+      await carService.createCar(payload, { headers });
+
+      clearDraft();
+      setFormData({
         name: "",
         price: "",
         description: "",
@@ -15,241 +217,282 @@ function SellCarPage() {
         power: "",
         year: "",
         photos: "",
-        producent: ""
-    });
+        producent: "",
+        hadAccidents: false,
+      });
 
-    const [metadata, setMetadata] = useState({
-        color: [],
-        carState: [],
-        petrolType: [],
-        producent: []
-    });
+      alert("Samochód został wystawiony!");
+    } catch (err) {
+      console.error("Create car error:", err);
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errors, setErrors] = useState({});
+      const status = err.response?.status;
+      if (status === 401) {
+        saveDraft(formData);
+        navigate("/auth/login", {
+          state: {
+            from: location.pathname,
+            message:
+              "Twoja sesja wygasła lub nie jesteś zalogowany. Twoje dane zostały zapisane.",
+          },
+        });
+        return;
+      }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setDane(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: undefined }));
-        }
-    };
-
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!dane.name) newErrors.name = "Car name is required";
-        if (!dane.producent) newErrors.producent = "Producent is required";
-        if (!dane.description) newErrors.description = "Description is required";
-        if (!dane.price || Number(dane.price) <= 0) newErrors.price = "Price must be > 0";
-        if (!dane.year || Number(dane.year) <= 0) newErrors.year = "Year is required";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const isValidUrl = (url) => /^https?:\/\/.+/.test(url);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm()) return;
-
-        const photoUrls = dane.photos
-            ? dane.photos.split(",").map(url => url.trim())
-            : [];
-
-        for (const url of photoUrls) {
-            if (!isValidUrl(url)) {
-                alert("Niepoprawny URL zdjęcia");
-                return;
-            }
-        }
-
-        const payload = {
-            name: dane.name,
-            price: Number(dane.price),
-            description: dane.description,
-            mileage: Number(dane.mileage),
-            engineCapacity: Number(dane.engineCapacity),
-            power: Number(dane.power),
-            year: Number(dane.year),
-            carState: dane.carState,
-
-            color: dane.color ? { id: Number(dane.color) } : null,
-            petrolType: dane.petrolType ? { id: Number(dane.petrolType) } : null,
-            producent: dane.producent ? { id: Number(dane.producent) } : null,
-
-            photos: photoUrls.map(url => ({ url }))
-        };
-
-        try {
-            setIsSubmitting(true);
-            await carService.createCar(payload);
-            alert("Samochód został wystawiony!");
-            setDane({
-                name: "",
-                price: "",
-                description: "",
-                color: "",
-                mileage: "",
-                carState: "",
-                petrolType: "",
-                engineCapacity: "",
-                power: "",
-                year: "",
-                photos: "",
-                producent: ""
-            });
-        } catch (error) {
-            console.error(error);
-            alert("Błąd podczas tworzenia ogłoszenia");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    useEffect(() => {
-        const fetchMetadata = async () => {
-            try {
-                const data = await carService.getMetadata();
-                setMetadata(data);
-            } catch (error) {
-                console.error("Failed to load metadata:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchMetadata();
-    }, []);
-
-    if (isLoading) {
-        return (
-            <div className="car-sell">
-                <h1>Ładowanie danych formularza...</h1>
-            </div>
+      const serverErrors = err.response?.data?.errors;
+      if (serverErrors && typeof serverErrors === "object") {
+        const mapped = {};
+        Object.keys(serverErrors).forEach((k) => {
+          mapped[k] = Array.isArray(serverErrors[k])
+            ? serverErrors[k].join(", ")
+            : String(serverErrors[k]);
+        });
+        setErrors((prev) => ({ ...prev, ...mapped }));
+      } else {
+        alert(
+          err.response?.data?.message ||
+            "Błąd podczas tworzenia ogłoszenia. Twoje dane zostały zapisane."
         );
+      }
+      saveDraft(formData);
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
+  const handleReset = (e) => {
+    e.preventDefault();
+    clearDraft();
+    setFormData({
+      name: "",
+      price: "",
+      description: "",
+      color: "",
+      mileage: "",
+      carState: "",
+      petrolType: "",
+      engineCapacity: "",
+      power: "",
+      year: "",
+      photos: "",
+      producent: "",
+      hadAccidents: false,
+    });
+    setErrors({});
+  };
 
+  if (isLoading) {
     return (
-        <div className="car-sell">
-            <header className="car-sell__header_inside">Sprzedaj swój samochód</header>
-            <h1 className="car-sell__title">Wypełnij poniższy formularz, aby wystawić swój samochód na sprzedaż.</h1>
-
-            <form  className="car-sell__form"  onSubmit={handleSubmit}>
-                <h2 className="car-sell__powdstawoweInformacje">Podstawowe informacje</h2>
-
-                <div className="car-sell__podstawowe-informacje">
-
-                    <div className="form-item">
-                        <label htmlFor="carName">Nazwa samochodu</label>
-                        <input type="text" id="carName" className="car-sell__nazwa-samochodu" name="name" value={dane.name} onChange={handleChange} />
-                    </div>
-
-                    <div className="form-item">
-                        <label htmlFor="price">Cena</label>
-                        <input type="number" id="price" className="car-sell__cena" name="price" value={dane.price} onChange={handleChange} />
-                    </div>
-
-                    <div className="form-item">
-                        <label htmlFor="manufacturer">Producent</label>
-                        <select id="manufacturer" className="car-sell__producent" name="producent" value={dane.producent} onChange={handleChange}>
-                            <option value="" disabled>Wybierz producenta</option>
-                            {metadata.producent.map(item => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="form-item">
-                        <label htmlFor="year">Rok</label>
-                        <input type="number" id="year" className="car-sell__rok" name="year" value={dane.year} onChange={handleChange} />
-                    </div>
-                </div>
-
-
-
-                <h2 className="car-sell__specyfikacjeTechniczne">Specyfikacje techniczne</h2>
-                <div className="car-sell__specyfikacje-techniczne">
-
-                    <div className="form-item">
-                        <label htmlFor="mileage">Przebieg (km)</label>
-                        <input type="number" id="mileage" className="car-sell__przebieg" name="mileage" value={dane.mileage} onChange={handleChange} />
-                    </div>
-
-                    <div className="form-item">
-                        <label htmlFor="engineCapacity">Pojemność silnika (l)</label>
-                        <input type="number" id="engineCapacity" className="car-sell__pojemnosc-silnika" name="engineCapacity" value={dane.engineCapacity} onChange={handleChange} />
-                    </div>
-
-                    <div className="form-item">
-                        <label htmlFor="power">Moc</label>
-                        <input type="number" id="power" className="car-sell__moc" name="power" value={dane.power} onChange={handleChange} />
-                    </div>
-
-
-                    <div className="form-item">
-                        <label htmlFor="fuelType">Rodzaj paliwa</label>
-                        <select id="fuelType" className="car-sell__rodzaj-paliwa" name="petrolType" value={dane.petrolType} onChange={handleChange}>
-                            <option value="" disabled>Wybierz paliwo</option>
-                            {metadata.petrolType.map(item => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                <h2 className="car-sell__wyglad-stan-naglowek">Wygląd i stan</h2>
-
-                <div className="car-sell__wyglad-stan">
-
-
-                    <div className="form-item">
-                        <label htmlFor="color">Kolor</label>
-                        <select id="color" className="car-sell__kolor" name="color" value={dane.color} onChange={handleChange}>
-                            <option value="" disabled>Wybierz kolor</option>
-                            {metadata.color.map(item => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-
-                    <div className="form-item">
-                        <label htmlFor="condition">Warunek</label>
-                        <select id="condition" className="car-sell__stan" name="carState" value={dane.carState} onChange={handleChange}>
-                            <option value="" disabled>Wybierz warunek</option>
-                            {metadata.carState.map((item, index) => (
-                                <option key={item.id || index} value={item.id || item}>{item.name || item}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                <div className="car-sell__opis-zdjecia">
-                    <h2>Opis i zdjęcia</h2>
-
-                    <label htmlFor="description">Opis</label>
-                    <textarea id="description" className="car-sell__opis" name="description" value={dane.description} onChange={handleChange} />
-
-                    <label htmlFor="photoUrl">Adresy URL zdjęć</label>
-                    <button className="car-sell__dodaj-zdjecie" type="button">+ Dodaj kolejne zdjęcie</button>
-                    <input type="text" id="photoUrl" className="car-sell__url" name="photos" value={dane.photos} onChange={handleChange} />
-
-                </div>
-
-                <div className="car-sell__buttons">
-                    <button className="car-sell__wyczysc" type="reset">Wyczyść</button>
-
-                    <button className="car-sell__wystaw-auto" type="submit" disabled={isSubmitting} >Wystaw moje auto</button>
-                </div>
-
-
-            </form>
-        </div>
+      <div className="sell-car">
+        <h1>Ładowanie danych formularza...</h1>
+      </div>
     );
+  }
+
+  return (
+    <div className="sell-car">
+      <header className="sell-car__header">Sprzedaj swój samochód</header>
+      <h1 className="sell-car__subtitle">
+        Wypełnij poniższy formularz, aby wystawić swój samochód na sprzedaż.
+      </h1>
+
+      <form className="sell-car__form" onSubmit={handleSubmit}>
+        <h2 className="sell-car__basic-info-heading">Podstawowe informacje</h2>
+
+        <div className="sell-car__basic-info">
+          <div className="form-item">
+            <label htmlFor="carName">Nazwa samochodu</label>
+            <input
+              type="text"
+              id="carName"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {errors.name && <div className="field-error">{errors.name}</div>}
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="price">Cena</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+            />
+            {errors.price && <div className="field-error">{errors.price}</div>}
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="manufacturer">Producent</label>
+            <select
+              id="manufacturer"
+              name="producent"
+              value={formData.producent}
+              onChange={handleChange}
+            >
+              <option value="">Wybierz producenta</option>
+              {metadata.producent &&
+                metadata.producent.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+            </select>
+            {errors.producent && (
+              <div className="field-error">{errors.producent}</div>
+            )}
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="year">Rok</label>
+            <input
+              type="number"
+              id="year"
+              name="year"
+              value={formData.year}
+              onChange={handleChange}
+            />
+            {errors.year && <div className="field-error">{errors.year}</div>}
+          </div>
+        </div>
+
+        <h2 className="sell-car__specs-heading">Specyfikacje techniczne</h2>
+        <div className="sell-car__specs">
+          <div className="form-item">
+            <label htmlFor="mileage">Przebieg (km)</label>
+            <input
+              type="number"
+              id="mileage"
+              name="mileage"
+              value={formData.mileage}
+              onChange={handleChange}
+            />
+            {errors.mileage && (
+              <div className="field-error">{errors.mileage}</div>
+            )}
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="engineCapacity">Pojemność silnika (l)</label>
+            <input
+              type="number"
+              id="engineCapacity"
+              name="engineCapacity"
+              value={formData.engineCapacity}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="power">Moc</label>
+            <input
+              type="number"
+              id="power"
+              name="power"
+              value={formData.power}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="fuelType">Rodzaj paliwa</label>
+            <select
+              id="fuelType"
+              name="petrolType"
+              value={formData.petrolType}
+              onChange={handleChange}
+            >
+              <option value="">Wybierz paliwo</option>
+              {metadata.petrolType &&
+                metadata.petrolType.map((item) => (
+                  <option
+                    key={item.id || item.petrolID}
+                    value={item.id || item.petrolID}
+                  >
+                    {item.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </div>
+
+        <h2 className="sell-car__appearance-heading">Wygląd i stan</h2>
+
+        <div className="sell-car__appearance">
+          <div className="form-item">
+            <label htmlFor="color">Kolor</label>
+            <select
+              id="color"
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
+            >
+              <option value="">Wybierz kolor</option>
+              {metadata.color &&
+                metadata.color.map((item) => (
+                  <option
+                    key={item.id || item.colorID}
+                    value={item.id || item.colorID}
+                  >
+                    {item.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="form-item">
+            <label htmlFor="carState">Stan samochodu</label>
+            <select
+              id="carState"
+              name="carState"
+              value={formData.carState}
+              onChange={handleChange}
+            >
+              <option value="">Wybierz stan</option>
+              {metadata.carState &&
+                metadata.carState.map((item, idx) => (
+                  <option key={item.id || idx} value={item.id ?? item}>
+                    {item.name ?? item}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="sell-car__additional-info">
+          <div className="form-item checkbox-item">
+            <input
+              type="checkbox"
+              id="hadAccidents"
+              name="hadAccidents"
+              checked={formData.hadAccidents}
+              onChange={handleChange}
+            />
+            <label htmlFor="hadAccidents">Samochód miał wypadki</label>
+          </div>
+        </div>
+
+        <div className="sell-car__buttons">
+          <button
+            className="sell-car__clear-btn"
+            type="button"
+            onClick={handleReset}
+          >
+            Wyczyść
+          </button>
+
+          <button
+            className="sell-car__submit-btn"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Wysyłanie..." : "Wystaw moje auto"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default SellCarPage;

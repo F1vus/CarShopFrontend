@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useDeviceMode from "../common/useDeviceMode";
 import "styles/_filtration-form.scss";
 import carService from "../../services/car.service";
@@ -19,6 +19,8 @@ const defaultForm = {
 function FiltrationForm({ variant = "auto" }) {
   const device = useDeviceMode();
   const activeVariant = variant === "auto" ? device : variant;
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [metadata, setMetadata] = useState({});
@@ -67,20 +69,30 @@ function FiltrationForm({ variant = "auto" }) {
 
   const handleSubmitFiltration = (e) => {
     e.preventDefault();
-    const newParams = new URLSearchParams(searchParams.toString());
 
-    // remove previous filter keys
+    // get current params (if on cars page)
+    const newParams =
+      location.pathname === "/cars"
+        ? new URLSearchParams(searchParams.toString())
+        : new URLSearchParams();
+
+    // clear previous filter keys
     Object.keys(defaultForm).forEach((p) => newParams.delete(p));
 
     // set new filter keys (only non-empty)
     Object.entries(formValues).forEach(([k, v]) => {
-      if (v !== "" && v != null) newParams.set(k, String(v));
+      if (v !== "" && v != null && v !== undefined) {
+        newParams.set(k, String(v).trim());
+      }
     });
 
-    // reset to page 1 when filters change
     newParams.delete("page");
 
-    setSearchParams(newParams);
+    if (location.pathname !== "/cars") {
+      navigate(`/cars?${newParams.toString()}`);
+    } else {
+      setSearchParams(newParams);
+    }
   };
 
   return (
