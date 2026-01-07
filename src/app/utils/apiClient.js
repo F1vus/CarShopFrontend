@@ -54,17 +54,16 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-
-    // Log error details
-    console.error("API Error:", {
-      url: originalRequest?.url,
-      method: originalRequest?.method?.toUpperCase(),
-      status: error.response?.status,
-      message: error.message,
-    });
-
     // Handle 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Log error details
+      console.error("API Error:", {
+        url: originalRequest?.url,
+        method: originalRequest?.method?.toUpperCase(),
+        status: error.response?.status,
+        message: error.message,
+      });
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -119,7 +118,7 @@ apiClient.interceptors.response.use(
 
         if (!window.location.pathname.startsWith("/CarShopFrontend/auth")) {
           setTimeout(() => {
-            window.location.href = "/CarShopFrontend/auth/login";
+            window.location.href = "/CarShopFrontend";
           }, 100);
         }
 
