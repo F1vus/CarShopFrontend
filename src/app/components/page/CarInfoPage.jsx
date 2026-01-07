@@ -36,6 +36,24 @@ function CarInfoPage({ carId }) {
     setShowPhone((prev) => !prev);
   };
 
+  const formatExactDate = (dateString) => {
+    if (!dateString) return "";
+
+    try {
+      const date = new Date(dateString);
+
+      if (isNaN(date.getTime())) {
+        return "";
+      }
+
+      return new Intl.DateTimeFormat("pl-PL", {
+        year: "numeric",
+      }).format(date);
+    } catch (err) {
+      return "";
+    }
+  };
+
   if (error) return <p>{error}</p>;
 
   return (
@@ -44,7 +62,10 @@ function CarInfoPage({ carId }) {
         <section className="car-info">
           <div className="car-info__main">
             <div className="car-info__image">
-              <Carousel photos={carInfo.photos || []} altPrefix={carInfo.name} />
+              <Carousel
+                photos={carInfo.photos || []}
+                altPrefix={carInfo.name}
+              />
             </div>
             <span className="divider-span"></span>
             <div className="car-info__important-data">
@@ -77,11 +98,16 @@ function CarInfoPage({ carId }) {
                   <li className="car-info__important-data-element">
                     <img src={engine} alt="Pojemność skokowa" />
                     <span className="span-title">Pojemność skokowa</span>
-                    <span className="span-info">{carInfo.engineCapacity} cc</span>
+                    <span className="span-info">
+                      {carInfo.engineCapacity} cc
+                    </span>
                   </li>
                 )}
                 <li className="car-info__important-data-element">
-                  <span className="color-swatch" style={{ background: carInfo.color?.name || '#999' }}></span>
+                  <span
+                    className="color-swatch"
+                    style={{ background: carInfo.color?.name || "#999" }}
+                  ></span>
                   <span className="span-title">Kolor</span>
                   <span className="span-info">{carInfo.color?.name}</span>
                 </li>
@@ -105,14 +131,16 @@ function CarInfoPage({ carId }) {
             <div className="car-info__aside-details">
               <p>
                 <span>
-                  {{ POOR: "Uszkodzony", USED: "Używany", NEW: "Nowy" }[carInfo.carState] ?? ""}
+                  {{ POOR: "Uszkodzony", USED: "Używany", NEW: "Nowy" }[
+                    carInfo.carState
+                  ] ?? ""}
                 </span>
                 - <span>{carInfo.year} rok</span>
               </p>
               <p>
                 <span>Cena: </span>
                 <span className="car-info__aside-details-text">
-                  {Number(carInfo.price || 0).toLocaleString('pl-PL')}
+                  {Number(carInfo.price || 0).toLocaleString("pl-PL")}
                 </span>
                 <span> PLN</span>
               </p>
@@ -122,11 +150,17 @@ function CarInfoPage({ carId }) {
                   <strong>{carInfo.producent.name}</strong>
                 </p>
               )}
-              {typeof carInfo.hadAccidents === 'boolean' && (
+              {typeof carInfo.hadAccidents === "boolean" && (
                 <p>
                   <span>Historia: </span>
-                  <strong className={carInfo.hadAccidents ? 'badge badge-danger' : 'badge badge-ok'}>
-                    {carInfo.hadAccidents ? 'Miał kolizje' : 'Bez kolizji'}
+                  <strong
+                    className={
+                      carInfo.hadAccidents
+                        ? "badge badge-danger"
+                        : "badge badge-ok"
+                    }
+                  >
+                    {carInfo.hadAccidents ? "Miał kolizje" : "Bez kolizji"}
                   </strong>
                 </p>
               )}
@@ -134,10 +168,25 @@ function CarInfoPage({ carId }) {
             <div className="car-info__aside-salesman-info">
               <div className="salesman-top">
                 <div className="salesman-meta">
-                  <h4>{carInfo.owner?.name || 'Sprzedawca'}</h4>
+                  <h4>{carInfo.owner?.name || "Sprzedawca"}</h4>
                   <p className="user-info">
+                    <i className="bi bi-shield-fill-check"></i>
+                    <span>{carInfo.owner?.type || "Prywatny sprzedawca"}</span>
+                  </p>
+                  <p>
                     <i className="bi bi-person-fill"></i>
-                    <span>{carInfo.owner?.email || ''}</span>
+                    <span>
+                      {carInfo.owner?.registrationDate ? (
+                        <>
+                          Sprzedający od{" "}
+                          <strong className="registration-date-bold">
+                            {formatExactDate(carInfo.owner.registrationDate)}
+                          </strong>
+                        </>
+                      ) : (
+                        "Data niedostępna"
+                      )}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -147,7 +196,7 @@ function CarInfoPage({ carId }) {
                 {showPhone ? (
                   <div className="car-info__phone-block">
                     <p className="phone-number">
-                      {carInfo.owner?.phoneNumber || 'Brak numeru'}
+                      {carInfo.owner?.phoneNumber || "Brak numeru"}
                     </p>
                   </div>
                 ) : (
