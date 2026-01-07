@@ -6,6 +6,7 @@ import canister from "assets/img/icons/large/canister-lg-white.svg";
 import wheel from "assets/img/icons/large/wheel-lg-white.svg";
 import engine from "assets/img/icons/large/engine-lg-white.svg";
 import "styles/_car-info-page.scss";
+import Carousel from "../UI/Carousel";
 import { useLocation } from "react-router-dom";
 
 function CarInfoPage({ carId }) {
@@ -43,7 +44,7 @@ function CarInfoPage({ carId }) {
         <section className="car-info">
           <div className="car-info__main">
             <div className="car-info__image">
-              <img src={carInfo.photos[0].url} alt={carInfo.name} />
+              <Carousel photos={carInfo.photos || []} altPrefix={carInfo.name} />
             </div>
             <span className="divider-span"></span>
             <div className="car-info__important-data">
@@ -59,7 +60,7 @@ function CarInfoPage({ carId }) {
                       <img src={battery} alt="Rodzaj paliwa" />
                       <span className="span-title">Rodzaj paliwa</span>
                       <span className="span-info">
-                        {carInfo.petrolType.name}
+                        {carInfo.petrolType?.name}
                       </span>
                     </>
                   ) : (
@@ -67,7 +68,7 @@ function CarInfoPage({ carId }) {
                       <img src={canister} alt="Rodzaj paliwa" />
                       <span className="span-title">Rodzaj paliwa</span>
                       <span className="span-info">
-                        {carInfo.petrolType.name}
+                        {carInfo.petrolType?.name}
                       </span>
                     </>
                   )}
@@ -76,9 +77,14 @@ function CarInfoPage({ carId }) {
                   <li className="car-info__important-data-element">
                     <img src={engine} alt="Pojemność skokowa" />
                     <span className="span-title">Pojemność skokowa</span>
-                    <span className="span-info">{carInfo.engineCapacity}</span>
+                    <span className="span-info">{carInfo.engineCapacity} cc</span>
                   </li>
                 )}
+                <li className="car-info__important-data-element">
+                  <span className="color-swatch" style={{ background: carInfo.color?.name || '#999' }}></span>
+                  <span className="span-title">Kolor</span>
+                  <span className="span-info">{carInfo.color?.name}</span>
+                </li>
                 <li className="car-info__important-data-element">
                   <img src={speedometer} alt="Moc" />
                   <span className="span-title">Moc</span>
@@ -99,39 +105,49 @@ function CarInfoPage({ carId }) {
             <div className="car-info__aside-details">
               <p>
                 <span>
-                  {{
-                    POOR: "Straszny",
-                    USED: "Używany",
-                    NEW: "Nowy",
-                  }[carInfo.carState] ?? ""}
-                </span>{" "}
+                  {{ POOR: "Uszkodzony", USED: "Używany", NEW: "Nowy" }[carInfo.carState] ?? ""}
+                </span>
                 - <span>{carInfo.year} rok</span>
               </p>
               <p>
                 <span>Cena: </span>
                 <span className="car-info__aside-details-text">
-                  {carInfo.price}
+                  {Number(carInfo.price || 0).toLocaleString('pl-PL')}
                 </span>
                 <span> PLN</span>
               </p>
+              {carInfo.producent?.name && (
+                <p>
+                  <span>Producent: </span>
+                  <strong>{carInfo.producent.name}</strong>
+                </p>
+              )}
+              {typeof carInfo.hadAccidents === 'boolean' && (
+                <p>
+                  <span>Historia: </span>
+                  <strong className={carInfo.hadAccidents ? 'badge badge-danger' : 'badge badge-ok'}>
+                    {carInfo.hadAccidents ? 'Miał kolizje' : 'Bez kolizji'}
+                  </strong>
+                </p>
+              )}
             </div>
             <div className="car-info__aside-salesman-info">
-              <h4>{carInfo.owner?.name || "Sprzedawca"}</h4>
-              <p className="user-info">
-                <i className="bi bi-shield-fill-check"></i>
-                <span>{carInfo.owner?.type || "Przywatny sprzedawca"}</span>
-              </p>
-              <p>
-                <i className="bi bi-person-fill"></i>
-                <span>{carInfo.owner?.type || "Sprzedający od 2020"}</span>
-              </p>
+              <div className="salesman-top">
+                <div className="salesman-meta">
+                  <h4>{carInfo.owner?.name || 'Sprzedawca'}</h4>
+                  <p className="user-info">
+                    <i className="bi bi-person-fill"></i>
+                    <span>{carInfo.owner?.email || ''}</span>
+                  </p>
+                </div>
+              </div>
               <div className="buttons-block">
                 <button className="write-to-button">Napisz</button>
 
                 {showPhone ? (
                   <div className="car-info__phone-block">
                     <p className="phone-number">
-                      {carInfo.owner?.phoneNumber || "Brak numeru"}
+                      {carInfo.owner?.phoneNumber || 'Brak numeru'}
                     </p>
                   </div>
                 ) : (
