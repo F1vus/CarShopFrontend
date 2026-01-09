@@ -27,6 +27,61 @@
       border-radius: 8px;
       object-fit: cover;
     }
+    .car-info__thumbnails {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+
+      img {
+        width: 74px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+    }
+    .carousel {
+      .carousel__main {
+        position: relative;
+        img {
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+          display: block;
+        }
+        .carousel__nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(0,0,0,0.45);
+          color: $white;
+          border: none;
+          width: 40px;
+          height: 40px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 22px;
+          line-height: 1;
+        }
+        .carousel__nav--prev { left: 10px; }
+        .carousel__nav--next { right: 10px; }
+      }
+
+      .carousel__thumbs {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.6rem;
+        justify-content: flex-start;
+        .carousel__thumb {
+          border: none;
+          padding: 0;
+          background: transparent;
+          cursor: pointer;
+          img { width: 60px; height: 40px; object-fit: cover; border-radius: 6px; }
+          &.is-active img { outline: 2px solid $orange; transform: scale(1.02); }
+        }
+      }
+    }
   }
 
   .divider-span {
@@ -71,6 +126,14 @@
         font-weight: bold;
       }
     }
+  }
+  .color-swatch {
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+    border-radius: 4px;
+    margin-bottom: 0.4rem;
+    border: 1px solid rgba(255,255,255,0.12);
   }
 
   &__description {
@@ -122,6 +185,39 @@
 
       margin-top: 2rem;
       padding: 1rem;
+
+      .salesman-top {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-bottom: 0.6rem;
+      }
+
+      .salesman-meta {
+        & h4 {
+          font-size: 1.05rem;
+          margin-bottom: 0.5rem;
+        }
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      .badge-danger {
+        background: rgba(255,100,80,0.12);
+        color: $orange;
+        border: 1px solid rgba(255,80,50,0.12);
+      }
+
+      .badge-ok {
+        background: rgba(0,200,120,0.06);
+        color: #1db954;
+      }
 
       i {
         font-size: 20px;

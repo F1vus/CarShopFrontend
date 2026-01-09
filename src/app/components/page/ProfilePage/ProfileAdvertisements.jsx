@@ -3,7 +3,6 @@ import {
   Navigate,
   Link,
   useNavigate,
-  useOutletContext,
   useSearchParams,
 } from "react-router-dom";
 import profileService from "services/profile.service.js";
@@ -12,13 +11,15 @@ import partners from "assets/img/auth-page/partners.svg";
 import Loader from "../../UI/Loader";
 import CarCard from "../../UI/CarCard";
 import carService from "../../../services/car.service";
+import { useAuth } from "../../context/authProvider";
 
 function ProfileAdvertisements() {
   const [cars, setCars] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { profileId } = useOutletContext() || {};
+  const {profileId} = useAuth();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "active";
@@ -28,20 +29,42 @@ function ProfileAdvertisements() {
 
   useEffect(() => {
     if (!profileId) return;
-    setIsLoading(true);
-    setIsError(false);
 
-    profileService
-      .getProfileCars(profileId)
-      .then((data) => setCars(data || []))
-      .catch((err) => {
+    const fetchCars = async () => {
+      setIsLoading(true);
+      setIsError(false);
+
+      try {
+        const data = await profileService.getProfileCars(profileId);
+        setCars(data || []);
+      } catch (err) {
         console.error("Fetch cars error:", err);
         setIsError(true);
-      })
-      .finally(() => setIsLoading(false));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCars();
   }, [profileId]);
 
-  // TODO: add useEffect for favorites
+  useEffect(() => {
+    
+    const fetchFavorites = async () => {
+      setIsLoadingFavorites(true);
+
+      try {
+        const data = await profileService.getLikedCarsByProfileId(profileId);
+        setFavorites(data || []);
+      } catch (err) {
+        console.error("Fetch favorites error:", err);
+      } finally {
+        setIsLoadingFavorites(false);
+      }
+    };
+
+    fetchFavorites();
+  }, [profileId, isLikedTab]);
 
   const handleTabChange = (tabName) => {
     setSearchParams({ tab: tabName });
@@ -56,7 +79,6 @@ function ProfileAdvertisements() {
       setFavorites((prev) => prev.filter((c) => (c.id || c._id) !== carId));
     } catch (err) {
       console.error("Delete car error:", err);
-      alert("Wystąpił błąd podczas usuwania ogłoszenia. Spróbuj ponownie.");
     } finally {
       setIsLoading(false);
     }
@@ -175,10 +197,9 @@ function ProfileAdvertisements() {
                     <div className="profile-ads__content-list">
                       <ul className="profile-ads__list">
                         {favorites.map((fav) => {
-                          const id = fav.id || fav._id;
                           return (
-                            <li key={id} className="profile-ads__list-item">
-                              <CarCard carInfo={fav} />
+                            <li key={fav.id} className="profile-ads__list-item">
+                              <CarCard carInfo={fav} isLiked={true} />
                             </li>
                           );
                         })}

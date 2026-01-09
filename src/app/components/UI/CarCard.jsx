@@ -2,12 +2,16 @@ import calendar from "assets/img/icons/calendar.svg";
 import canister from "assets/img/icons/canister.svg";
 import battery from "assets/img/icons/battery.svg";
 import wheel from "assets/img/icons/wheel.svg";
-import { useState } from "react";
 import "styles/_car-card.scss";
 import { Link, useLocation } from "react-router-dom";
+import LikeButton from "./LikeButton";
 
-function CarCard({ carInfo, isProfileCard = false, handles = {} }) {
-  const [isLiked, setIsLiked] = useState(false);
+function CarCard({
+  carInfo,
+  isProfileCard = false,
+  handles = {},
+  isLiked = false,
+}) {
   const currentPath = useLocation().pathname;
   const { handleDelete, handleEdit } = handles;
 
@@ -36,7 +40,7 @@ function CarCard({ carInfo, isProfileCard = false, handles = {} }) {
               {!isProfileCard ? (
                 <Link to={currentPath + `/${id}`}>{name}</Link>
               ) : (
-                name 
+                name
               )}
             </h3>
             <div className="car-card__info-description">{description}</div>
@@ -71,14 +75,7 @@ function CarCard({ carInfo, isProfileCard = false, handles = {} }) {
         <div className="car-card__price">
           {price} <span>PLN</span>
         </div>
-        {!isProfileCard && (
-          <div
-            className="car-card__fav"
-            onClick={() => setIsLiked((prev) => !prev)}
-          >
-            <i className={`bi bi-heart${!isLiked ? "" : "-fill"}`}></i>
-          </div>
-        )}
+        {!isProfileCard && <LikeButton carId={id} isLikedActive={isLiked} />}
       </div>
 
       {isProfileCard && (
