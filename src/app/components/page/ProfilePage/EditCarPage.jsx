@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import carService from "services/car.service";
-import "styles/profilePage/_edit-car-page.scss";
+import "../../../assets/styles/profilePage/_edit-car-page.scss";
 
 function EditCarPage() {
   const navigate = useNavigate();
