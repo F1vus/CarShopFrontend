@@ -1,10 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  Navigate,
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Navigate, Link, useNavigate, useSearchParams } from "react-router-dom";
 import profileService from "services/profile.service.js";
 import "styles/profilePage/_profile-advertisements.scss";
 import partners from "assets/img/auth-page/partners.svg";
@@ -19,7 +14,7 @@ function ProfileAdvertisements() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
   const [isError, setIsError] = useState(false);
-  const {profileId} = useAuth();
+  const { profileId } = useAuth();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "active";
@@ -48,23 +43,23 @@ function ProfileAdvertisements() {
     fetchCars();
   }, [profileId]);
 
+  const fetchFavorites = useCallback(async () => {
+    setIsLoadingFavorites(true);
+    try {
+      const data = await profileService.getLikedCarsByProfileId(profileId);
+      setFavorites(data || []);
+    } catch (err) {
+      console.error("Fetch favorites error:", err);
+    } finally {
+      setIsLoadingFavorites(false);
+    }
+  }, [profileId]);
+
   useEffect(() => {
-    
-    const fetchFavorites = async () => {
-      setIsLoadingFavorites(true);
-
-      try {
-        const data = await profileService.getLikedCarsByProfileId(profileId);
-        setFavorites(data || []);
-      } catch (err) {
-        console.error("Fetch favorites error:", err);
-      } finally {
-        setIsLoadingFavorites(false);
-      }
-    };
-
-    fetchFavorites();
-  }, [profileId, isLikedTab]);
+    if (profileId && isLikedTab) {
+      fetchFavorites();
+    }
+  }, [profileId, isLikedTab, fetchFavorites]);
 
   const handleTabChange = (tabName) => {
     setSearchParams({ tab: tabName });
@@ -84,6 +79,10 @@ function ProfileAdvertisements() {
     }
   };
 
+  const handleRemoveFavorite = (carId) => {
+    setFavorites((prev) => prev.filter((car) => (car.id || car._id) !== carId));
+  };
+
   const handleEdit = (car) => {
     const carId = car.id || car._id;
     navigate(`/profile/advertisements/edit/${carId}`, { state: { car } });
@@ -93,7 +92,6 @@ function ProfileAdvertisements() {
 
   return (
     <article className="profile-ads">
-      {/* NAVIGATION - Uses query parameters */}
       <nav className="profile-ads__navigation" aria-label="Profile tabs">
         <li className="profile-ads__navigation-item">
           <button
@@ -193,13 +191,19 @@ function ProfileAdvertisements() {
                 <h4 className="profile-ads__title">Ulubione ogłoszenia</h4>
 
                 <div className="profile-ads__content-block">
-                  {favorites.length > 0 ? (
+                  {isLoadingFavorites ? (
+                    <Loader />
+                  ) : favorites.length > 0 ? (
                     <div className="profile-ads__content-list">
                       <ul className="profile-ads__list">
                         {favorites.map((fav) => {
                           return (
                             <li key={fav.id} className="profile-ads__list-item">
-                              <CarCard carInfo={fav} isLiked={true} />
+                              <CarCard
+                                carInfo={fav}
+                                isLiked={true}
+                                onRemoveFavorite={handleRemoveFavorite}
+                              />
                             </li>
                           );
                         })}

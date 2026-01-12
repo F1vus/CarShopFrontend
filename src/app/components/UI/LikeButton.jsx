@@ -3,7 +3,7 @@ import { useAuth } from "../context/authProvider";
 import { useNavigate } from "react-router-dom";
 import profileService from "../../services/profile.service";
 
-function LikeButton({ carId, isLikedActive = false }) {
+function LikeButton({ carId, isLikedActive = false, onLikeChanged }) {
   const [isLiked, setIsLiked] = useState(isLikedActive);
   const { isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +32,10 @@ function LikeButton({ carId, isLikedActive = false }) {
       } else {
         await profileService.addLikedCar(carId);
       }
+
+      if (onLikeChanged) {
+        onLikeChanged(carId, !wasLiked);
+      }
     } catch (err) {
       console.error("Error updating like status:", err);
       setIsLiked(wasLiked);
@@ -42,7 +46,7 @@ function LikeButton({ carId, isLikedActive = false }) {
 
   return (
     <>
-      <div className="car-card__fav like-button" onClick={() => handleLike()}>
+      <div className="car-card__fav like-button" onClick={handleLike}>
         <i className={`bi bi-heart${!isLiked ? "" : "-fill"}`}></i>
       </div>
     </>

@@ -11,6 +11,7 @@ function CarCard({
   isProfileCard = false,
   handles = {},
   isLiked = false,
+  onRemoveFavorite,
 }) {
   const currentPath = useLocation().pathname;
   const { handleDelete, handleEdit } = handles;
@@ -75,7 +76,17 @@ function CarCard({
         <div className="car-card__price">
           {price} <span>PLN</span>
         </div>
-        {!isProfileCard && <LikeButton carId={id} isLikedActive={isLiked} />}
+        {!isProfileCard && (
+          <LikeButton
+            carId={id}
+            isLikedActive={isLiked}
+            onLikeChanged={(carId, isLiked) => {
+              if (!isLiked && onRemoveFavorite) {
+                onRemoveFavorite(carId);
+              }
+            }}
+          />
+        )}
       </div>
 
       {isProfileCard && (
