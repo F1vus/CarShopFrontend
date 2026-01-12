@@ -47,12 +47,22 @@ const carService = {
       throw err;
     }
   },
-
-  createCar: async (body, options = {}) => {
+  createCar: async (formData, options = {}) => {
     const url = config.apiEndpoint + carEndpoint;
     const headers = options.headers || {};
+
+    const safeHeaders = { ...(headers || {}) };
+    if (safeHeaders["Content-Type"] || safeHeaders["content-type"]) {
+      delete safeHeaders["Content-Type"];
+      delete safeHeaders["content-type"];
+    }
+
     try {
-      const response = await axios.post(url, body, { headers });
+      const response = await axios.post(url, formData, {
+        headers: {
+          ...safeHeaders,
+        },
+      });
       return response.data;
     } catch (err) {
       console.error(
@@ -63,7 +73,6 @@ const carService = {
       throw err;
     }
   },
-
   deleteById: async (carId) => {
     const url = `${config.apiEndpoint}${carEndpoint}/${carId}`;
     try {

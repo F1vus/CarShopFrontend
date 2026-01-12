@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import carService from "../../services/car.service";
 import { useAuth } from "../context/authProvider";
 import "styles/_sell-car-page.scss";
+import PhotoUploadModal from "../UI/PhotoUploadModal";
 
 const DRAFT_KEY = "sellCarDraft_v1";
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 function SellCarPage() {
   const { isAuthenticated, profileId, getAuthHeaders } = useAuth();
@@ -22,10 +25,13 @@ function SellCarPage() {
     engineCapacity: "",
     power: "",
     year: "",
-    photos: "",
     producent: "",
     hadAccidents: false,
   });
+
+  // images: { id, file, previewUrl, status, error }
+  const [images, setImages] = useState([]);
+  const imagesIdRef = useRef(0);
 
   const [metadata, setMetadata] = useState({
     color: [],
@@ -37,8 +43,9 @@ function SellCarPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
 
-  // draft helpers (omitted for brevity in this snippet; keep your existing ones)
+  // Draft helpers
   const loadDraft = () => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
@@ -70,10 +77,9 @@ function SellCarPage() {
       try {
         const data = await carService.getMetadata();
         const normalized = {
-          color: data.colors || data.color || [],
-          petrolType: data.petrols || data.petrolType || [],
-          producent: data.producers || data.producent || [],
-          carState: data.carStates || data.carState || [],
+          color: data.colors || [],
+          petrolType: data.petrols || [],
+          producent: data.producers || []
         };
         if (!mounted) return;
         setMetadata(normalized);
@@ -89,10 +95,21 @@ function SellCarPage() {
     getMetadata();
     return () => {
       mounted = false;
+      images.forEach((img) => {
+        if (img.previewUrl) URL.revokeObjectURL(img.previewUrl);
+      });
     };
   }, []);
 
-  // handle change same as before (checkbox support)
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => {
+        if (img.previewUrl) URL.revokeObjectURL(img.previewUrl);
+      });
+    };
+  }, [images]);
+
+  // handle change (checkbox support)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === "checkbox" ? checked : value;
@@ -104,6 +121,13 @@ function SellCarPage() {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
+  // local car states
+  const LOCAL_CAR_STATES = [
+    { id: "POOR", name: "POOR" },
+    { id: "USED", name: "USED" },
+    { id: "NEW", name: "NEW" },
+  ];
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "Nazwa samochodu jest wymagana";
@@ -113,12 +137,63 @@ function SellCarPage() {
       newErrors.price = "Cena musi być większa niż 0";
     if (!formData.year || Number(formData.year) <= 0)
       newErrors.year = "Rok jest wymagany";
+    if (!formData.carState) newErrors.carState = "Wybierz stan samochodu";
+
+    // image-side client validation errors
+    const imageErrors = images.map((img) => img.error).filter(Boolean);
+    if (imageErrors.length > 0) newErrors.photos = imageErrors.join("; ");
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const isValidUrl = (url) => /^https?:\/\/.+/.test(url);
+  // Image helpers
+  const addFiles = (fileList) => {
+    const files = Array.from(fileList || []);
+    const added = files.map((file) => {
+      const id = imagesIdRef.current++;
+      let error = null;
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        error = "Nieobsługiwany typ obrazu (wspierane: jpeg, webp, png)";
+      } else if (file.size > MAX_IMAGE_SIZE) {
+        error = "Plik jest za duży (maks. 5 MB)";
+      }
+      const previewUrl = URL.createObjectURL(file);
+      return {
+        id,
+        file,
+        previewUrl,
+        status: error ? "error" : "idle",
+        error,
+      };
+    });
+    setImages((prev) => {
+      const next = [...prev, ...added];
+      saveDraft({ ...formData, _imagesCount: next.length });
+      return next;
+    });
+    if (errors.photos) setErrors((prev) => ({ ...prev, photos: undefined }));
+  };
 
+  const removeImage = (id) => {
+    setImages((prev) => {
+      const toRemove = prev.find((p) => p.id === id);
+      if (toRemove && toRemove.previewUrl) {
+        URL.revokeObjectURL(toRemove.previewUrl);
+      }
+      const next = prev.filter((im) => im.id !== id);
+      saveDraft({ ...formData, _imagesCount: next.length });
+      return next;
+    });
+  };
+
+  const getId = (value) => {
+    if (value === "" || value === null || value === undefined) return null;
+    const n = Number(value);
+    return Number.isNaN(n) ? null : n;
+  };
+
+  // Build and send multipart/form-data request: "car" part (JSON) + "photos" parts (files)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
@@ -126,9 +201,8 @@ function SellCarPage() {
       return;
     }
 
-    // if not authenticated -> save draft and redirect to login
     if (!isAuthenticated) {
-      saveDraft(formData);
+      saveDraft({ ...formData, _imagesCount: images.length });
       navigate("/auth/login", {
         state: {
           from: location.pathname,
@@ -136,75 +210,57 @@ function SellCarPage() {
             "Musisz się zalogować, aby wystawić ogłoszenie. Twoje dane zostały zapisane.",
         },
       });
-      alert("Only registrated users can clear the form.");
-
       return;
     }
 
-    const photoUrls = formData.photos
-      ? formData.photos
-          .split(",")
-          .map((url) => url.trim())
-          .filter(Boolean)
-      : [];
-
-    for (const url of photoUrls) {
-      if (!isValidUrl(url)) {
-        setErrors((prev) => ({ ...prev, photos: "Niepoprawny URL zdjęcia" }));
-        return;
-      }
-    }
-
-    const getFullObject = (id, metadataArray) => {
-      if (!id) return null;
-      const item = metadataArray.find(
-        (item) =>
-          item.id === Number(id) ||
-          item.colorID === Number(id) ||
-          item.petrolID === Number(id)
-      );
-      return item
-        ? { id: item.id || item.colorID || item.petrolID, name: item.name }
-        : null;
-    };
-
-    // Build payload: include the user's id so DB constraint is satisfied.
-    // Adjust property names to match backend expectations.
-    const payload = {
-      name: formData.name,
-      price: Number(formData.price),
-      description: formData.description,
-      mileage: formData.mileage ? Number(formData.mileage) : null,
-      engineCapacity: formData.engineCapacity
-        ? Number(formData.engineCapacity)
-        : null,
-      power: formData.power ? Number(formData.power) : null,
-      year: Number(formData.year),
-      carState: formData.carState || null,
-      color: getFullObject(formData.color, metadata.color),
-      petrolType: getFullObject(formData.petrolType, metadata.petrolType),
-      producent: getFullObject(formData.producent, metadata.producent),
-      photos: photoUrls.map((url) => ({ url })),
-      hadAccidents: formData.hadAccidents || false,
-      // important: user reference (choose one your backend expects)
-      usersProfilesId: profileId ? Number(profileId) : undefined,
-      users_profiles_id: profileId ? Number(profileId) : undefined,
-      ownerId: profileId ? Number(profileId) : undefined,
-      // if your backend expects an object:
-      owner: profileId ? { id: Number(profileId) } : undefined,
-    };
-
-    // remove undefined fields to keep payload clean
-    Object.keys(payload).forEach(
-      (k) => payload[k] === undefined && delete payload[k]
-    );
-
     try {
       setIsSubmitting(true);
-      // pass auth headers from context if available
       const headers =
         typeof getAuthHeaders === "function" ? getAuthHeaders() : {};
-      await carService.createCar(payload, { headers });
+
+      const carPayload = {
+        name: formData.name,
+        price: Number(formData.price),
+        description: formData.description,
+        mileage: formData.mileage ? Number(formData.mileage) : null,
+        engineCapacity: formData.engineCapacity
+          ? Number(formData.engineCapacity)
+          : null,
+        power: formData.power ? Number(formData.power) : null,
+        year: Number(formData.year),
+        carState: formData.carState || null, // string: POOR/USED/NEW
+        color: getId(formData.color), // sends numeric id or null
+        petrolType: getId(formData.petrolType), // numeric id or null
+        producent: getId(formData.producent), // numeric id or null
+        hadAccidents: !!formData.hadAccidents,
+      };
+
+      Object.keys(carPayload).forEach(
+        (k) =>
+          (carPayload[k] === undefined || carPayload[k] === null) &&
+          delete carPayload[k]
+      );
+
+      const form = new FormData();
+      const carBlob = new Blob([JSON.stringify(carPayload)], {
+        type: "application/json",
+      });
+      form.append("car", carBlob);
+
+      images.forEach((img) => {
+        if (img.file && img.status !== "error") {
+          form.append("photos", img.file);
+        }
+      });
+
+      // ensuring that headers do not set Content-Type
+      const safeHeaders = { ...(headers || {}) };
+      if (safeHeaders["Content-Type"] || safeHeaders["content-type"]) {
+        delete safeHeaders["Content-Type"];
+        delete safeHeaders["content-type"];
+      }
+
+      await carService.createCar(form, { headers: safeHeaders });
 
       clearDraft();
       setFormData({
@@ -218,10 +274,13 @@ function SellCarPage() {
         engineCapacity: "",
         power: "",
         year: "",
-        photos: "",
         producent: "",
         hadAccidents: false,
       });
+      images.forEach((img) => {
+        if (img.previewUrl) URL.revokeObjectURL(img.previewUrl);
+      });
+      setImages([]);
 
       alert("Samochód został wystawiony!");
     } catch (err) {
@@ -229,7 +288,7 @@ function SellCarPage() {
 
       const status = err.response?.status;
       if (status === 401) {
-        saveDraft(formData);
+        saveDraft({ ...formData, _imagesCount: images.length });
         navigate("/auth/login", {
           state: {
             from: location.pathname,
@@ -250,12 +309,15 @@ function SellCarPage() {
         });
         setErrors((prev) => ({ ...prev, ...mapped }));
       } else {
-        alert(
-          err.response?.data?.message ||
-            "Błąd podczas tworzenia ogłoszenia. Twoje dane zostały zapisane."
-        );
+        setErrors((prev) => ({
+          ...prev,
+          photos:
+            err.message ||
+            err.response?.data?.message ||
+            "Błąd podczas tworzenia ogłoszenia. Twoje dane zostały zapisane.",
+        }));
       }
-      saveDraft(formData);
+      saveDraft({ ...formData, _imagesCount: images.length });
     } finally {
       setIsSubmitting(false);
     }
@@ -275,10 +337,13 @@ function SellCarPage() {
       engineCapacity: "",
       power: "",
       year: "",
-      photos: "",
       producent: "",
       hadAccidents: false,
     });
+    images.forEach((img) => {
+      if (img.previewUrl) URL.revokeObjectURL(img.previewUrl);
+    });
+    setImages([]);
     setErrors({});
   };
 
@@ -452,13 +517,86 @@ function SellCarPage() {
               onChange={handleChange}
             >
               <option value="">Wybierz stan</option>
+              {LOCAL_CAR_STATES.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
               {metadata.carState &&
                 metadata.carState.map((item, idx) => (
-                  <option key={item.id || idx} value={item.id ?? item}>
+                  <option key={item.id ?? idx} value={item.id ?? item}>
                     {item.name ?? item}
                   </option>
                 ))}
             </select>
+            {errors.carState && (
+              <div className="field-error">{errors.carState}</div>
+            )}
+          </div>
+        </div>
+
+        <div className="sell-car__description-photos">
+          <div className="form-item">
+            <label htmlFor="description">Opis</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Napisz opis samochodu..."
+            />
+            {errors.description && (
+              <div className="field-error">{errors.description}</div>
+            )}
+          </div>
+
+          <div className="form-item">
+            <label>Zdjęcia</label>
+            <div>
+              <button
+                type="button"
+                className="sell-car__clear-btn"
+                onClick={() => setShowPhotoModal(true)}
+              >
+                Zarządzaj zdjęciami ({images.length})
+              </button>
+              <div className="photo-modal__meta-note" style={{ marginTop: 8 }}>
+                <small>
+                  Wspierane typy: jpeg, webp, png. Maksymalny rozmiar: 5MB /
+                  zdjęcie.
+                </small>
+              </div>
+              {errors.photos && (
+                <div className="field-error">{errors.photos}</div>
+              )}
+            </div>
+
+            <div className="photo-modal__thumbnails" style={{ marginTop: 12 }}>
+              {images.length === 0 && <div>Brak wybranych zdjęć.</div>}
+              {images.map((img) => (
+                <div className="photo-modal__thumb" key={img.id}>
+                  <div className="photo-modal__thumb-img">
+                    <img src={img.previewUrl} alt="preview" />
+                  </div>
+
+                  <div className="photo-modal__thumb-controls">
+                    <button type="button" onClick={() => removeImage(img.id)}>
+                      Usuń
+                    </button>
+                    <div className="photo-modal__status">
+                      {img.status === "uploading" && "Wysyłanie..."}
+                      {img.status === "uploaded" && "Wysłane"}
+                      {img.status === "error" && "Błąd"}
+                      {img.status === "idle" && "Gotowy"}
+                    </div>
+                  </div>
+
+                  {img.error && (
+                    <div className="photo-modal__thumb-error">{img.error}</div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -493,6 +631,15 @@ function SellCarPage() {
           </button>
         </div>
       </form>
+
+      {showPhotoModal && (
+        <PhotoUploadModal
+          onClose={() => setShowPhotoModal(false)}
+          onAddFiles={(files) => addFiles(files)}
+          images={images}
+          onRemove={removeImage}
+        />
+      )}
     </div>
   );
 }
