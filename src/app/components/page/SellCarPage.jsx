@@ -136,6 +136,8 @@ function SellCarPage() {
             "Musisz się zalogować, aby wystawić ogłoszenie. Twoje dane zostały zapisane.",
         },
       });
+      alert("Only registrated users can clear the form.");
+
       return;
     }
 
