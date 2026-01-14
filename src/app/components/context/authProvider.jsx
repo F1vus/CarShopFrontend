@@ -15,7 +15,6 @@ import {
   isTokenExpired,
   isTokenValid,
 } from "../../utils/authUtils";
-import profileService from "../../services/profile.service";
 
 const AuthContext = createContext({});
 
@@ -40,7 +39,7 @@ export function AuthProvider({ children }) {
     return {
       token,
       refreshToken,
-      id,
+      profileId: id,
       expiresAt,
       isValid: token && id && isTokenValid(expiresAt),
     };

@@ -42,9 +42,11 @@ function ProfileAdvertisements() {
     };
 
     fetchCars();
-  }, []);
+  }, [profileId]);
 
   const fetchFavorites = useCallback(async () => {
+    if (!profileId) return;
+
     setIsLoadingFavorites(true);
     try {
       const data = await profileService.getLikedCarsByProfileId(profileId);
@@ -55,7 +57,7 @@ function ProfileAdvertisements() {
     } finally {
       setIsLoadingFavorites(false);
     }
-  }, []);
+  }, [profileId]);
 
   useEffect(() => {
     if (profileId && isLikedTab) {

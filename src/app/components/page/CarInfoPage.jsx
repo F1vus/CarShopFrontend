@@ -23,7 +23,6 @@ function CarInfoPage({ carId }) {
       .getById(carId)
       .then((data) => {
         setCarInfo(data || {});
-        console.log(data);
         setIsElectric(data?.petrolType?.name === "Electric");
         setIsLoaded(true);
       })

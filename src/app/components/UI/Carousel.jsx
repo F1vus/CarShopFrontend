@@ -52,8 +52,21 @@ function Carousel({ photos = [], altPrefix = "photo" }) {
       </div>
     );
   }
+  
+  const getBestSize = () => {
+    const dpr = window.devicePixelRatio || 1;
+    const containerWidth = 900; // max carousel width in CSS
+    const needed = Math.ceil(containerWidth * dpr);
 
-  const mainPhotoUrl = config.photosEndpoint + photos[index].url + "512";
+    if (needed <= 156) return 156;
+    if (needed <= 512) return 512;
+    return 512; // fallback if screen is huge
+  };
+
+  const mainPhotoUrl =
+    config.photosEndpoint + photos[index].url + getBestSize();
+
+  const hasMultiple = photos.length > 1;
 
   return (
     <div className="carousel">
@@ -63,23 +76,27 @@ function Carousel({ photos = [], altPrefix = "photo" }) {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <button
-          className="carousel__nav carousel__nav--prev"
-          onClick={prev}
-          aria-label="Poprzednie"
-        >
-          ‹
-        </button>
+        {hasMultiple && (
+          <button
+            className="carousel__nav carousel__nav--prev"
+            onClick={prev}
+            aria-label="Poprzednie"
+          >
+            ‹
+          </button>
+        )}
 
         <img src={mainPhotoUrl} alt={`${altPrefix}-${index}`} />
 
-        <button
-          className="carousel__nav carousel__nav--next"
-          onClick={next}
-          aria-label="Następne"
-        >
-          ›
-        </button>
+        {hasMultiple && (
+          <button
+            className="carousel__nav carousel__nav--next"
+            onClick={next}
+            aria-label="Następne"
+          >
+            ›
+          </button>
+        )}
       </div>
 
       {photos.length > 1 && (
