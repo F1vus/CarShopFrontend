@@ -7,6 +7,7 @@ import Loader from "../../UI/Loader";
 import CarCard from "../../UI/CarCard";
 import carService from "../../../services/car.service";
 import { useAuth } from "../../context/authProvider";
+import localStorageService from "../../../services/localStorage.service";
 
 function ProfileAdvertisements() {
   const [cars, setCars] = useState([]);
@@ -41,19 +42,20 @@ function ProfileAdvertisements() {
     };
 
     fetchCars();
-  }, [profileId]);
+  }, []);
 
   const fetchFavorites = useCallback(async () => {
     setIsLoadingFavorites(true);
     try {
       const data = await profileService.getLikedCarsByProfileId(profileId);
       setFavorites(data || []);
+      localStorageService.setFavoritesAds(data);
     } catch (err) {
       console.error("Fetch favorites error:", err);
     } finally {
       setIsLoadingFavorites(false);
     }
-  }, [profileId]);
+  }, []);
 
   useEffect(() => {
     if (profileId && isLikedTab) {

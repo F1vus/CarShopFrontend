@@ -79,7 +79,7 @@ function SellCarPage() {
         const normalized = {
           color: data.colors || [],
           petrolType: data.petrols || [],
-          producent: data.producers || []
+          producent: data.producers || [],
         };
         if (!mounted) return;
         setMetadata(normalized);
@@ -281,8 +281,6 @@ function SellCarPage() {
         if (img.previewUrl) URL.revokeObjectURL(img.previewUrl);
       });
       setImages([]);
-
-      alert("Samochód został wystawiony!");
     } catch (err) {
       console.error("Create car error:", err);
 

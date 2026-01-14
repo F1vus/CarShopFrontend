@@ -15,6 +15,7 @@ import {
   isTokenExpired,
   isTokenValid,
 } from "../../utils/authUtils";
+import profileService from "../../services/profile.service";
 
 const AuthContext = createContext({});
 

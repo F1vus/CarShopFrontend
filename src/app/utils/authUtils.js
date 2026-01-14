@@ -2,6 +2,7 @@ export const TOKEN_KEY = "jwt-token";
 export const REFRESH_TOKEN_KEY = "wt-refresh-token";
 export const PROFILE_ID_KEY = "profile-id";
 export const EXPIRES_KEY = "token-expires";
+export const FAVORITES_ADS = "favorites-ads";
 
 export function isTokenExpired(expiresAt) {
   if (!expiresAt) return true;

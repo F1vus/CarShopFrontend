@@ -3,6 +3,7 @@ import {
   REFRESH_TOKEN_KEY,
   PROFILE_ID_KEY,
   EXPIRES_KEY,
+  FAVORITES_ADS,
 } from "../utils/authUtils";
 class LocalStorageService {
   constructor() {
@@ -18,6 +19,7 @@ class LocalStorageService {
       this.storage.setItem(REFRESH_TOKEN_KEY, refreshToken || "");
       this.storage.setItem(PROFILE_ID_KEY, profileId?.toString() || "");
       this.storage.setItem(EXPIRES_KEY, expiresAt?.toString() || "");
+      this.storage.setItem(FAVORITES_ADS, []);
 
       // Notify other tabs
       this.dispatchStorageEvent();
@@ -88,6 +90,32 @@ class LocalStorageService {
     }
   }
 
+  setFavoritesAds(favoriteAds) {
+    if (!this.storage) return;
+
+    try {
+      let favoritesIds = favoriteAds.map((ad) => ad.id);
+      this.storage.setItem(FAVORITES_ADS, JSON.stringify(favoritesIds || []));
+      this.dispatchStorageEvent();
+    } catch (error) {
+      console.error("Failed to set favorite ads:", error);
+      this.handleStorageError(error);
+    }
+  }
+
+  getFavoritesAds() {
+    const data = this.getSafeItem(FAVORITES_ADS);
+
+    if (data) {
+      try {
+        return JSON.parse(data);
+      } catch (error) {
+        console.error("Failed to parse favorite ads:", error);
+        return [];
+      }
+    }
+  }
+
   // Remove all auth data
   removeAuthData() {
     if (!this.storage) return;
@@ -97,6 +125,7 @@ class LocalStorageService {
       this.storage.removeItem(REFRESH_TOKEN_KEY);
       this.storage.removeItem(PROFILE_ID_KEY);
       this.storage.removeItem(EXPIRES_KEY);
+      this.storage.removeItem(FAVORITES_ADS);
 
       this.dispatchStorageEvent();
     } catch (error) {
