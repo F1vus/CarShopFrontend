@@ -23,6 +23,8 @@ function CarInfoPage({ carId }) {
       .getById(carId)
       .then((data) => {
         setCarInfo(data || {});
+        console.log(data);
+        
         setIsElectric(data?.petrolType?.name === "Electric");
         setIsLoaded(true);
       })
@@ -52,6 +54,25 @@ function CarInfoPage({ carId }) {
     } catch (err) {
       return "";
     }
+  };
+
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return "";
+
+    const cleaned = phone.replace(/[^\d+]/g, "");
+
+    if (!cleaned.startsWith("+")) return phone;
+
+    const match = cleaned.match(/^(\+\d{1,3})(\d+)$/);
+    if (!match) return phone;
+
+    const country = match[1];
+    const rest = match[2];
+
+    // group remaining digits in blocks of 3
+    const grouped = rest.match(/.{1,3}/g)?.join(" ");
+
+    return `${country} ${grouped}`;
   };
 
   if (error) return <p>{error}</p>;
@@ -195,9 +216,20 @@ function CarInfoPage({ carId }) {
 
                 {showPhone ? (
                   <div className="car-info__phone-block">
-                    <p className="phone-number">
-                      {carInfo.owner?.phoneNumber || "Brak numeru"}
-                    </p>
+                    {carInfo.owner?.phoneNumber ? (
+                      <a
+                        href={`tel:${carInfo.owner.phoneNumber}`}
+                        className="phone-number phone-number--clickable"
+                      >
+                        <i
+                          className="bi bi-telephone-fill"
+                          style={{ marginRight: 6 }}
+                        ></i>
+                        {formatPhoneNumber(carInfo.owner.phoneNumber)}
+                      </a>
+                    ) : (
+                      <p className="phone-number">Brak numeru</p>
+                    )}
                   </div>
                 ) : (
                   <button

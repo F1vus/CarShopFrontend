@@ -309,6 +309,16 @@
         font-size: 1.1rem;
         color: #222;
       }
+
+      .phone-number--clickable {
+        display: inline-block;
+        text-decoration: none;
+        color: #222;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
   }
 }
