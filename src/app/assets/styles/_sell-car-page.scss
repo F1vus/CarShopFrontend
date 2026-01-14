@@ -16,6 +16,11 @@
   color: $white;
   min-height: 100vh;
 
+  input:disabled {
+    background-color: #f3f3f3;
+    cursor: not-allowed;
+  }
+
   &__header {
     font-size: 32px;
     font-weight: 700;
@@ -351,7 +356,11 @@
   &__dialog {
     width: 780px;
     max-width: 95%;
-    background: linear-gradient(180deg, rgba($darker-grey, 0.96), rgba($darker-grey, 0.9));
+    background: linear-gradient(
+      180deg,
+      rgba($darker-grey, 0.96),
+      rgba($darker-grey, 0.9)
+    );
     border: 1px solid rgba($orange, 0.12);
     box-shadow: 0 10px 40px rgba($orange, 0.12), 0 4px 10px rgba($black, 0.6);
     padding: 20px;
@@ -419,7 +428,11 @@
       margin-top: 12px;
       padding: 10px 14px;
       border-radius: 10px;
-      background: linear-gradient(135deg, $orange 0%, color.adjust($orange, $lightness: 10%) 100%);
+      background: linear-gradient(
+        135deg,
+        $orange 0%,
+        color.adjust($orange, $lightness: 10%) 100%
+      );
       color: $white;
       border: 1px solid rgba($orange, 0.18);
       cursor: pointer;

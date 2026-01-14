@@ -8,9 +8,10 @@ import PhotoUploadModal from "../UI/PhotoUploadModal";
 const DRAFT_KEY = "sellCarDraft_v1";
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ELECTRIC_PETROL_ID = 4;
 
 function SellCarPage() {
-  const { isAuthenticated, profileId, getAuthHeaders } = useAuth();
+  const { isAuthenticated, getAuthHeaders } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,7 +30,6 @@ function SellCarPage() {
     hadAccidents: false,
   });
 
-  // images: { id, file, previewUrl, status, error }
   const [images, setImages] = useState([]);
   const imagesIdRef = useRef(0);
 
@@ -108,6 +108,21 @@ function SellCarPage() {
       });
     };
   }, [images]);
+
+  const isElectric = Number(formData.petrolType) === ELECTRIC_PETROL_ID;
+
+  useEffect(() => {
+    if (isElectric) {
+      setFormData((prev) => {
+        const next = {
+          ...prev,
+          engineCapacity: "",
+        };
+        saveDraft(next);
+        return next;
+      });
+    }
+  }, [isElectric]);
 
   // handle change (checkbox support)
   const handleChange = (e) => {
@@ -446,11 +461,17 @@ function SellCarPage() {
               name="engineCapacity"
               value={formData.engineCapacity}
               onChange={handleChange}
+              disabled={isElectric}
             />
+            {isElectric && (
+              <small className="field-hint">
+                Samochody elektryczne nie posiadają pojemności silnika
+              </small>
+            )}
           </div>
 
           <div className="form-item">
-            <label htmlFor="power">Moc</label>
+            <label htmlFor="power">Moc {isElectric ? "(kW)" : "(KM)"}</label>
             <input
               type="number"
               id="power"
