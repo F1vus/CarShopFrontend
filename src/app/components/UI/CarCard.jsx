@@ -67,6 +67,9 @@ function CarCard({
     return () => ro.disconnect();
   }, [photos]);
 
+  const truncate = (text, maxLength) =>
+    text?.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
   return (
     <div className={`car-card ${isProfileCard ? "car-card-profile" : ""}`}>
       <div className="car-card__container">
@@ -82,12 +85,14 @@ function CarCard({
           <div className="car-card__info-block">
             <h3 className="car-card__info-title">
               {!isProfileCard ? (
-                <Link to={currentPath + `/${id}`}>{name}</Link>
+                <Link to={currentPath + `/${id}`}>{truncate(name, 20)}</Link>
               ) : (
-                name
+                truncate(name, 20)
               )}
             </h3>
-            <div className="car-card__info-description">{description}</div>
+            <div className="car-card__info-description">
+              {truncate(description, 40)}
+            </div>
           </div>
           <div className="car-card__footer">
             <ul className="car-card__details">
