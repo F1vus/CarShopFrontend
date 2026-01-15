@@ -1,6 +1,5 @@
 import { jwtDecode } from "jwt-decode";
 import apiClient, { refreshClient } from "../utils/apiClient";
-import localStorageService from "./localStorage.service";
 
 const authService = {
   register: async (credentials) => {

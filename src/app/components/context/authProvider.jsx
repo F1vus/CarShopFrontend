@@ -8,6 +8,7 @@ import {
 } from "react";
 import localStorageService from "../../services/localStorage.service";
 import authService from "../../services/auth.service";
+import profileService from "../../services/profile.service";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   calculateExpire,
@@ -39,7 +40,7 @@ export function AuthProvider({ children }) {
     return {
       token,
       refreshToken,
-      id,
+      profileId: id,
       expiresAt,
       isValid: token && id && isTokenValid(expiresAt),
     };
@@ -103,8 +104,6 @@ export function AuthProvider({ children }) {
           const refreshToken = localStorageService.getRefreshToken();
           if (refreshToken) {
             const newTokens = await authService.refreshToken(refreshToken);
-
-            console.log(newTokens.profileId);
 
             const expiresAt = calculateExpire(newTokens.expiresIn);
 
@@ -288,6 +287,20 @@ export function AuthProvider({ children }) {
           expiresAt,
           isValid: true,
         });
+
+        // fetching liked cars after auth is set
+        try {
+          const likedCars = await profileService.getLikedCarsByProfileId(
+            data.profileId
+          );
+          localStorageService.setLikedAds(likedCars);
+        } catch (likedCarsError) {
+          console.warn(
+            "Could not fetch liked cars during login:",
+            likedCarsError
+          );
+          localStorageService.setLikedAds([]);
+        }
 
         if (redirect) {
           const redirectTo = location.state?.from || redirect;
