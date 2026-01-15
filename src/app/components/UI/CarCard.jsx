@@ -18,7 +18,7 @@ function CarCard({
 }) {
   const currentPath = useLocation().pathname;
   const { handleDelete, handleEdit } = handles;
-  const favorites = localStorageService.getFavoritesAds() || [];
+  const favorites = localStorageService.getLikedAds() || [];
 
   const {
     id,

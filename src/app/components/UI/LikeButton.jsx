@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/authProvider";
 import { useNavigate } from "react-router-dom";
 import profileService from "../../services/profile.service";
-import { FAVORITES_ADS } from "../../utils/authUtils";
+import { LIKED_ADS } from "../../utils/authUtils";
 import localStorageService from "../../services/localStorage.service";
 
 function LikeButton({ carId, isLikedActive = false, onLikeChanged }) {
@@ -32,16 +32,16 @@ function LikeButton({ carId, isLikedActive = false, onLikeChanged }) {
 
       if (wasLiked) {
         await profileService.removeLikedCar(carId);
-        let favorites = localStorageService.getFavoritesAds();
+        let favorites = localStorageService.getLikedAds();
         favorites = favorites.filter((id) => id !== carId);
-        localStorage.setItem(FAVORITES_ADS, JSON.stringify(favorites));
+        localStorage.setItem(LIKED_ADS, JSON.stringify(favorites));
       } else {
         await profileService.addLikedCar(carId);
-        let favorites = localStorageService.getFavoritesAds();
+        let favorites = localStorageService.getLikedAds();
 
         if (favorites) {
           favorites.push(carId);
-          localStorage.setItem(FAVORITES_ADS, JSON.stringify(favorites));
+          localStorage.setItem(LIKED_ADS, JSON.stringify(favorites));
         }
       }
 

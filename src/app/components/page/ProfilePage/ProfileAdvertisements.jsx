@@ -51,7 +51,7 @@ function ProfileAdvertisements() {
     try {
       const data = await profileService.getLikedCarsByProfileId(profileId);
       setFavorites(data || []);
-      localStorageService.setFavoritesAds(data);
+      localStorageService.setLikedAds(data);
     } catch (err) {
       console.error("Fetch favorites error:", err);
     } finally {

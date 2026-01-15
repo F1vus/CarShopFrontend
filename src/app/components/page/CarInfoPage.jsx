@@ -23,8 +23,6 @@ function CarInfoPage({ carId }) {
       .getById(carId)
       .then((data) => {
         setCarInfo(data || {});
-        console.log(data);
-        
         setIsElectric(data?.petrolType?.name === "Electric");
         setIsLoaded(true);
       })
@@ -63,10 +61,11 @@ function CarInfoPage({ carId }) {
 
     if (!cleaned.startsWith("+")) return phone;
 
-    const match = cleaned.match(/^(\+\d{1,3})(\d+)$/);
+    const match = cleaned.match(/^(\+\d{1,2})(\d+)$/);
     if (!match) return phone;
 
     const country = match[1];
+    
     const rest = match[2];
 
     // group remaining digits in blocks of 3
