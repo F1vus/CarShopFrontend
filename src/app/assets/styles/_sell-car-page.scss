@@ -16,6 +16,11 @@
   color: $white;
   min-height: 100vh;
 
+  input:disabled {
+    background-color: #f3f3f3;
+    cursor: not-allowed;
+  }
+
   &__header {
     font-size: 32px;
     font-weight: 700;
@@ -334,6 +339,187 @@
 
       h2 {
         font-size: 18px;
+      }
+    }
+  }
+}
+
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 10, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+
+  &__dialog {
+    width: 780px;
+    max-width: 95%;
+    background: linear-gradient(
+      180deg,
+      rgba($darker-grey, 0.96),
+      rgba($darker-grey, 0.9)
+    );
+    border: 1px solid rgba($orange, 0.12);
+    box-shadow: 0 10px 40px rgba($orange, 0.12), 0 4px 10px rgba($black, 0.6);
+    padding: 20px;
+    border-radius: 12px;
+    color: $white;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .photo-modal__close-btn {
+      background: transparent;
+      border: 1px solid rgba($white, 0.06);
+      color: $white;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.12s ease;
+
+      &:hover {
+        background: rgba($orange, 0.08);
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  &__dropzone {
+    margin-top: 6px;
+    padding: 18px;
+    border-radius: 8px;
+    border: 1px dashed rgba($orange, 0.08);
+    text-align: center;
+    background: linear-gradient(90deg, rgba($white, 0.01), transparent);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+    &:hover {
+      border-color: rgba($orange, 0.18);
+      box-shadow: 0 8px 20px rgba($orange, 0.04);
+    }
+
+    p {
+      margin: 0;
+      color: rgba($white, 0.86);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .photo-modal__meta-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba($white, 0.66);
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: linear-gradient(
+        135deg,
+        $orange 0%,
+        color.adjust($orange, $lightness: 10%) 100%
+      );
+      color: $white;
+      border: 1px solid rgba($orange, 0.18);
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 26px rgba($orange, 0.14);
+      }
+    }
+  }
+
+  &__thumbnails {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    .photo-modal__thumb {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      .photo-modal__thumb-img {
+        width: 100%;
+        height: 90px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba($light-black, 0.24);
+        border: 1px solid rgba($white, 0.03);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+      }
+
+      .photo-modal__thumb-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+
+        button {
+          padding: 6px 8px;
+          border-radius: 8px;
+          background: transparent;
+          border: 1px solid rgba($white, 0.06);
+          color: $white;
+          font-size: 13px;
+          cursor: pointer;
+
+          &:hover {
+            background: rgba($orange, 0.06);
+            transform: translateY(-2px);
+          }
+        }
+
+        .photo-modal__status {
+          font-size: 12px;
+          color: rgba($white, 0.72);
+        }
+      }
+
+      .photo-modal__thumb-error {
+        margin-top: 6px;
+        color: $light-orange-red;
+        font-size: 12px;
+      }
+    }
+  }
+
+  /* small screens */
+  @media (max-width: 520px) {
+    &__dialog {
+      padding: 14px;
+    }
+
+    &__thumbnails {
+      .photo-modal__thumb {
+        width: 110px;
+
+        .photo-modal__thumb-img {
+          height: 70px;
+        }
       }
     }
   }

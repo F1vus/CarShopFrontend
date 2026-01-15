@@ -5,15 +5,20 @@ import wheel from "assets/img/icons/wheel.svg";
 import "styles/_car-card.scss";
 import { Link, useLocation } from "react-router-dom";
 import LikeButton from "./LikeButton";
+import localStorageService from "../../services/localStorage.service";
+import config from "../../../config";
+import { useEffect, useRef, useState } from "react";
 
 function CarCard({
   carInfo,
   isProfileCard = false,
   handles = {},
   isLiked = false,
+  onRemoveFavorite,
 }) {
   const currentPath = useLocation().pathname;
   const { handleDelete, handleEdit } = handles;
+  const favorites = localStorageService.getLikedAds() || [];
 
   const {
     id,
@@ -27,23 +32,67 @@ function CarCard({
     producent,
   } = carInfo;
 
+  const imageContainerRef = useRef(null);
+  const [photoSrc, setPhotoSrc] = useState(null);
+
+  useEffect(() => {
+    if (!photos || !photos[0]) return;
+    const base = config.photosEndpoint + photos[0].url;
+
+    const sizes = [64, 128, 256, 512]; // available sizes
+
+    function chooseSize(containerPx) {
+      const dpr = window.devicePixelRatio || 1;
+      const needed = Math.ceil(containerPx * dpr);
+
+      return sizes.find((s) => s >= needed) || sizes[sizes.length - 1];
+    }
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width || 200;
+        const chosen = chooseSize(width);
+        setPhotoSrc(`${base}${chosen}`);
+      }
+    });
+
+    if (imageContainerRef.current) ro.observe(imageContainerRef.current);
+
+    if (imageContainerRef.current) {
+      const w = imageContainerRef.current.getBoundingClientRect().width;
+      const chosen = chooseSize(w);
+      setPhotoSrc(`${base}${chosen}`);
+    }
+
+    return () => ro.disconnect();
+  }, [photos]);
+
+  const truncate = (text, maxLength) =>
+    text?.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
   return (
     <div className={`car-card ${isProfileCard ? "car-card-profile" : ""}`}>
       <div className="car-card__container">
-        <div className="car-card__image">
-          <img src={photos[0].url} alt={name} />
+        <div className="car-card__image" ref={imageContainerRef}>
+          {photoSrc ? (
+            <img src={photoSrc} alt={name} />
+          ) : (
+            <div className="placeholder" />
+          )}
         </div>
 
         <div className="car-card__info">
           <div className="car-card__info-block">
             <h3 className="car-card__info-title">
               {!isProfileCard ? (
-                <Link to={currentPath + `/${id}`}>{name}</Link>
+                <Link to={currentPath + `/${id}`}>{truncate(name, 20)}</Link>
               ) : (
-                name
+                truncate(name, 20)
               )}
             </h3>
-            <div className="car-card__info-description">{description}</div>
+            <div className="car-card__info-description">
+              {truncate(description, 40)}
+            </div>
           </div>
           <div className="car-card__footer">
             <ul className="car-card__details">
@@ -75,7 +124,17 @@ function CarCard({
         <div className="car-card__price">
           {price} <span>PLN</span>
         </div>
-        {!isProfileCard && <LikeButton carId={id} isLikedActive={isLiked} />}
+        {!isProfileCard && (
+          <LikeButton
+            carId={id}
+            isLikedActive={favorites.includes(id)}
+            onLikeChanged={(carId, isLiked) => {
+              if (!isLiked && onRemoveFavorite) {
+                onRemoveFavorite(carId);
+              }
+            }}
+          />
+        )}
       </div>
 
       {isProfileCard && (

@@ -28,7 +28,7 @@ function applyClientFilters(cars, params) {
   const mileageTo = parseNumber(params.get("mileageTo"));
   const colorParam = params.get("color");
   const fuelTypeParam = params.get("fuelType");
-  const producerParam = params.get("producer"); // new producer param
+  const producerParam = params.get("producer");
 
   return cars.filter((c) => {
     if (priceFrom != null && (c.price == null || c.price < priceFrom))
@@ -52,12 +52,9 @@ function applyClientFilters(cars, params) {
     )
       return false;
 
-    // Producer filter: your car object uses `producent` in sample data
     if (producerParam) {
-      // support either `producent` or `producer` field on car objects
       const prod = c.producent || c.producer || c.producerId || null;
       if (!prod) return false;
-      // prod may be object {id,...} or numeric/string id
       const prodId = prod.id !== undefined ? prod.id : prod;
       if (String(prodId) !== String(producerParam)) return false;
     }
@@ -86,7 +83,6 @@ function CarsPage() {
       .getAll()
       .then((data) => {
         setAllCars(data || []);
-        setCurrentPage(1);
         setIsLoaded(true);
       })
       .catch((err) => {
@@ -95,15 +91,37 @@ function CarsPage() {
       });
   }, [location.pathname]);
 
-  // compute filtered list in-memory
   const filteredCars = useMemo(() => {
     return applyClientFilters(allCars, searchParams);
   }, [allCars, searchParams]);
 
-  // reset page to 1 whenever search params change
+  const pageParamRaw = searchParams.get("page");
+  const pageParam = parseNumber(pageParamRaw) || 1;
+  useEffect(() => {
+    setCurrentPage(pageParam);
+  }, [pageParam]);
+
+  const filterKeys = [
+    "priceFrom",
+    "priceTo",
+    "yearFrom",
+    "yearTo",
+    "mileageFrom",
+    "mileageTo",
+    "color",
+    "fuelType",
+    "producer",
+  ];
+  const filtersString = filterKeys
+    .map((k) => `${k}=${searchParams.get(k) ?? ""}`)
+    .join("&");
+
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchParams.toString()]);
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set("page", "1");
+    setSearchParams(newParams);
+  }, [filtersString]);
 
   if (error) return <Navigate to="/*" replace />;
 
@@ -133,7 +151,11 @@ function CarsPage() {
           <div className="no-results" role="status" aria-live="polite">
             <div className="no-results__wrapper">
               <h3 className="no-results__title">Brak ogłoszeń</h3>
-              <img src={noResultsImg} alt="No result were found!" className="no-results-img" />
+              <img
+                src={noResultsImg}
+                alt="No result were found!"
+                className="no-results-img"
+              />
               <p className="no-results__desc">
                 Nie znaleziono samochodów pasujących do wybranych parametrów.
                 Spróbuj poszerzyć zakres filtrów lub wyczyść je, aby zobaczyć

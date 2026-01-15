@@ -1,37 +1,72 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import config from "../../../config";
 
 function Carousel({ photos = [], altPrefix = "photo" }) {
   const [index, setIndex] = useState(0);
   const startX = useRef(null);
   const deltaX = useRef(0);
 
-  const prev = () => setIndex((i) => (photos.length ? (i - 1 + photos.length) % photos.length : 0));
-  const next = () => setIndex((i) => (photos.length ? (i + 1) % photos.length : 0));
-  const goTo = (i) => setIndex(i);
+  useEffect(() => {
+    if (index >= photos.length) {
+      setIndex(0);
+    }
+  }, [photos, index]);
+
+  const prev = () =>
+    setIndex((i) =>
+      photos.length ? (i - 1 + photos.length) % photos.length : 0
+    );
+
+  const next = () =>
+    setIndex((i) => (photos.length ? (i + 1) % photos.length : 0));
+
+  const goTo = (i) => {
+    if (i >= 0 && i < photos.length) {
+      setIndex(i);
+    }
+  };
 
   const onTouchStart = (e) => {
     startX.current = e.touches[0].clientX;
     deltaX.current = 0;
   };
+
   const onTouchMove = (e) => {
-    if (startX.current != null) deltaX.current = e.touches[0].clientX - startX.current;
+    if (startX.current != null) {
+      deltaX.current = e.touches[0].clientX - startX.current;
+    }
   };
+
   const onTouchEnd = () => {
     if (Math.abs(deltaX.current) > 50) {
-      if (deltaX.current < 0) next();
-      else prev();
+      deltaX.current < 0 ? next() : prev();
     }
     startX.current = null;
     deltaX.current = 0;
   };
 
-  if (!photos || photos.length === 0) {
+  if (!photos.length) {
     return (
       <div className="carousel empty">
         <img src="/placeholder-car.jpg" alt={altPrefix} />
       </div>
     );
   }
+  
+  const getBestSize = () => {
+    const dpr = window.devicePixelRatio || 1;
+    const containerWidth = 900; // max carousel width in CSS
+    const needed = Math.ceil(containerWidth * dpr);
+
+    if (needed <= 156) return 156;
+    if (needed <= 512) return 512;
+    return 512; // fallback if screen is huge
+  };
+
+  const mainPhotoUrl =
+    config.photosEndpoint + photos[index].url + getBestSize();
+
+  const hasMultiple = photos.length > 1;
 
   return (
     <div className="carousel">
@@ -41,27 +76,45 @@ function Carousel({ photos = [], altPrefix = "photo" }) {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <button className="carousel__nav carousel__nav--prev" onClick={prev} aria-label="Poprzednie">
-          ‹
-        </button>
-        <img src={photos[index].url} alt={`${altPrefix}-${index}`} />
-        <button className="carousel__nav carousel__nav--next" onClick={next} aria-label="Następne">
-          ›
-        </button>
+        {hasMultiple && (
+          <button
+            className="carousel__nav carousel__nav--prev"
+            onClick={prev}
+            aria-label="Poprzednie"
+          >
+            ‹
+          </button>
+        )}
+
+        <img src={mainPhotoUrl} alt={`${altPrefix}-${index}`} />
+
+        {hasMultiple && (
+          <button
+            className="carousel__nav carousel__nav--next"
+            onClick={next}
+            aria-label="Następne"
+          >
+            ›
+          </button>
+        )}
       </div>
 
       {photos.length > 1 && (
         <div className="carousel__thumbs">
-          {photos.slice(0, 6).map((p, i) => (
-            <button
-              key={p.id}
-              className={`carousel__thumb ${i === index ? "is-active" : ""}`}
-              onClick={() => goTo(i)}
-              aria-label={`Pokaż zdjęcie ${i + 1}`}
-            >
-              <img src={p.url} alt={`${altPrefix}-thumb-${i}`} />
-            </button>
-          ))}
+          {photos.slice(0, 6).map((p, i) => {
+            const thumbUrl = config.photosEndpoint + p.url + "128";
+
+            return (
+              <button
+                key={p.id ?? i}
+                className={`carousel__thumb ${i === index ? "is-active" : ""}`}
+                onClick={() => goTo(i)}
+                aria-label={`Pokaż zdjęcie ${i + 1}`}
+              >
+                <img src={thumbUrl} alt={`${altPrefix}-thumb-${i}`} />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
