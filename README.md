@@ -1,4 +1,4 @@
-# Car Shop - Web App
+# Car Shop - Frontend
 
 ## Opis
 
