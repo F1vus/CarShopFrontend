@@ -84,4 +84,20 @@
       background-color: $orange-hover;
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 8px 15px;
+    font-size: 12px;
+    height: 36px;
+    letter-spacing: 0.8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    font-size: 11px;
+    height: 32px;
+    letter-spacing: 0.5px;
+    flex: 1;
+    text-align: center;
+  }
 }

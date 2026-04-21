@@ -1,6 +1,8 @@
 @use "../styles/colors" as *;
 @use "../styles/mixins" as *;
+@use "../styles/variables" as *;
 @use "sass:color";
+@use "sass:math";
 
 @keyframes cardFloat {
   0%,
@@ -85,8 +87,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 40px 20px;
+  min-height: 80vh;
+  padding: 80px 20px;
   background: radial-gradient(
       circle at 20% 50%,
       rgba($orange, 0.04) 0%,
@@ -95,6 +97,13 @@
     radial-gradient(circle at 80% 80%, rgba($success, 0.02) 0%, transparent 50%);
   position: relative;
   overflow: hidden;
+
+
+  @media (max-height: 850px), (max-width: 600px) {
+    align-items: center;
+    height: calc(100vh - $navbar-height - 20p);
+    padding:  10px;
+  }
 }
 
 .authorization-page::before {
@@ -139,6 +148,10 @@
   overflow: hidden;
   animation: cardFloat 4s ease-in-out infinite;
   z-index: 1;
+
+  @media (max-height: 850px), (max-width: 600px) {
+    animation: none;
+  }
 }
 
 .auth-card::before {
