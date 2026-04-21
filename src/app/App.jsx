@@ -13,6 +13,7 @@ import ProfileAdvertisements from "./components/page/ProfilePage/ProfileAdvertis
 import ProfileMessages from "./components/page/ProfilePage/ProfileMessages";
 import ProfileSettings from "./components/page/ProfilePage/ProfileSettings";
 import EditCarPage from "./components/page/ProfilePage/EditCarPage";
+import PrivacyPolicyPage from "./components/page/PrivacyPolicyPage";
 function App() {
   return (
     <>
@@ -26,6 +27,7 @@ function App() {
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/sellcar" element={<SellCarPage />} />
           <Route path="/basket" element={<ShoppingBasketPage />} />
+          <Route path="privacy" element={<PrivacyPolicyPage />} />
           <Route path="/profile" element={<ProfilePage />}>
             <Route index element={<Navigate to="advertisements" replace />} />
             <Route path="advertisements" element={<ProfileAdvertisements />} />
