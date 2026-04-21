@@ -1,4 +1,5 @@
 @use "./colors" as *;
+@use "./variables" as *;
 
 .navbar {
   position: sticky;
@@ -13,7 +14,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
-    height: 64px;
+    height: $navbar-height;
 
     flex-wrap: nowrap;
   }
@@ -287,8 +288,6 @@
       border: none;
       padding: 8px;
       display: flex;
-      align-items: center;
-      justify-content: center;
       cursor: pointer;
       color: $white;
     }
@@ -596,10 +595,15 @@
   }
 }
 
-/* responsive adjustments for suggestion width */
 @media (max-width: 1250px) {
   .navbar__search-container .navbar__suggestions {
     width: 280px;
+  }
+}
+
+@media (max-width: 860px) {
+  .navbar__link {
+    font-size: 0.75rem;
   }
 }
 
@@ -609,5 +613,13 @@
     right: 0;
     width: auto;
     margin: 0 8px;
+  }
+  .navbar__search {
+    width: 45px;
+  }
+  .dropdown-item-content {
+    i {
+      margin-right: 8px !important;
+    }
   }
 }

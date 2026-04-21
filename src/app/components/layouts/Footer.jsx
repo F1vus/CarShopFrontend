@@ -32,17 +32,10 @@ export default function Footer() {
                 <img src={siteLogo} alt="CarShop" />
               </Link>
             </div>
-
-            <Link to="/" className="footer__link">
-              Pomoc
-            </Link>
             <Link to="/contacts" className="footer__link">
               Kontakty
             </Link>
-            <Link to="/" className="footer__link">
-              Reklama
-            </Link>
-            <Link to="/" className="footer__link">
+            <Link to="/privacy" className="footer__link">
               Polityka Prywatności
             </Link>
           </div>
@@ -52,7 +45,7 @@ export default function Footer() {
           <div className="footer__column footer__column--contact">
             <h4 className="footer__title">Dane kontaktowe</h4>
             <p className="footer__text">
-              Telefon: +48 000 000 000, 48 111 111 111
+              Telefon: +48 123 456 789
             </p>
             <p className="footer__text">Email: carshop@carshop.pl</p>
             <p className="footer__text">Od pn do nd w godz. 08:00–20:20</p>

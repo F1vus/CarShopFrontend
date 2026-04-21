@@ -24,7 +24,11 @@ function CurrentLocation() {
     }
 
     if (pathnames[0] === "contacts") {
-      crumbs.push({ name: "Kontakt", path: "/contacts" });
+      crumbs.push({ name: "Kontakty", path: "/contacts" });
+    }
+
+    if (pathnames[0] === "privacy") {
+      crumbs.push({ name: "Polityka Prywatności", path: "/privacy" });
     }
 
     if (pathnames[0] === "sellcar") {

@@ -102,3 +102,130 @@
     }
   }
 }
+
+@media (max-width: 1100px) and (min-width: 769px) {
+  .cars-page {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .filtration-form-aside {
+    flex: 1 1 100%;
+    max-width: 100%;
+    order: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .filtration-form-aside .filtration-form {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .content,
+  .content-no-results {
+    order: 2;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
+
+.filter-toggle-button {
+  display: none;
+  position: sticky;
+  top: 16px;
+  z-index: 10;
+  width: fit-content;
+  margin: 0 0 16px auto;
+  padding: 10px 20px;
+  background: $orange;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s;
+
+  &:hover {
+    background: $orange-hover;
+  }
+}
+
+.filter-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.filter-modal {
+  background: rgb(147, 147, 147, 0.70);
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 20px 20px 24px;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+
+  &__close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000000;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $orange-hover;
+    }
+  }
+
+  .filtration-form {
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cars-page {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filtration-form-aside {
+    display: none;
+  }
+
+  .filter-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .content,
+  .content-no-results {
+    width: 100%;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .cars-cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}

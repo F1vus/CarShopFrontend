@@ -77,6 +77,8 @@ function CarsPage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
   useEffect(() => {
     setIsLoaded(false);
     carService
@@ -90,6 +92,21 @@ function CarsPage() {
         setError(true);
       });
   }, [location.pathname]);
+
+  useEffect(() => {
+    setIsFilterModalOpen(false);
+  }, [searchParams]);
+
+  // if page size is changed
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && isFilterModalOpen) {
+        setIsFilterModalOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isFilterModalOpen]);
 
   const filteredCars = useMemo(() => {
     return applyClientFilters(allCars, searchParams);
@@ -143,6 +160,32 @@ function CarsPage() {
       <aside className="filtration-form-aside">
         <FiltrationForm />
       </aside>
+
+      <button
+        className="filter-toggle-button"
+        onClick={() => setIsFilterModalOpen(true)}
+        aria-label="Otwórz filtry"
+      >
+        Filtruj
+      </button>
+
+      {isFilterModalOpen && (
+        <div
+          className="filter-modal-overlay"
+          onClick={() => setIsFilterModalOpen(false)}
+        >
+          <div className="filter-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="filter-modal__close"
+              onClick={() => setIsFilterModalOpen(false)}
+              aria-label="Zamknij"
+            >
+              ✕
+            </button>
+            <FiltrationForm />
+          </div>
+        </div>
+      )}
 
       <section
         className={`content${filteredCars.length === 0 ? "-no-results" : ""}`}
