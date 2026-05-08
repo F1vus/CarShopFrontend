@@ -44,6 +44,11 @@ function SellCarPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  setTimeout(() => {
+    setSuccessMessage("");
+  }, 5000);
 
   // Draft helpers
   const loadDraft = () => {
@@ -138,9 +143,9 @@ function SellCarPage() {
 
   // local car states
   const LOCAL_CAR_STATES = [
-    { id: "POOR", name: "POOR" },
-    { id: "USED", name: "USED" },
-    { id: "NEW", name: "NEW" },
+    { id: "POOR", name: "Zły" },
+    { id: "USED", name: "Używany" },
+    { id: "NEW", name: "Nowy" },
   ];
 
   const validateForm = () => {
@@ -230,6 +235,7 @@ function SellCarPage() {
 
     try {
       setIsSubmitting(true);
+      setSuccessMessage("");
       const headers =
         typeof getAuthHeaders === "function" ? getAuthHeaders() : {};
 
@@ -253,7 +259,7 @@ function SellCarPage() {
       Object.keys(carPayload).forEach(
         (k) =>
           (carPayload[k] === undefined || carPayload[k] === null) &&
-          delete carPayload[k]
+          delete carPayload[k],
       );
 
       const form = new FormData();
@@ -276,6 +282,8 @@ function SellCarPage() {
       }
 
       await carService.createCar(form, { headers: safeHeaders });
+
+      setSuccessMessage("Ogłoszenie zostało pomyślnie dodane!");
 
       clearDraft();
       setFormData({
@@ -397,6 +405,8 @@ function SellCarPage() {
               type="number"
               id="price"
               name="price"
+              step="any"
+              min="1.0"
               value={formData.price}
               onChange={handleChange}
             />
@@ -454,7 +464,7 @@ function SellCarPage() {
           </div>
 
           <div className="form-item">
-            <label htmlFor="engineCapacity">Pojemność silnika (l)</label>
+            <label htmlFor="engineCapacity">Pojemność skokowa (cm3)</label>
             <input
               type="number"
               id="engineCapacity"
@@ -649,6 +659,9 @@ function SellCarPage() {
             {isSubmitting ? "Wysyłanie..." : "Wystaw moje auto"}
           </button>
         </div>
+        {successMessage && (
+          <div className="success-message">{successMessage}</div>
+        )}
       </form>
 
       {showPhotoModal && (

@@ -101,8 +101,8 @@
       border-radius: 10px;
       color: $white-smoke;
       font-size: 14px;
-      resize: vertical;
-      min-height: 120px;
+      resize: none;
+      height: 200px;
       font-family: inherit;
       transition: border-color 0.28s ease, background 0.28s ease,
         transform 0.28s ease;
@@ -523,4 +523,16 @@
       }
     }
   }
+}
+
+.success-message {
+  margin-top: 20px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: rgba(46, 204, 113, 0.12);
+  border: 1px solid rgba(46, 204, 113, 0.35);
+  color: #7dffb3;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 0 18px rgba(46, 204, 113, 0.12);
 }

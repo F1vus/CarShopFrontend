@@ -38,8 +38,9 @@ function CarCard({
   useEffect(() => {
     if (!photos || !photos[0]) return;
     const base = config.photosEndpoint + photos[0].url;
+    // const base = photos[0].url;
 
-    const sizes = [64, 128, 256, 512]; // available sizes
+    const sizes = [64, 128, 512]; // available sizes
 
     function chooseSize(containerPx) {
       const dpr = window.devicePixelRatio || 1;
