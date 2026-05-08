@@ -12,11 +12,15 @@ const carService = {
       allowAbsoluteUrls: true,
     };
     try {
+
       const response = await axios.request(request);
-      return response.data;
+      console.log(response.data);
+      return response.data || [];
+      
     } catch (err) {
       console.error(err);
-      throw err;
+      // throw err;
+      return [];
     }
   },
   getById: async (id) => {
